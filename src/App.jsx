@@ -7,10 +7,11 @@ import {
   useNavigate,
 } from 'react-router-dom'
 
+import { HeroVisual } from './components/HeroVisual'
 import { MeltyText } from './components/MeltyText'
 import { Nav } from './components/Nav'
 import { NoiseOverlay } from './components/NoiseOverlay'
-import { SmokeOverlay } from './components/SmokeOverlay'
+import { SmokeOverlay, SMOKE_DURATION, SWAP_DELAY } from './components/SmokeOverlay'
 import { TextAnimate } from '@/registry/magicui/text-animate'
 import './App.css'
 
@@ -37,15 +38,89 @@ const pages = [
   { path: '/contact', id: 'contact' },
 ]
 
-const SWAP_DELAY = 800
-const SMOKE_DURATION = 1800
+const heroStats = [
+  { value: '0 → 100', label: 'from idea to launch' },
+  { value: '12+', label: 'products shipped' },
+  { value: '6 wks', label: 'avg. to first release' },
+]
 
-function HeroPage() {
+const workProjects = [
+  {
+    name: 'J Creation',
+    category: 'e-commerce',
+    href: 'https://jcreationbd.com/shop',
+    description:
+      "Grooms' exclusive wear shop — catalog, product pages, and checkout flow.",
+    tags: ['shop', 'catalog', 'checkout'],
+  },
+  {
+    name: 'Arish Travels & Tours',
+    category: 'website',
+    href: 'https://arishbd.com/',
+    description:
+      'Hajj & Umrah agency site — packages, visa guidance, and pre-registration.',
+    tags: ['hajj & umrah', 'packages', 'booking'],
+  },
+  {
+    name: 'SLR Playground',
+    category: 'website',
+    href: 'https://slrplaygroundmalaysia.com/',
+    description:
+      'Playground supplier catalog & project gallery for the Malaysian market.',
+    tags: ['catalog', 'gallery', 'malaysia'],
+  },
+  {
+    name: 'Kasem Garments',
+    category: 'mobile app',
+    href: 'https://github.com/mihsanalam/Kasem-Garments',
+    description:
+      'Inventory app (React Native + Expo + Firebase) — stock, sales, invoicing.',
+    tags: ['react native', 'firebase', 'inventory'],
+  },
+  {
+    name: 'Innovick',
+    category: 'website',
+    href: 'https://innovick.vercel.app/',
+    description: 'Fast, minimal studio site for the team behind these builds.',
+    tags: ['vercel', 'minimal', 'studio'],
+  },
+]
+
+function HeroPage({ onNavigate }) {
   return (
     <main className="page">
       <div className="hero">
         <MeltyText text="XY Combinators" />
+        <p className="hero-tagline">
+          a design & engineering studio for founders who move fast.
+        </p>
+        <p className="hero-body">
+          We partner with early-stage teams to shape the product, ship the
+          first version, and get it in front of real users. No endless decks,
+          no hand-offs. Just working software, built alongside you.
+        </p>
+        <div className="hero-actions">
+          <button
+            type="button"
+            className="hero-cta"
+            onClick={() => onNavigate?.('/work')}
+          >
+            see the work
+          </button>
+          <a className="hero-link" href="mailto:hello@xycombinators.com">
+            start a project
+          </a>
+        </div>
+        <ul className="hero-stats">
+          {heroStats.map((stat) => (
+            <li key={stat.label} className="hero-stat">
+              <span className="hero-stat-value">{stat.value}</span>
+              <span className="hero-stat-label">{stat.label}</span>
+            </li>
+          ))}
+        </ul>
       </div>
+      <HeroVisual />
     </main>
   )
 }
@@ -58,6 +133,57 @@ function SectionPage({ title, body }) {
           {title}
         </TextAnimate>
         <p>{body}</p>
+      </div>
+    </main>
+  )
+}
+
+function WorkPage() {
+  return (
+    <main className="page">
+      <div className="work">
+        <TextAnimate as="h2" animation="blurIn" className="section-title">
+          work
+        </TextAnimate>
+        <p className="work-intro">
+          A few things we've designed and shipped, from first sketch to
+          production.
+        </p>
+        <ul className="work-list">
+          {workProjects.map((project, i) => (
+            <li key={project.name} className="work-item">
+              <a
+                className="work-item-link"
+                href={project.href}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span className="work-item-index">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="work-item-main">
+                  <span className="work-item-head">
+                    <span className="work-item-name">{project.name}</span>
+                    <span className="work-item-category">{project.category}</span>
+                  </span>
+                  <span className="work-item-description">
+                    {project.description}
+                  </span>
+                  <span className="work-item-tags">
+                    {project.tags.map((tag) => (
+                      <span key={tag} className="work-item-tag">
+                        {tag}
+                      </span>
+                    ))}
+                  </span>
+                </span>
+                <span className="work-item-arrow" aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </main>
   )
@@ -194,18 +320,21 @@ function App() {
     <>
       <Nav onNavigate={goToPath} />
       <Routes>
-        <Route path="/" element={<HeroPage />} />
-        {pages.slice(1).map((page) =>
-          page.title ? (
-            <Route
-              key={page.id}
-              path={page.path}
-              element={<SectionPage title={page.title} body={page.body} />}
-            />
-          ) : (
-            <Route key={page.id} path={page.path} element={<ContactPage />} />
-          )
-        )}
+        <Route path="/" element={<HeroPage onNavigate={goToPath} />} />
+        <Route path="/work" element={<WorkPage />} />
+        {pages.slice(1)
+          .filter((page) => page.id !== 'work')
+          .map((page) =>
+            page.title ? (
+              <Route
+                key={page.id}
+                path={page.path}
+                element={<SectionPage title={page.title} body={page.body} />}
+              />
+            ) : (
+              <Route key={page.id} path={page.path} element={<ContactPage />} />
+            )
+          )}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <SmokeOverlay

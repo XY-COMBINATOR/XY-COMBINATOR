@@ -1,5 +1,6 @@
 :root {
-  font: 18px/145% system-ui, 'Segoe UI', Roboto, sans-serif;
+  font: clamp(18px, 1.1vw + 0.5rem, 24px)/145% system-ui, 'Segoe UI', Roboto,
+    sans-serif;
   color-scheme: dark;
   color: #f3f4f6;
   font-synthesis: none;

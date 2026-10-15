@@ -1,4 +1,4 @@
-import { MeshGradient } from '@paper-design/shaders-react'
+import cardBg from '@/assets/home card bg.png'
 
 import './HeroVisual.css'
 
@@ -12,13 +12,7 @@ export function HeroVisual() {
   return (
     <aside className="hero-visual" aria-hidden="true">
       <div className="hero-visual-frame">
-        <MeshGradient
-          className="hero-visual-shader"
-          speed={0.45}
-          distortion={1.1}
-          swirl={0.8}
-          colors={['#1a1a2e', '#4c1d95', '#0f172a', '#6d28d9']}
-        />
+        <img className="hero-visual-shader" src={cardBg} alt="" draggable="false" />
         <div className="hero-visual-overlay">
           <span className="hero-visual-badge">now shipping</span>
           <ul className="hero-visual-list">

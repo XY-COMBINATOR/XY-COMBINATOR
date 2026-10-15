@@ -7,6 +7,11 @@ import {
   useNavigate,
 } from 'react-router-dom'
 
+import arishImg from './assets/work-imgs/arish travels.png'
+import innovickImg from './assets/work-imgs/innovick.png'
+import jcreationImg from './assets/work-imgs/jcriation.png'
+import kasemImg from './assets/work-imgs/kasem garments.png'
+import slrImg from './assets/work-imgs/SLR Playground Malaysia.png'
 import { HeroVisual } from './components/HeroVisual'
 import { MeltyText } from './components/MeltyText'
 import { Nav } from './components/Nav'
@@ -27,7 +32,7 @@ const pages = [
     path: '/about',
     id: 'about',
     title: 'about',
-    body: 'XY Combinators is a small studio of designers and engineers taking products from zero to one.',
+    body: 'XY Combinators is a studio of designers and engineers taking products from zero to one.',
   },
   {
     path: '/services',
@@ -41,7 +46,22 @@ const pages = [
 const heroStats = [
   { value: '0 → 100', label: 'from idea to launch' },
   { value: '12+', label: 'products shipped' },
-  { value: '6 wks', label: 'avg. to first release' },
+  { value: '2 wks', label: 'avg. to first release' },
+]
+
+const aboutValues = [
+  {
+    title: 'ship, then polish',
+    text: 'A rough version in front of real users beats a perfect one in a doc.',
+  },
+  {
+    title: 'founders in the room',
+    text: 'No account managers — you work directly with the people building it.',
+  },
+  {
+    title: 'own the outcome',
+    text: 'We stay through launch and iteration, not just until the hand-off.',
+  },
 ]
 
 const workProjects = [
@@ -49,6 +69,7 @@ const workProjects = [
     name: 'J Creation',
     category: 'e-commerce',
     href: 'https://jcreationbd.com/shop',
+    image: jcreationImg,
     description:
       "Grooms' exclusive wear shop — catalog, product pages, and checkout flow.",
     tags: ['shop', 'catalog', 'checkout'],
@@ -57,6 +78,7 @@ const workProjects = [
     name: 'Arish Travels & Tours',
     category: 'website',
     href: 'https://arishbd.com/',
+    image: arishImg,
     description:
       'Hajj & Umrah agency site — packages, visa guidance, and pre-registration.',
     tags: ['hajj & umrah', 'packages', 'booking'],
@@ -65,6 +87,7 @@ const workProjects = [
     name: 'SLR Playground',
     category: 'website',
     href: 'https://slrplaygroundmalaysia.com/',
+    image: slrImg,
     description:
       'Playground supplier catalog & project gallery for the Malaysian market.',
     tags: ['catalog', 'gallery', 'malaysia'],
@@ -73,6 +96,7 @@ const workProjects = [
     name: 'Kasem Garments',
     category: 'mobile app',
     href: 'https://github.com/mihsanalam/Kasem-Garments',
+    image: kasemImg,
     description:
       'Inventory app (React Native + Expo + Firebase) — stock, sales, invoicing.',
     tags: ['react native', 'firebase', 'inventory'],
@@ -81,6 +105,7 @@ const workProjects = [
     name: 'Innovick',
     category: 'website',
     href: 'https://innovick.vercel.app/',
+    image: innovickImg,
     description: 'Fast, minimal studio site for the team behind these builds.',
     tags: ['vercel', 'minimal', 'studio'],
   },
@@ -103,7 +128,7 @@ function HeroPage({ onNavigate }) {
           <button
             type="button"
             className="hero-cta"
-            onClick={() => onNavigate?.('/work')}
+            onClick={() => onNavigate?.('/ourp')}
           >
             see the work
           </button>
@@ -139,9 +164,34 @@ function SectionPage({ title, body }) {
 }
 
 function WorkPage() {
+  const [hovered, setHovered] = useState(null)
+  const [pos, setPos] = useState({ x: 0, y: 0 })
+  const previewRef = useRef(null)
+
+  const onItemEnter = (project) => {
+    if (project.image) setHovered(project)
+  }
+
+  const onItemLeave = () => setHovered(null)
+
+  const onListMove = (event) => {
+    setPos({ x: event.clientX, y: event.clientY })
+  }
+
+  useEffect(() => {
+    const preview = previewRef.current
+    if (!preview) return
+    const width = preview.offsetWidth
+    const height = preview.offsetHeight
+    const flipX = pos.x + width + 40 > window.innerWidth
+    const flipY = pos.y + height + 40 > window.innerHeight
+    preview.style.left = `${pos.x + (flipX ? -width - 28 : 28)}px`
+    preview.style.top = `${pos.y + (flipY ? -height - 28 : 28)}px`
+  }, [pos, hovered])
+
   return (
     <main className="page">
-      <div className="work">
+      <div className="work" onMouseMove={onListMove}>
         <TextAnimate as="h2" animation="blurIn" className="section-title">
           work
         </TextAnimate>
@@ -157,6 +207,8 @@ function WorkPage() {
                 href={project.href}
                 target="_blank"
                 rel="noreferrer"
+                onMouseEnter={() => onItemEnter(project)}
+                onMouseLeave={onItemLeave}
               >
                 <span className="work-item-index">
                   {String(i + 1).padStart(2, '0')}
@@ -181,6 +233,40 @@ function WorkPage() {
                   ↗
                 </span>
               </a>
+            </li>
+          ))}
+        </ul>
+        {hovered && (
+          <div className="work-preview" ref={previewRef} aria-hidden="true">
+            <img src={hovered.image} alt="" draggable="false" />
+          </div>
+        )}
+      </div>
+    </main>
+  )
+}
+
+function AboutPage() {
+  return (
+    <main className="page">
+      <div className="about">
+        <p className="about-lead">
+          XY Combinators is a studio of designers and engineers taking products from 0 to 100.
+        </p>
+        <p className="about-body">
+          We started as a group of builders who kept watching good ideas die in slide decks.
+        </p>
+        <p className="about-body">
+          We build custom websites, mobile apps, and digital tools that help businesses grow. Our team handles everything from your initial design ideas to final coding and launch. We focus on delivering clean, fast, and secure software that simplifies your daily operations.
+        </p>
+        <ul className="about-values">
+          {aboutValues.map((value, i) => (
+            <li key={value.title} className="about-value">
+              <span className="about-value-index">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="about-value-title">{value.title}</span>
+              <span className="about-value-text">{value.text}</span>
             </li>
           ))}
         </ul>
@@ -322,8 +408,9 @@ function App() {
       <Routes>
         <Route path="/" element={<HeroPage onNavigate={goToPath} />} />
         <Route path="/work" element={<WorkPage />} />
+        <Route path="/about" element={<AboutPage />} />
         {pages.slice(1)
-          .filter((page) => page.id !== 'work')
+          .filter((page) => page.id !== 'work' && page.id !== 'about')
           .map((page) =>
             page.title ? (
               <Route

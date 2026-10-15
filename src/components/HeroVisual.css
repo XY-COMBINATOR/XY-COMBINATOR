@@ -14,7 +14,7 @@
   border-radius: 1rem;
   overflow: hidden;
   background: #0a0a0a;
-  box-shadow: 0 0 80px rgba(109, 40, 217, 0.12);
+  box-shadow: 0 0 80px rgba(255, 255, 255, 0.12);
 }
 
 .hero-visual-shader {
@@ -22,7 +22,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.85;
+  object-fit: cover;
 }
 
 .hero-visual-overlay {
@@ -30,14 +30,8 @@
   inset: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  gap: 0.9rem;
-  padding: 1.4rem;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0) 30%,
-    rgba(0, 0, 0, 0.75) 100%
-  );
+  justify-content: space-between;
+  padding: 1.5rem;
 }
 
 .hero-visual-badge {
@@ -56,7 +50,7 @@
 .hero-visual-list {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.7rem;
   margin: 0;
   padding: 0;
   list-style: none;

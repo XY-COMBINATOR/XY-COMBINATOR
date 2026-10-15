@@ -1,0 +1,24 @@
+:root {
+  font: 18px/145% system-ui, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: dark;
+  color: #f3f4f6;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  margin: 0;
+  background: #000 url('./assets/bg.jpg') center / cover no-repeat fixed;
+}
+
+#root {
+  min-height: 100svh;
+}

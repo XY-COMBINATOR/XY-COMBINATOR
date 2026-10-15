@@ -1,0 +1,27 @@
+.whitespace-pre-wrap {
+  white-space: pre-wrap;
+}
+
+.whitespace-pre {
+  white-space: pre;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.block {
+  display: block;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

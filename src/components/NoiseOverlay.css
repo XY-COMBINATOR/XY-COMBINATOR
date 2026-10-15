@@ -1,0 +1,35 @@
+.noise-overlay {
+  position: fixed;
+  inset: -8%;
+  width: 116%;
+  height: 116%;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: screen;
+  animation: noise-shift 0.9s steps(1) infinite;
+}
+
+@keyframes noise-shift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(-2%, 1.5%, 0);
+  }
+  50% {
+    transform: translate3d(1.5%, -2%, 0);
+  }
+  75% {
+    transform: translate3d(-1%, -1%, 0);
+  }
+  100% {
+    transform: translate3d(2%, 2%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .noise-overlay {
+    animation: none;
+  }
+}

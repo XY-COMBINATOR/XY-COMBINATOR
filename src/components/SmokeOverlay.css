@@ -1,0 +1,38 @@
+.smoke {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+
+.smoke,
+.smoke * {
+  pointer-events: none !important;
+}
+
+.smoke.is-running {
+  opacity: 1;
+  transition: opacity 350ms ease;
+}
+
+.smoke canvas {
+  display: block;
+}
+
+.smoke-core {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    90% 80% at 50% 50%,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.85) 45%,
+    rgba(0, 0, 0, 0) 75%
+  );
+  opacity: 0;
+  transition: opacity 350ms ease;
+}
+
+.smoke.is-running .smoke-core {
+  opacity: 1;
+}

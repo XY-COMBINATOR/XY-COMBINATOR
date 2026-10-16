@@ -12,7 +12,6 @@ import innovickImg from './assets/work-imgs/innovick.png'
 import jcreationImg from './assets/work-imgs/jcriation.png'
 import kasemImg from './assets/work-imgs/kasem garments.png'
 import slrImg from './assets/work-imgs/SLR Playground Malaysia.png'
-import { HeroVisual } from './components/HeroVisual'
 import { MeltyText } from './components/MeltyText'
 import { Nav } from './components/Nav'
 import { NoiseOverlay } from './components/NoiseOverlay'
@@ -113,9 +112,9 @@ const workProjects = [
 
 function HeroPage({ onNavigate }) {
   return (
-    <main className="page">
+    <main className="page page--hero">
       <div className="hero">
-        <MeltyText text="XY Combinators" />
+        <MeltyText text="XY Combinators" className="hero-title" />
         <p className="hero-tagline">
           a design & engineering studio for founders who move fast.
         </p>
@@ -128,7 +127,7 @@ function HeroPage({ onNavigate }) {
           <button
             type="button"
             className="hero-cta"
-            onClick={() => onNavigate?.('/ourp')}
+            onClick={() => onNavigate?.('/work')}
           >
             see the work
           </button>
@@ -145,7 +144,22 @@ function HeroPage({ onNavigate }) {
           ))}
         </ul>
       </div>
-      <HeroVisual />
+      <footer className="hero-footer">
+        <ul className="hero-socials">
+          <li>
+            <a href="https://github.com" target="_blank" rel="noreferrer">github ↗</a>
+          </li>
+          <li>
+            <a href="https://x.com" target="_blank" rel="noreferrer">x / twitter ↗</a>
+          </li>
+          <li>
+            <a href="https://linkedin.com" target="_blank" rel="noreferrer">linkedin ↗</a>
+          </li>
+          <li>
+            <a href="https://instagram.com" target="_blank" rel="noreferrer">instagram ↗</a>
+          </li>
+        </ul>
+      </footer>
     </main>
   )
 }

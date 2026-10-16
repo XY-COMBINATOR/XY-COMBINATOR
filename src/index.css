@@ -9,6 +9,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   overflow: hidden;
@@ -18,6 +24,13 @@ body {
 body {
   margin: 0;
   background: #000 url('./assets/bg.jpg') center / cover no-repeat fixed;
+}
+
+/* background-attachment: fixed janks on iOS, so fall back to scroll */
+@media (max-width: 700px) {
+  body {
+    background-attachment: scroll;
+  }
 }
 
 #root {

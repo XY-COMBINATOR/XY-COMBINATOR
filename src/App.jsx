@@ -21,25 +21,49 @@ import './App.css'
 
 const pages = [
   { path: '/', id: 'home' },
-  {
-    path: '/work',
-    id: 'work',
-    title: 'work',
-    body: "A few things we've designed and shipped, from first sketch to production.",
-  },
-  {
-    path: '/about',
-    id: 'about',
-    title: 'about',
-    body: 'XY Combinators is a studio of designers and engineers taking products from zero to one.',
-  },
-  {
-    path: '/services',
-    id: 'services',
-    title: 'services',
-    body: 'Product design, full-stack engineering, and launch support for early-stage teams.',
-  },
+  { path: '/work', id: 'work' },
+  { path: '/about', id: 'about' },
+  { path: '/services', id: 'services' },
   { path: '/contact', id: 'contact' },
+]
+
+const services = [
+  {
+    title: 'product design',
+    text: 'Interfaces and prototypes that make the product obvious, with user flows, UI, and a design system you can keep building on.',
+    tags: ['UI/UX', 'prototypes', 'design systems'],
+  },
+  {
+    title: 'websites',
+    text: 'Marketing sites, e-commerce and catalogs that load fast, rank well, and turn visitors into customers.',
+    tags: ['marketing sites', 'e-commerce', 'SEO'],
+  },
+  {
+    title: 'mobile apps',
+    text: 'Cross-platform apps from first build to store release, with one codebase, native feel and backend included.',
+    tags: ['React Native', 'Expo', 'Firebase'],
+  },
+  {
+    title: 'launch support',
+    text: 'Deployment, analytics and iteration after day one. We stay till it works in production, not just till handoff.',
+    tags: ['deployment', 'analytics', 'iteration'],
+  },
+]
+
+const processSteps = [
+  { title: 'say hello', text: 'Tell us what you are building and where you are stuck.' },
+  { title: 'scope in days', text: 'Fixed scope and timeline, no endless discovery phase.' },
+  { title: 'design & build', text: 'Weekly releases you can click, test and react to.' },
+  { title: 'launch & iterate', text: 'Ship to real users, then keep improving what works.' },
+]
+
+const EMAIL = 'hello@xycombinators.com'
+
+const socials = [
+  { label: 'github', href: 'https://github.com' },
+  { label: 'x / twitter', href: 'https://x.com' },
+  { label: 'linkedin', href: 'https://linkedin.com' },
+  { label: 'instagram', href: 'https://instagram.com' },
 ]
 
 const heroStats = [
@@ -55,7 +79,7 @@ const aboutValues = [
   },
   {
     title: 'founders in the room',
-    text: 'No account managers — you work directly with the people building it.',
+    text: 'No account managers. You work directly with the people building it.',
   },
   {
     title: 'own the outcome',
@@ -70,7 +94,7 @@ const workProjects = [
     href: 'https://jcreationbd.com/shop',
     image: jcreationImg,
     description:
-      "Grooms' exclusive wear shop — catalog, product pages, and checkout flow.",
+      "Grooms' exclusive wear shop with catalog, product pages, and checkout flow.",
     tags: ['shop', 'catalog', 'checkout'],
   },
   {
@@ -79,7 +103,7 @@ const workProjects = [
     href: 'https://arishbd.com/',
     image: arishImg,
     description:
-      'Hajj & Umrah agency site — packages, visa guidance, and pre-registration.',
+      'Hajj & Umrah agency site with packages, visa guidance, and pre-registration.',
     tags: ['hajj & umrah', 'packages', 'booking'],
   },
   {
@@ -97,7 +121,7 @@ const workProjects = [
     href: 'https://github.com/mihsanalam/Kasem-Garments',
     image: kasemImg,
     description:
-      'Inventory app (React Native + Expo + Firebase) — stock, sales, invoicing.',
+      'Inventory app (React Native + Expo + Firebase) for stock, sales and invoicing.',
     tags: ['react native', 'firebase', 'inventory'],
   },
   {
@@ -146,32 +170,72 @@ function HeroPage({ onNavigate }) {
       </div>
       <footer className="hero-footer">
         <ul className="hero-socials">
-          <li>
-            <a href="https://github.com" target="_blank" rel="noreferrer">github ↗</a>
-          </li>
-          <li>
-            <a href="https://x.com" target="_blank" rel="noreferrer">x / twitter ↗</a>
-          </li>
-          <li>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer">linkedin ↗</a>
-          </li>
-          <li>
-            <a href="https://instagram.com" target="_blank" rel="noreferrer">instagram ↗</a>
-          </li>
+          {socials.map((social) => (
+            <li key={social.label}>
+              <a href={social.href} target="_blank" rel="noreferrer">
+                {social.label} ↗
+              </a>
+            </li>
+          ))}
         </ul>
       </footer>
     </main>
   )
 }
 
-function SectionPage({ title, body }) {
+function ServicesPage({ onNavigate }) {
   return (
     <main className="page">
-      <div className="section">
+      <div className="services">
         <TextAnimate as="h2" animation="blurIn" className="section-title">
-          {title}
+          services
         </TextAnimate>
-        <p>{body}</p>
+        <p className="services-intro">
+          Product design, full-stack engineering, and launch support for
+          early-stage teams.
+        </p>
+        <ul className="services-list">
+          {services.map((service, i) => (
+            <li key={service.title} className="services-item">
+              <span className="about-value-index">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="services-item-title">{service.title}</span>
+              <span className="services-item-body">
+                <span className="services-item-text">{service.text}</span>
+                <span className="work-item-tags">
+                  {service.tags.map((tag) => (
+                    <span key={tag} className="work-item-tag">
+                      {tag}
+                    </span>
+                  ))}
+                </span>
+              </span>
+            </li>
+          ))}
+        </ul>
+        <h3 className="services-subhead">how it works</h3>
+        <ol className="services-process">
+          {processSteps.map((step, i) => (
+            <li key={step.title} className="services-step">
+              <span className="about-value-index">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="services-step-title">{step.title}</span>
+              <span className="services-step-text">{step.text}</span>
+            </li>
+          ))}
+        </ol>
+        <div className="services-cta">
+          <p>Have a project in mind?</p>
+          <button
+            type="button"
+            className="hero-cta"
+            onClick={() => onNavigate?.('/contact')}
+          >
+            start a project
+          </button>
+        </div>
       </div>
     </main>
   )
@@ -290,10 +354,53 @@ function AboutPage() {
 }
 
 function ContactPage() {
+  const [copied, setCopied] = useState(false)
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL)
+    } catch {
+      const input = document.createElement('input')
+      input.value = EMAIL
+      document.body.appendChild(input)
+      input.select()
+      document.execCommand('copy')
+      input.remove()
+    }
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1600)
+  }
+
   return (
     <main className="page">
       <div className="contact">
-        <a href="mailto:hello@xycombinators.com">hello@xycombinators.com</a>
+        <TextAnimate as="h2" animation="blurIn" className="contact-title">
+          Let&apos;s build it together.
+        </TextAnimate>
+        <p className="contact-body">
+          Tell us what you&apos;re building, where you are, and when you want
+          to launch. We reply to every message.
+        </p>
+        <div className="contact-email-row">
+          <a className="contact-email" href={`mailto:${EMAIL}`}>
+            {EMAIL}
+          </a>
+          <button type="button" className="contact-copy" onClick={copyEmail}>
+            {copied ? 'copied ✓' : 'copy'}
+          </button>
+        </div>
+        <a className="hero-cta contact-cta" href={`mailto:${EMAIL}`}>
+          start a project
+        </a>
+        <ul className="contact-socials">
+          {socials.map((social) => (
+            <li key={social.label}>
+              <a href={social.href} target="_blank" rel="noreferrer">
+                {social.label} ↗
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </main>
   )
@@ -362,7 +469,17 @@ function App() {
   )
 
   useEffect(() => {
+    // If the current page is scrollable, scroll gestures NEVER switch
+    // pages. They only scroll content. Page switch happens via nav.
+    const isPageScrollable = () => {
+      const page = document.querySelector('main.page')
+      return (
+        page != null && page.scrollHeight > page.clientHeight + 2
+      )
+    }
+
     const onWheel = (event) => {
+      if (isPageScrollable()) return
       event.preventDefault()
       if (busy.current) return
       accWheel.current += event.deltaY
@@ -381,16 +498,19 @@ function App() {
       touchY.current = event.touches[0].clientY
     }
 
-    const onTouchMove = (event) => {
-      event.preventDefault()
-    }
-
+    // No touchmove preventDefault: blocking it kills native inner scroll,
+    // which makes long pages (work/about) unscrollable on phones.
+    // On a scrollable page, swipe only scrolls, it never changes pages.
     const onTouchEnd = (event) => {
+      if (isPageScrollable()) return
       const dy = touchY.current - event.changedTouches[0].clientY
-      if (Math.abs(dy) > 50) step(dy > 0 ? 1 : -1)
+      if (Math.abs(dy) <= 60) return
+      step(dy > 0 ? 1 : -1)
     }
 
     const onKeyDown = (event) => {
+      // Scrollable page: let arrows/space scroll natively, don't switch.
+      if (isPageScrollable()) return
       if (event.key === 'ArrowDown' || event.key === 'PageDown' || event.key === ' ') {
         event.preventDefault()
         step(1)
@@ -402,14 +522,12 @@ function App() {
 
     window.addEventListener('wheel', onWheel, { passive: false })
     window.addEventListener('touchstart', onTouchStart, { passive: true })
-    window.addEventListener('touchmove', onTouchMove, { passive: false })
     window.addEventListener('touchend', onTouchEnd)
     window.addEventListener('keydown', onKeyDown)
 
     return () => {
       window.removeEventListener('wheel', onWheel)
       window.removeEventListener('touchstart', onTouchStart)
-      window.removeEventListener('touchmove', onTouchMove)
       window.removeEventListener('touchend', onTouchEnd)
       window.removeEventListener('keydown', onKeyDown)
       clearTimeout(wheelTimer.current)
@@ -423,19 +541,11 @@ function App() {
         <Route path="/" element={<HeroPage onNavigate={goToPath} />} />
         <Route path="/work" element={<WorkPage />} />
         <Route path="/about" element={<AboutPage />} />
-        {pages.slice(1)
-          .filter((page) => page.id !== 'work' && page.id !== 'about')
-          .map((page) =>
-            page.title ? (
-              <Route
-                key={page.id}
-                path={page.path}
-                element={<SectionPage title={page.title} body={page.body} />}
-              />
-            ) : (
-              <Route key={page.id} path={page.path} element={<ContactPage />} />
-            )
-          )}
+        <Route
+          path="/services"
+          element={<ServicesPage onNavigate={goToPath} />}
+        />
+        <Route path="/contact" element={<ContactPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <SmokeOverlay

@@ -78,7 +78,7 @@ export function SmokeOverlay({ running, direction = 1, runId = 0 }) {
     >
       <div className="smoke-core" />
 
-      {/* CSS fallback — always animates, guarantees visible smoke on
+      {/* CSS fallback: always animates, guarantees visible smoke on
           every device even if WebGL is slow, blocked or unsupported. */}
       <div className="smoke-fallback" aria-hidden="true">
         <span className="smoke-puff smoke-puff--1" />

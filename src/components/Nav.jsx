@@ -24,7 +24,7 @@ export function Nav({ onNavigate }) {
         className="nav-logo"
         to="/"
         onClick={(event) => handleNav(event, '/')}
-        aria-label="XY Combinators — home"
+        aria-label="XY Combinators, home"
       >
         <img src="/logo.png" alt="XY" className="nav-logo-img" draggable="false" />
         <span className="nav-logo-text">Combinators</span>

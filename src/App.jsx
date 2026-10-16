@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom'
 
 import arishImg from './assets/work-imgs/arish-travels.webp'
+import idiotBoxImg from './assets/work-imgs/idiot-box.webp'
 import innovickImg from './assets/work-imgs/innovick.webp'
 import jcreationImg from './assets/work-imgs/jcreation.webp'
 import kasemImg from './assets/work-imgs/kasem-garments.webp'
@@ -131,6 +132,15 @@ const workProjects = [
     image: innovickImg,
     description: 'Fast, minimal studio site for the team behind these builds.',
     tags: ['vercel', 'minimal', 'studio'],
+  },
+  {
+    name: 'Idiot Box',
+    category: 'desktop app',
+    href: 'https://thewonderlandstudio.github.io/Idiot_Box/',
+    image: idiotBoxImg,
+    description:
+      'Free & open-source code editor & IDE for Windows. Map your project, write code, run the terminal — all in one calm window.',
+    tags: ['open source', 'IDE', 'windows'],
   },
 ]
 

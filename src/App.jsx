@@ -68,7 +68,7 @@ const socials = [
 
 const heroStats = [
   { value: '0 → 100', label: 'from idea to launch' },
-  { value: '12+', label: 'products shipped' },
+  { value: '50+', label: 'products shipped' },
   { value: '2 wks', label: 'avg. to first release' },
 ]
 

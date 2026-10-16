@@ -26,7 +26,16 @@ export function Nav({ onNavigate }) {
         onClick={(event) => handleNav(event, '/')}
         aria-label="XY Combinators, home"
       >
-        <img src="/logo.png" alt="XY" className="nav-logo-img" draggable="false" />
+        <img
+          src="/logo.png"
+          alt="XY"
+          className="nav-logo-img"
+          draggable="false"
+          width="32"
+          height="32"
+          decoding="async"
+          fetchpriority="high"
+        />
         <span className="nav-logo-text">Combinators</span>
       </Link>
       <nav className="nav-links" aria-label="primary">

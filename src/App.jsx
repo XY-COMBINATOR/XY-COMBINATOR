@@ -7,11 +7,11 @@ import {
   useNavigate,
 } from 'react-router-dom'
 
-import arishImg from './assets/work-imgs/arish travels.png'
-import innovickImg from './assets/work-imgs/innovick.png'
-import jcreationImg from './assets/work-imgs/jcriation.png'
-import kasemImg from './assets/work-imgs/kasem garments.png'
-import slrImg from './assets/work-imgs/SLR Playground Malaysia.png'
+import arishImg from './assets/work-imgs/arish-travels.webp'
+import innovickImg from './assets/work-imgs/innovick.webp'
+import jcreationImg from './assets/work-imgs/jcreation.webp'
+import kasemImg from './assets/work-imgs/kasem-garments.webp'
+import slrImg from './assets/work-imgs/slr-playground.webp'
 import { MeltyText } from './components/MeltyText'
 import { Nav } from './components/Nav'
 import { NoiseOverlay } from './components/NoiseOverlay'
@@ -246,6 +246,17 @@ function WorkPage() {
   const [pos, setPos] = useState({ x: 0, y: 0 })
   const previewRef = useRef(null)
 
+  // Warm the tiny WebP previews as soon as the work page mounts,
+  // so the first hover shows instantly instead of downloading.
+  useEffect(() => {
+    workProjects.forEach((project) => {
+      if (!project.image) return
+      const img = new Image()
+      img.decoding = 'async'
+      img.src = project.image
+    })
+  }, [])
+
   const onItemEnter = (project) => {
     if (project.image) setHovered(project)
   }
@@ -316,7 +327,14 @@ function WorkPage() {
         </ul>
         {hovered && (
           <div className="work-preview" ref={previewRef} aria-hidden="true">
-            <img src={hovered.image} alt="" draggable="false" />
+            <img
+              src={hovered.image}
+              alt=""
+              draggable="false"
+              decoding="async"
+              width="576"
+              height="352"
+            />
           </div>
         )}
       </div>
@@ -428,6 +446,25 @@ function App() {
   }, [pageIndex])
 
   useEffect(() => () => timers.current.forEach(clearTimeout), [])
+
+  // Idle-preload work previews (only ~100 KB total now) so the
+  // hover card on /work renders instantly on first hover.
+  useEffect(() => {
+    const preload = () => {
+      workProjects.forEach((project) => {
+        if (!project.image) return
+        const img = new Image()
+        img.decoding = 'async'
+        img.src = project.image
+      })
+    }
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(preload, { timeout: 3000 })
+      return () => window.cancelIdleCallback?.(id)
+    }
+    const t = setTimeout(preload, 1500)
+    return () => clearTimeout(t)
+  }, [])
 
   const transitionTo = useCallback(
     (to) => {

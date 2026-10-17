@@ -1,0 +1,34 @@
+@import '@src/styles/functions';
+
+/* hide native scrollbar */
+.scrollbar {
+  width: 0.25vw;
+  position: fixed;
+  top: 10svh;
+  height: 80svh;
+  right: 1vw;
+  z-index: 100;
+  opacity: 0;
+  mix-blend-mode: difference;
+  border-radius: 0.15vw;
+
+  background-color: #f0f4f11a;
+
+  @include mobile {
+    width: 0.65vw;
+  }
+  .inner {
+    position: absolute;
+
+    width: 0.25vw;
+    height: 6svh;
+    background-color: var(--white);
+    border: none;
+
+    border-radius: 0.15vw;
+
+    @include mobile {
+      width: 0.65vw;
+    }
+  }
+}

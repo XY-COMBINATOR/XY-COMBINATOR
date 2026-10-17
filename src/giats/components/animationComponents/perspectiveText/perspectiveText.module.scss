@@ -1,0 +1,47 @@
+@import '@src/styles/functions';
+
+.root {
+  height: 100%;
+  width: 100%;
+  &:hover {
+    .perspectiveText {
+      transform: rotateX(90deg);
+
+      p,
+      a {
+        &:nth-of-type(1) {
+          transform: translateY(-100%);
+          opacity: 0;
+        }
+
+        &:nth-of-type(2) {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+.perspectiveText {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.1, 1);
+
+  p,
+  a {
+    color: var(--menuFontColor);
+    transition: all 0.45s cubic-bezier(0.4, 0, 0.1, 1);
+    text-transform: uppercase;
+
+    &:nth-of-type(2) {
+      position: absolute;
+      transform-origin: bottom center;
+      transform: rotateX(-90deg) translateY(50%);
+      opacity: 0;
+    }
+  }
+}

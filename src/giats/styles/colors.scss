@@ -1,0 +1,18 @@
+@use 'sass:color';
+
+$colors: (
+  'white': #f0f4f1,
+  'black': #28282b,
+  'menuColor': #28282b,
+  'accentColor': #f9f9f9,
+  'fillColor': #f2ffbd,
+  'menuFontColor': #f0f4f1,
+);
+
+html {
+  @each $name, $color in $colors {
+    --#{$name}: #{$color};
+    // for safari use case: https://ambientimpact.com/web/snippets/safari-bug-with-gradients-that-fade-to-transparent
+    // --#{$name}-transparent: #{color.change($color, $alpha: 0)};
+  }
+}

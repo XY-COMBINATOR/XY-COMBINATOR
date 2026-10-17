@@ -1,0 +1,49 @@
+@import '@src/styles/functions';
+
+.root {
+  padding-top: calc(var(--layout-columns-gap) * 4);
+  padding-left: 0px;
+  padding-right: 0px;
+  background-color: var(--white);
+  display: flex;
+  flex-direction: column;
+
+  height: 100svh;
+
+  box-shadow: 0 0 0 var(--layout-columns-gap) var(--white);
+  @include mobile {
+    height: auto;
+  }
+  .date {
+    font-weight: 450;
+
+    font-style: italic;
+    // text-align: center;
+  }
+  .others {
+    display: flex;
+    flex-direction: column;
+    gap: var(--layout-columns-gap);
+    padding-top: calc(var(--layout-columns-gap) * 0.5);
+    // align-self: flex-end;
+
+    width: 100%;
+    height: 100%;
+    padding-bottom: var(--layout-columns-gap);
+
+    @include mobile {
+      flex-direction: column;
+      gap: calc(var(--layout-columns-gap) * 1);
+    }
+    .desc {
+      width: 100%;
+      height: max-content;
+      display: flex;
+      flex-direction: column;
+      gap: var(--layout-columns-gap);
+    }
+    .buttonContainer {
+      width: max-content;
+    }
+  }
+}

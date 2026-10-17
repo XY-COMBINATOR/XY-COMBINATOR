@@ -1,0 +1,33 @@
+@import '@src/styles/functions';
+
+.root {
+  display: flex;
+  position: relative;
+  text-align: center;
+  white-space: nowrap;
+  height: 100%;
+  align-items: center;
+  .infiniteItem {
+    position: relative;
+    line-height: 100%;
+    flex: 0 0 33%;
+    padding: 0 0;
+
+    > span {
+      position: relative;
+      display: inline-block;
+      z-index: 1;
+      font-size: 1vw;
+      @include mobile {
+        font-size: 2vw !important;
+      }
+    }
+  }
+
+  .stroke {
+    color: transparent;
+    text-shadow: none;
+
+    -webkit-text-stroke: 0.12vw rgba(0, 0, 0, 0.2);
+  }
+}

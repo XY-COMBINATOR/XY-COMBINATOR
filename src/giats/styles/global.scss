@@ -1,0 +1,111 @@
+@import '@src/styles/reset.scss';
+@import '@src/styles/fonts.scss';
+@import '@src/styles/colors.scss';
+@import '@src/styles/functions.scss';
+@import '@src/styles/layout.scss';
+@import '@src/styles/utils.scss';
+@import '@src/styles/fontStyle.scss';
+@import '@src/styles/scroll.scss';
+
+html {
+  font-weight: bolder;
+  font-family: var(--font-primary), sans-serif;
+
+  scrollbar-width: thin;
+  &.nav {
+    overflow: hidden;
+  }
+}
+
+main.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+  max-height: 100%;
+  overflow: hidden;
+
+  > canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100%;
+  }
+}
+
+#backgroundWebGl {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+
+  & canvas {
+    width: 100%;
+    height: 100%;
+  }
+}
+#layout::before {
+  content: '';
+  position: fixed;
+  left: 0;
+  z-index: 9999;
+  top: 0;
+  width: calc(100% + 20rem);
+  height: calc(100% + 20rem);
+  /* background-color: red; */
+  background-image: url('/other/noise.png');
+  opacity: 0.65;
+  pointer-events: none;
+  animation: noise 1s steps(2) infinite;
+}
+
+a,
+button,
+input,
+label,
+textarea,
+select {
+  color: inherit;
+  cursor: pointer;
+}
+
+section {
+  padding-top: calc(var(--layout-columns-gap) * 2);
+  padding-bottom: calc(var(--layout-columns-gap) * 2);
+  box-shadow:
+    inset 0 calc(var(--layout-columns-gap) * 2.1) 0 0 var(--white),
+    inset calc(var(--layout-margin) * -1.05) 0 0 0 var(--white),
+    inset 0 calc(var(--layout-columns-gap) * -2.1) 0 0 var(--white),
+    inset calc(var(--layout-margin) * 1.05) 0 0 0 var(--white),
+    0 0 0 calc(var(--layout-columns-gap) * 0.045) var(--white);
+
+  background-color: transparent;
+  @include mobile {
+    box-shadow:
+      inset 0 calc(var(--layout-columns-gap) * 2.1) 0 0 var(--white),
+      inset calc(var(--layout-margin) * -1.0265) 0 0 0 var(--white),
+      inset 0 calc(var(--layout-columns-gap) * -2.1) 0 0 var(--white),
+      inset calc(var(--layout-margin) * 1.0265) 0 0 0 var(--white),
+      0 0 0 calc(var(--layout-columns-gap) * 0.04) var(--white);
+  }
+}
+
+main > div > section:nth-last-child(1) {
+  border-bottom-left-radius: var(--layout-columns-gap);
+  border-bottom-right-radius: var(--layout-columns-gap);
+  @include mobile {
+    border-bottom-left-radius: calc(var(--layout-columns-gap) * 0.5);
+    border-bottom-right-radius: calc(var(--layout-columns-gap) * 0.5);
+  }
+}
+
+.trigger-footer {
+  height: 10px;
+  width: 100%;
+}

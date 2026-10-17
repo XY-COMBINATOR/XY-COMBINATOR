@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Reference source copy (Next.js original) — kept locally, not committed
+giats-portfolio-awwwards/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

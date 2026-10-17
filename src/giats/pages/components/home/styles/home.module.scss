@@ -1,0 +1,155 @@
+@import '@src/styles/functions';
+
+.root {
+  z-index: 4;
+  height: 100vh;
+  height: calc(100 * var(--svh, 1vh));
+  height: 100svh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--layout-columns-gap) + 3.1vw) var(--layout-margin)
+    calc(var(--layout-columns-gap) * 2);
+
+  box-shadow:
+    inset 0 calc(var(--layout-columns-gap) + 3.2vw) 0 0 var(--white),
+    inset calc(var(--layout-margin) * -1.05) 0 0 0 var(--white),
+    inset 0 calc(var(--layout-columns-gap) * -1.0065 * 2) 0 0 var(--white),
+    inset calc(var(--layout-margin) * 1.05) 0 0 0 var(--white);
+
+  @include mobile {
+    padding: calc(var(--layout-columns-gap) + 6.5vw) var(--layout-margin)
+      calc(var(--layout-columns-gap) * 2);
+    box-shadow:
+      inset 0 calc(var(--layout-columns-gap) + 6.6vw) 0 0 var(--white),
+      inset calc(var(--layout-margin) * -1.1001) 0 0 0 var(--white),
+      inset 0 calc(var(--layout-columns-gap) * -1.04 * 2) 0 0 var(--white),
+      inset calc(var(--layout-margin) * 1.1001) 0 0 0 var(--white);
+  }
+  .topContainer {
+    padding: var(--layout-columns-gap) 0px;
+    flex: 0 1 auto;
+    background-color: var(--white);
+    align-items: center;
+    box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.04) var(--white);
+    @include mobile {
+      box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.04) var(--white);
+    }
+    .leftContainer {
+      grid-column: 1 / 9;
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      @include mobile {
+        width: 100%;
+      }
+    }
+    .rightContainer {
+      height: auto;
+      grid-column: 11 / 17;
+    }
+  }
+
+  .bottomContainer {
+    position: relative;
+    flex: 1 1 auto;
+    height: 1px;
+    width: 100%;
+    box-shadow: 0 0 0 1vw var(--white);
+
+    border-radius: var(--layout-columns-gap);
+
+    @include mobile {
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      height: auto;
+      box-shadow: 0 0 0 2vw var(--white);
+      border-radius: calc(var(--layout-columns-gap) * 0.5);
+    }
+    .svgWrapper {
+      width: 100.1%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      > svg {
+        display: block;
+      }
+      .mask1 {
+        fill: white;
+      }
+      .mask2 {
+        fill: var(--white);
+
+        -webkit-mask: url(#mask);
+        mask: url(#mask);
+      }
+    }
+  }
+
+  .heroMedia {
+    position: absolute;
+    inset: 0;
+    display: block;
+    border-radius: inherit;
+    overflow: hidden;
+    cursor: pointer;
+
+    > img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    &:hover > img {
+      transform: scale(1.035);
+    }
+  }
+
+  .heroTag {
+    position: absolute;
+    left: var(--layout-columns-gap);
+    bottom: var(--layout-columns-gap);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5vw;
+    padding: 0.6vw 1.1vw;
+    background-color: var(--white);
+    color: var(--black);
+    border-radius: 999px;
+    font-size: 0.9vw;
+    line-height: 1;
+    font-weight: 650;
+    @include mobile {
+      left: calc(var(--layout-columns-gap) * 0.5);
+      bottom: calc(var(--layout-columns-gap) * 0.5);
+      padding: 2vw 3.4vw;
+      font-size: 3vw;
+    }
+  }
+
+  .rightContainerMobile {
+    background-color: var(--white);
+    @include mobile {
+      height: auto;
+      padding-top: var(--layout-columns-gap);
+      box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.04) var(--white);
+    }
+  }
+  .infiniteContainer {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    background-color: var(--white);
+    overflow: hidden;
+    height: calc(var(--layout-columns-gap) * 2);
+    left: var(--layout-margin);
+    width: calc(100% - 2 * var(--layout-margin));
+  }
+}

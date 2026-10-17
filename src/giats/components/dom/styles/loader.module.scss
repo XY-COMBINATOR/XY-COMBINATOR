@@ -1,0 +1,80 @@
+@import '@src/styles/functions';
+
+.root {
+  position: fixed;
+  top: 0;
+  z-index: 5;
+  width: 100vw;
+  height: 100vh;
+  height: calc(100 * var(--svh, 1vh));
+  height: 100svh;
+  color: #28282b;
+  background-color: #f0f4f1;
+  .innerContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .fullNameContainer {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      .fullName {
+        text-align: center;
+        display: inline-block;
+        overflow: hidden;
+        color: #020002;
+        > span {
+          position: relative;
+          top: 0px;
+        }
+      }
+    }
+    .shortNameContainer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      .shortName {
+        text-align: center;
+        display: inline-block;
+        overflow: hidden;
+        opacity: 0;
+        color: #020002;
+        > span {
+          position: relative;
+          top: 12vw;
+        }
+      }
+    }
+  }
+  .progressContainer {
+    bottom: 2svh;
+    right: 0;
+    position: absolute;
+    .progress {
+      text-align: center;
+      display: inline-block;
+      overflow: hidden;
+      color: #020002;
+      > span {
+        position: relative;
+        top: 0px;
+      }
+    }
+  }
+}
+.other {
+  display: none;
+}

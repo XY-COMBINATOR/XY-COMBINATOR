@@ -1,0 +1,99 @@
+@import '@src/styles/functions';
+
+.root {
+  position: relative;
+  background-color: transparent;
+
+  padding-top: calc(var(--layout-columns-gap) * 6);
+  border-radius: var(--layout-columns-gap);
+  box-shadow:
+    inset 0 calc(var(--layout-columns-gap) * 4.2) 0 0 var(--white),
+    0 0 0 calc(var(--layout-columns-gap) * 1.2) var(--white);
+  @include mobile {
+    padding-top: calc(var(--layout-columns-gap) * 2);
+    border-radius: calc(var(--layout-columns-gap) * 0.5);
+    box-shadow:
+      0 calc(var(--layout-columns-gap) * 3) 0 0 var(--white),
+      0 0 0 calc(var(--layout-columns-gap) * 0.5) var(--white);
+  }
+
+  .imageContainer {
+    grid-column: 1 / 9;
+    display: block;
+
+    aspect-ratio: 243 / 491;
+    height: auto;
+    position: relative;
+
+    @include mobile {
+      grid-column: 1 / 7;
+    }
+    > img {
+      object-fit: fill;
+      @include mobile {
+        border-radius: calc(var(--layout-columns-gap) * 0.25);
+      }
+      border-radius: calc(var(--layout-columns-gap) * 0.5);
+    }
+  }
+
+  .mediumContainer {
+    aspect-ratio: 16 / 9;
+    grid-column: 1 / 17;
+    position: relative;
+    @include mobile {
+      grid-column: 1 / 7;
+    }
+    > img {
+      object-fit: fill;
+      @include mobile {
+        border-radius: calc(var(--layout-columns-gap) * 0.25);
+      }
+      border-radius: calc(var(--layout-columns-gap) * 0.5);
+    }
+  }
+  .bigContainer {
+    grid-column: 1 / 17;
+    position: relative;
+    aspect-ratio: 190 / 101;
+    @include mobile {
+      grid-column: 1 / 7;
+    }
+    > img {
+      object-fit: fill;
+      @include mobile {
+        border-radius: calc(var(--layout-columns-gap) * 0.25);
+        grid-column: 1 / 7;
+      }
+      border-radius: calc(var(--layout-columns-gap) * 0.5);
+    }
+  }
+  .videoContainer {
+    grid-column: 1 / 17;
+    position: relative;
+    width: 100%;
+    @include mobile {
+      grid-column: 1 / 7;
+    }
+    > video {
+      border-radius: var(--layout-columns-gap);
+      width: 100%;
+      height: 100%;
+      @include mobile {
+        border-radius: calc(var(--layout-columns-gap) * 0.25);
+      }
+      border-radius: calc(var(--layout-columns-gap) * 0.5);
+    }
+    iframe {
+      border-radius: var(--layout-columns-gap);
+      width: 100%;
+      height: 27.5vw;
+
+      @include mobile {
+        border-radius: calc(var(--layout-columns-gap) * 0.25);
+        height: 44.3vw;
+      }
+      border-radius: calc(var(--layout-columns-gap) * 0.5);
+    }
+  }
+}

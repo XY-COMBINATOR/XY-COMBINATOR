@@ -1,0 +1,171 @@
+@import '@src/styles/functions';
+
+.titleContainer {
+  display: block;
+  position: relative;
+  width: 100%;
+  background-color: var(--white);
+  padding-top: calc(var(--layout-columns-gap) * 4);
+  padding-bottom: calc(var(--layout-columns-gap) * 1);
+  align-items: center;
+
+  .title {
+    position: relative;
+    width: max-content;
+  }
+}
+.nextRoot {
+  // overflow: visible !important;
+  // display: unset;
+
+  padding-top: 0px;
+  padding-bottom: 0px;
+
+  display: block;
+  position: relative;
+  width: 100%;
+  contain: paint;
+  box-shadow:
+    inset 0 0 0 0 var(--white),
+    inset calc(var(--layout-margin) * -1.0065) 0 0 0 var(--white),
+    inset 0 0 0 0 var(--white),
+    inset calc(var(--layout-margin) * 1.0065) 0 0 0 var(--white);
+  @include mobile {
+    box-shadow:
+      0 0 0 calc(var(--layout-columns-gap) * 0.5) var(--white),
+      inset calc(var(--layout-margin) * -1.0065) 0 0 0 var(--white),
+      inset calc(var(--layout-margin) * 1.0065) 0 0 0 var(--white);
+  }
+  .innerContainer {
+    border-radius: var(--layout-columns-gap);
+    box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 1) var(--white);
+    @include mobile {
+      display: flex;
+      gap: var(--layout-columns-gap);
+      flex-direction: column;
+      border-radius: calc(var(--layout-columns-gap) * 0.5);
+
+      box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.5) var(--white);
+    }
+    width: 100%;
+    display: block;
+    .card {
+      display: block;
+      position: relative;
+      contain: paint;
+      cursor: pointer;
+      height: 100svh;
+      padding: 0;
+      width: 100%;
+      @include mobile {
+        height: 50svh;
+        border-radius: calc(var(--layout-columns-gap) * 0.5);
+        box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 1) var(--white);
+      }
+      &:hover {
+        .projectsWrap {
+          .container {
+            .projectsDetails {
+              > h6,
+              h3 {
+                color: #28282b;
+                text-shadow: 0.1vw 0.1vw 0.1vw #f0f4f1;
+              }
+            }
+          }
+        }
+        .canvas {
+          transition: opacity 0.6s cubic-bezier(0.4, 0, 0.1, 1);
+          opacity: 0.85;
+        }
+      }
+      .projectsWrap {
+        pointer-events: none;
+        left: 0;
+        position: absolute;
+        right: 0;
+        z-index: 2;
+        width: 100%;
+
+        .container {
+          align-items: center;
+          height: 100svh;
+          position: sticky;
+          top: 0;
+          width: 100%;
+          @include mobile {
+            height: 50svh;
+            top: 0px;
+          }
+          .projectsDetails {
+            display: flex;
+            flex-direction: column;
+            grid-column: 2 / 9;
+            gap: var(--layout-columns-gap);
+            @include mobile {
+              position: absolute;
+              height: 100%;
+              gap: calc(var(--layout-columns-gap) * 0.5);
+              margin-bottom: calc(var(--layout-columns-gap) * 2);
+              align-items: center;
+              justify-content: flex-end;
+              grid-column: none;
+              width: 100%;
+            }
+            > h6,
+            h3 {
+              transition: all 0.6s cubic-bezier(0.4, 0, 0.1, 1);
+              color: #f0f4f1;
+              text-shadow: unset;
+            }
+          }
+          .imageContainer {
+            position: absolute;
+
+            grid-column: 9 / 17;
+            width: 100%; /* or any other value */
+            aspect-ratio: 1920 / 900;
+            border-radius: var(--layout-columns-gap);
+            @include mobile {
+              width: 83%;
+
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+            }
+            > img {
+              box-shadow: 0 0 0 0.01vw rgb(40, 40, 43, 0.3);
+              object-fit: fill;
+              @include mobile {
+                border-radius: calc(var(--layout-columns-gap) * 0.25);
+              }
+              border-radius: calc(var(--layout-columns-gap) * 0.5);
+            }
+          }
+        }
+      }
+
+      .canvas {
+        // opacity: 0.4;
+
+        will-change: transform;
+        transition: opacity 0.6s cubic-bezier(0.4, 0, 0.1, 1);
+        opacity: 0.4;
+
+        bottom: 0;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+
+        > img {
+          border-radius: var(--layout-columns-gap);
+          @include mobile {
+            border-radius: calc(var(--layout-columns-gap) * 0.5);
+          }
+          object-fit: cover;
+        }
+      }
+    }
+  }
+}

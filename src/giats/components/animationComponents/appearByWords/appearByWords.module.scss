@@ -1,0 +1,24 @@
+.title {
+  .char {
+    display: inline-block;
+    overflow: hidden;
+    > * {
+      display: inline-block;
+    }
+  }
+
+  &.visible {
+    > * {
+      transition: 0.45s ease-in-out all;
+      transition-delay: calc(50ms * var(--i));
+      opacity: 1;
+    }
+  }
+
+  &:not(.visible) {
+    > * {
+      opacity: 0;
+      transform: translateY(20%);
+    }
+  }
+}

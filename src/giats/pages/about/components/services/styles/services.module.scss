@@ -1,0 +1,204 @@
+@import '@src/styles/functions';
+
+.topContainer {
+  width: 100%;
+  background-color: var(--white);
+  @include mobile {
+    padding-bottom: calc(var(--layout-columns-gap) * 2);
+  }
+}
+.text {
+  color: var(--black);
+  z-index: 2;
+  position: relative;
+  box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.04) var(--white);
+}
+.root {
+  padding-bottom: calc(var(--layout-columns-gap) * 4.95);
+  position: relative;
+  fill: var(--black);
+  transition: 0.35s ease-in-out fill;
+  box-shadow:
+    inset 0 calc(var(--layout-columns-gap) * 2.1) 0 0 var(--white),
+    inset calc(var(--layout-margin) * -1.0065) 0 0 0 var(--white),
+    inset 0 calc(var(--layout-columns-gap) * -2.1) 0 0 var(--white),
+    inset calc(var(--layout-margin) * 2.0065) 0 0 0 var(--white);
+  @include mobile {
+    box-shadow:
+      inset 0 calc(var(--layout-columns-gap) * 2.1) 0 0 var(--white),
+      inset calc(var(--layout-margin) * -1.0265) 0 0 0 var(--white),
+      inset 0 calc(var(--layout-columns-gap) * -2.1) 0 0 var(--white),
+      inset calc(var(--layout-margin) * 1.0265) 0 0 0 var(--white);
+    padding-bottom: calc(var(--layout-columns-gap) * 2);
+  }
+  .servicesContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    @include mobile {
+      flex-direction: column;
+    }
+    .leftContainer {
+      width: 50%;
+      height: 100svh !important;
+      position: relative;
+      @include mobile {
+        display: none;
+        height: 0svh;
+        width: 0%;
+      }
+      .spacing {
+        position: absolute;
+        top: 35vw;
+        width: 100%;
+        height: 100%;
+        background-color: var(--white);
+      }
+      .shapesContainer {
+        border-radius: var(--layout-columns-gap);
+
+        box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 6) var(--white);
+        position: absolute;
+        top: 5vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        left: 20%;
+        width: 80%;
+        height: 27vw;
+
+        .shape {
+          width: 100% !important;
+          height: 100% !important;
+          position: relative;
+
+          > div {
+            width: 100% !important;
+            height: 100% !important;
+
+            > div {
+              > canvas {
+                border-radius: var(--layout-columns-gap);
+
+                width: 100% !important;
+                height: 100% !important;
+              }
+            }
+          }
+        }
+      }
+    }
+    .rightContainer {
+      @include mobile {
+        width: 100%;
+        background-color: transparent;
+        box-shadow: none;
+      }
+      background-color: var(--white);
+      box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 5) var(--white);
+
+      width: 50%;
+      .category {
+        padding: calc(var(--layout-columns-gap) * 4) 0;
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--layout-columns-gap) * 2);
+        @include mobile {
+          padding: 0px 0px;
+          gap: 0px;
+        }
+        .shape {
+          width: 100%;
+          height: 450px;
+          position: relative;
+          @include mobile {
+            border-radius: calc(var(--layout-columns-gap) * 0.5);
+            box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.5) var(--white);
+            height: 79vw;
+          }
+          > div {
+            width: 100% !important;
+            height: 100% !important;
+
+            > div {
+              > canvas {
+                width: 100% !important;
+                height: 100% !important;
+              }
+            }
+          }
+        }
+        .innerContainer {
+          display: flex;
+          background-color: var(--white);
+          flex-direction: column;
+          gap: calc(var(--layout-columns-gap) * 2);
+          width: 100%;
+          @include mobile {
+            padding: calc(var(--layout-columns-gap) * 2) 0px;
+          }
+          .desc {
+            max-width: 80%;
+            @include mobile {
+              max-width: 100%;
+            }
+          }
+          .options {
+            z-index: 2;
+            font-weight: 450;
+            display: flex;
+            flex-direction: column;
+            gap: var(--layout-columns-gap);
+            .option {
+              display: flex;
+              gap: calc(var(--layout-columns-gap) * 0.5);
+              width: max-content;
+              align-items: center;
+              .arrow {
+                width: 0.8vw;
+                height: 0.8vw;
+                transform: rotate(-90deg);
+
+                @include mobile {
+                  width: 1.8vw;
+                  height: 1.8vw;
+                }
+              }
+              > div {
+                display: flex;
+                align-items: center;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.hoverTextContainer {
+  @include mobile {
+    width: 50%;
+    bottom: var(--layout-columns-gap);
+  }
+
+  padding: calc(var(--layout-columns-gap) * 0.5);
+  z-index: 2;
+  position: fixed;
+  right: var(--layout-margin);
+  display: flex;
+  width: 25%;
+  bottom: calc(var(--layout-columns-gap) * 2);
+  mix-blend-mode: difference;
+  flex-direction: column;
+
+  gap: calc(var(--layout-columns-gap) * 0.5);
+  > div:nth-child(1) {
+    animation-delay: 100ms;
+  }
+  .hoverText {
+    transform: translateY(100%);
+    opacity: 0;
+    font-weight: 550;
+    color: var(--white);
+  }
+}

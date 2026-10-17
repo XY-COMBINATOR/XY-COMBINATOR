@@ -1,0 +1,8 @@
+@import '@src/styles/functions';
+
+.title {
+  width: 63%;
+  @include mobile {
+    width: 100%;
+  }
+}

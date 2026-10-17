@@ -1,0 +1,46 @@
+.title {
+  overflow: hidden;
+
+  > div {
+    overflow: hidden;
+  }
+}
+.visibleFooter {
+  > * {
+    transition:
+      transform 0.45s ease-out,
+      opacity 0.45s ease-out;
+    opacity: 1;
+    transition-delay: calc(100ms * var(--i));
+    transform: translateY(0) skewY(0);
+  }
+}
+
+.notVisibleFooter {
+  > * {
+    transform: translateY(100%) skewY(1deg);
+    opacity: 0;
+  }
+}
+.visible {
+  > div > * {
+    transition: transform 0.45s ease-out;
+
+    transition-delay: calc(50ms * var(--i));
+    transform: translateY(0) skewY(0);
+  }
+}
+
+.notVisible {
+  > div > * {
+    transform: translateY(100%) skewY(1deg);
+  }
+}
+.titleFooter {
+  display: inline-block;
+  overflow: hidden;
+
+  > * {
+    display: block;
+  }
+}

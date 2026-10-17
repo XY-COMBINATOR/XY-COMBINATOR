@@ -1,0 +1,60 @@
+.fade-in>div {
+  animation: fadeIn 0.65s cubic-bezier(0.4, 0, 0.1, 1) forwards;
+}
+
+.fade-out>div {
+  animation: fadeOut 0.45s forwards;
+}
+
+.fade-in>div:nth-child(1) {
+  animation-delay: 100ms;
+}
+
+.fade-out>div:nth-child(1) {
+  animation-delay: 200ms;
+}
+
+.fade-in>div:nth-child(2) {
+  animation-delay: 200ms;
+}
+
+.fade-out>div:nth-child(2) {
+  animation-delay: 100ms;
+}
+
+@keyframes fadeIn {
+  from {
+    transform: translateY(50%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(50%);
+    opacity: 0;
+  }
+}
+
+.color-change {
+  color: rgba(40, 40, 43, 0.1) !important;
+}
+.fill-change {
+  fill: rgba(40, 40, 43, 0.1) !important;
+}
+#menu,
+main,
+#scrollbar,
+header {
+  will-change: transform, opacity;
+}

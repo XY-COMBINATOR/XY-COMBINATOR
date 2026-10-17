@@ -1,0 +1,239 @@
+@import '@src/styles/functions';
+
+.root {
+  position: relative;
+  row-gap: 0px;
+  .sectionTitle {
+    background-color: var(--white);
+    padding-bottom: calc(var(--layout-columns-gap) * 1);
+    grid-column: 1 / 17;
+    @include mobile {
+      grid-column: 1 / 7;
+    }
+  }
+
+  .mobileEmpty {
+    position: relative;
+    background-color: var(--white);
+    height: calc(var(--layout-columns-gap) * 2);
+    grid-column: 1 / 7;
+  }
+  .mobileCount {
+    box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.5) var(--white);
+    position: relative;
+    background-color: var(--white);
+    &:after {
+      top: 0px;
+      z-index: 1;
+      content: '';
+      background-color: var(--white);
+      width: var(--layout-columns-gap);
+      height: 100%;
+      position: absolute;
+      right: calc(var(--layout-columns-gap) * -1);
+    }
+  }
+  .mobileEmptySecond {
+    box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.5) var(--white);
+    position: relative;
+    background-color: var(--white);
+    &:after {
+      z-index: 1;
+      content: '';
+      background-color: var(--white);
+      width: var(--layout-columns-gap);
+      height: 100%;
+      position: absolute;
+      right: calc(var(--layout-columns-gap) * -1);
+    }
+  }
+  .textMobile {
+    box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.07) var(--white);
+    grid-column: 2 / 7;
+    background-color: var(--white);
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--layout-columns-gap) * 2) 0px;
+    gap: var(--layout-columns-gap);
+  }
+  .first {
+    grid-column: 1 / 6;
+    height: 30vw;
+    @include mobile {
+      grid-column: 2 / 7;
+      height: 90vw;
+    }
+    border-radius: var(--layout-columns-gap);
+    box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 1) var(--white);
+
+    @include mobile {
+      border-radius: calc(var(--layout-columns-gap) * 0.5);
+      box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.5) var(--white);
+    }
+    > div {
+      width: 100% !important;
+      height: 100% !important;
+
+      > div {
+        > canvas {
+          width: 100% !important;
+          height: 100% !important;
+        }
+      }
+    }
+  }
+
+  .firstEmpty {
+    position: relative;
+    grid-column: 6 / 17;
+    box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.15) var(--white);
+
+    background-color: var(--white);
+    &:before {
+      z-index: 1;
+      content: '';
+      background-color: var(--white);
+      width: var(--layout-columns-gap);
+      height: 100%;
+      position: absolute;
+      left: calc(var(--layout-columns-gap) * -1);
+    }
+  }
+  .secondEmpty {
+    position: relative;
+    grid-column: 1 / 12;
+    box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.15) var(--white);
+
+    background-color: var(--white);
+    &:after {
+      z-index: 1;
+      content: '';
+      background-color: var(--white);
+      width: var(--layout-columns-gap);
+      height: 100%;
+      position: absolute;
+      right: calc(var(--layout-columns-gap) * -1);
+    }
+  }
+  .firstText {
+    z-index: 2;
+    position: absolute;
+    display: flex;
+    top: 25vw;
+    flex-direction: column;
+    gap: var(--layout-columns-gap);
+    grid-column: 7 / 12;
+    background-color: var(--white);
+  }
+  .second {
+    position: relative;
+    grid-column: 12 / 17;
+    height: 30vw;
+    margin-top: calc(var(--layout-columns-gap) * 4);
+    border-radius: var(--layout-columns-gap);
+    box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 1) var(--white);
+
+    @include mobile {
+      grid-column: 2 / 7;
+      height: 90vw;
+      margin-top: 0px;
+      border-radius: calc(var(--layout-columns-gap) * 0.5);
+      box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.5) var(--white);
+    }
+    &:before {
+      @include mobile {
+        content: none;
+      }
+      z-index: 1;
+      box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.15) var(--white);
+
+      content: '';
+      background-color: var(--white);
+      width: 100%;
+      height: calc(var(--layout-columns-gap) * 4);
+      position: absolute;
+      top: calc(var(--layout-columns-gap) * -4);
+    }
+  }
+  .secondText {
+    z-index: 2;
+    position: absolute;
+    display: flex;
+    top: 55vw;
+    flex-direction: column;
+    gap: var(--layout-columns-gap);
+    grid-column: 1 / 6;
+    background-color: var(--white);
+  }
+  .third {
+    position: relative;
+    grid-column: 6 / 11;
+    height: 30vw;
+    margin-top: calc(var(--layout-columns-gap) * 4);
+    border-radius: var(--layout-columns-gap);
+    box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 1) var(--white);
+    @include mobile {
+      grid-column: 2 / 7;
+      height: 90vw;
+      margin-top: 0px;
+      border-radius: calc(var(--layout-columns-gap) * 0.5);
+      box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.5) var(--white);
+    }
+    &:before {
+      @include mobile {
+        content: none;
+      }
+      box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.15) var(--white);
+
+      z-index: 1;
+      content: '';
+      background-color: var(--white);
+      width: 100%;
+      height: calc(var(--layout-columns-gap) * 4);
+      position: absolute;
+      top: calc(var(--layout-columns-gap) * -4);
+    }
+  }
+  .fourthEmpty {
+    position: relative;
+    grid-column: 1 / 6;
+    box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.15) var(--white);
+
+    background-color: var(--white);
+    &:after {
+      z-index: 1;
+      content: '';
+      background-color: var(--white);
+      width: var(--layout-columns-gap);
+      height: 100%;
+      position: absolute;
+      right: calc(var(--layout-columns-gap) * -1);
+    }
+  }
+  .fifthEmpty {
+    position: relative;
+    grid-column: 11 / 17;
+    box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.15) var(--white);
+
+    background-color: var(--white);
+    &:after {
+      z-index: 1;
+      content: '';
+      background-color: var(--white);
+      width: var(--layout-columns-gap);
+      height: 100%;
+      position: absolute;
+      left: calc(var(--layout-columns-gap) * -1);
+    }
+  }
+  .thirdText {
+    z-index: 2;
+    position: absolute;
+    display: flex;
+    top: 92vw;
+    flex-direction: column;
+    gap: var(--layout-columns-gap);
+    grid-column: 12 / 17;
+    background-color: var(--white);
+  }
+}

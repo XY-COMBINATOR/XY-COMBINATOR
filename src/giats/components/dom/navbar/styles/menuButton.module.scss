@@ -1,0 +1,18 @@
+@import '@src/styles/functions';
+.button {
+  height: 2.5vw;
+  @include mobile {
+    height: 6vw;
+  }
+  border-radius: 9vw;
+  background-color: var(--menuColor);
+  box-shadow:
+    0 0.32vw 0.52vw #0000000a,
+    0 0.12vw 0.22vw #0000000a;
+  .label {
+    @include mobile {
+      padding: 0 3vw 0 3vw;
+    }
+    padding: 0 1.25vw 0 1.25vw;
+  }
+}

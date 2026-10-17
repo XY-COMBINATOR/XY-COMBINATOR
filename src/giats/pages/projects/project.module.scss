@@ -1,0 +1,25 @@
+@import '@src/styles/functions';
+
+.root {
+  position: relative;
+  padding-top: 0px;
+
+  .leftContainer {
+    height: 100svh;
+    grid-column: 1 / 7;
+    box-shadow:
+      0 0 0 var(--layout-columns-gap) var(--white),
+      0 calc(var(--layout-columns-gap) * 10) 0 0 var(--white);
+    @include mobile {
+      height: auto;
+      box-shadow: 0 0 0 var(--layout-columns-gap) var(--white);
+    }
+  }
+
+  .rightContainer {
+    grid-column: 7 / 17;
+    @include mobile {
+      grid-column: 1 / 7;
+    }
+  }
+}

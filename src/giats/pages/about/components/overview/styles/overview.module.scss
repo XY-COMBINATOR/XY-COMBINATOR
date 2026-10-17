@@ -1,0 +1,32 @@
+@import '@src/styles/functions';
+
+.root {
+  position: relative;
+  background-color: var(--white);
+
+  .title {
+    grid-column: 5 / 16;
+    @include mobile {
+      grid-column: 1 / 7;
+    }
+  }
+  .myStory {
+    padding-top: calc(var(--layout-columns-gap) * 2);
+    grid-column: 5 / 8;
+    @include mobile {
+      grid-column: 1 / 7;
+    }
+  }
+  .desc {
+    padding-top: calc(var(--layout-columns-gap) * 2);
+    grid-column: 8 / 16;
+
+    @include mobile {
+      grid-column: 1 / 7;
+    }
+    .paddingTop {
+      display: inline-block;
+      padding-top: var(--layout-columns-gap);
+    }
+  }
+}

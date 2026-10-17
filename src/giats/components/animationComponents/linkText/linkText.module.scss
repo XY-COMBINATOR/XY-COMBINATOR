@@ -1,0 +1,29 @@
+@import '@src/styles/functions';
+
+.root {
+  display: block;
+  position: relative;
+  overflow: hidden;
+
+  svg {
+    overflow: hidden;
+    display: inline;
+    position: absolute;
+    top: 0;
+    left: -1vw;
+    transition: transform 0.4s ease-in;
+    transform: rotate(-90deg);
+  }
+
+  span {
+    margin: 0;
+    display: inline-block;
+    position: relative;
+    transition: transform 0.4s ease-in;
+
+    div {
+      display: inline-block;
+      transform: translate3d(0px, 0px, 0px);
+    }
+  }
+}

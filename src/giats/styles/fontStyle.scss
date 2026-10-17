@@ -1,0 +1,122 @@
+.h1 {
+  font-size: 6.7vw;
+  line-height: 120%;
+  font-weight: 550;
+  @include mobile {
+    font-size: 9.4vw;
+    line-height: 130%;
+  }
+}
+
+.h2 {
+  font-size: 4.7vw;
+  line-height: 120%;
+  font-weight: 550;
+  @include mobile {
+    font-size: 7.6vw;
+    line-height: 120%;
+  }
+}
+
+.h3 {
+  font-size: 3.8vw;
+  line-height: 130%;
+  font-weight: 550;
+  @include mobile {
+    font-size: 7vw;
+    line-height: 130%;
+  }
+}
+
+.h4 {
+  font-size: 2.3vw;
+  line-height: 130%;
+  font-weight: 550;
+  @include mobile {
+    font-size: 5.9vw;
+    line-height: 140%;
+  }
+}
+
+.h5 {
+  font-size: 1.9vw;
+  line-height: 130%;
+  font-weight: 550;
+  @include mobile {
+    font-size: 3.7vw;
+    line-height: 140%;
+  }
+}
+
+.h6 {
+  font-size: 1.5vw;
+  line-height: 140%;
+  font-weight: 550;
+  @include mobile {
+    font-size: 3.4vw;
+    line-height: 140%;
+  }
+}
+
+.p-l {
+  font-size: 1.15vw;
+  line-height: 140%;
+  font-weight: 550;
+  @include mobile {
+    font-size: 3.1vw;
+    line-height: 140%;
+  }
+}
+
+.p {
+  font-size: 0.95vw;
+  line-height: 140%;
+  font-weight: 550;
+  @include mobile {
+    font-size: 2.9vw;
+    line-height: 140%;
+  }
+}
+
+.p-x {
+  font-size: 0.85vw;
+  line-height: 140%;
+  font-weight: 550;
+  @include mobile {
+    font-size: 2.8vw;
+    line-height: 140%;
+  }
+}
+
+.p-xs {
+  font-size: 0.75vw;
+  line-height: 140%;
+  font-weight: 550;
+  @include mobile {
+    font-size: 2.7vw;
+    line-height: 140%;
+  }
+}
+
+.footer {
+  color: var(--white);
+  font-size: 1.15vw;
+  line-height: 140%;
+  font-weight: 550;
+  @include mobile {
+    font-size: 3.1vw;
+    line-height: 140%;
+  }
+}
+
+.roman {
+  font-weight: 550;
+}
+
+.medium {
+  font-weight: 650;
+}
+
+.bold {
+  font-weight: 750;
+}

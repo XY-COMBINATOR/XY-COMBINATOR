@@ -16,10 +16,10 @@ const clients = [
     name: 'J Creation',
     copy: [
       'Grooms’ exclusive wear, taken online.',
-      'Full catalog, product pages and a',
-      'checkout built to convert. Design,',
-      'build, payments and SEO shipped as',
-      'one project in a single release.',
+      'A full catalog, product pages and a',
+      'checkout that actually completes.',
+      'Design, build, payments and SEO went',
+      'out together, in one release.',
     ],
   },
   {
@@ -29,9 +29,9 @@ const clients = [
     copy: [
       'A Hajj and Umrah agency site with',
       'packages, visa guidance and online',
-      'pre-registration. Built to rank well,',
-      'and to turn first-time visitors into',
-      'confirmed bookings.',
+      'pre-registration. Built to show up in',
+      'search, and to turn first-time visitors',
+      'into confirmed bookings.',
     ],
   },
   {
@@ -39,11 +39,23 @@ const clients = [
     year: '2023',
     name: 'SLR Playground',
     copy: [
-      'A playground supplier catalog and',
-      'project gallery for the Malaysian',
-      'market. Fast, image-led and easy for',
-      'the team to keep updated long after',
+      'A supplier catalog and project',
+      'gallery for playground equipment.',
+      'Fast and image-led, and easy for the',
+      'team to keep updating long after',
       'launch day.',
+    ],
+  },
+  {
+    badge: 'company4',
+    year: '2026',
+    name: 'Idiot Box',
+    copy: [
+      'A free, open-source code editor and',
+      'IDE for Windows. Project map, code,',
+      'terminal and preview in one calm',
+      'window, so the team could just build.',
+      'Designed and shipped as one release.',
     ],
   },
 ];
@@ -220,6 +232,46 @@ function Clients() {
             <AppearTitle>{renderCopy(clients[2].copy)}</AppearTitle>
           </div>
         </>
+      ) : null}
+      {!isMobile ? <div className={styles.sixthEmpty} /> : null}
+      {isMobile ? <div className={styles.mobileEmpty} /> : null}
+      {isMobile ? (
+        <div className={styles.mobileCount}>
+          <AppearTitle>{clients[3].year}</AppearTitle>
+        </div>
+      ) : null}
+      <div
+        ref={(el) => {
+          badgeRefs.current[3] = el;
+        }}
+        className={styles.fourth}
+      >
+        <Badge name={clients[3].badge} />
+      </div>
+      {isMobile ? <div className={styles.mobileEmptySecond} /> : null}
+      {isMobile ? (
+        <div className={styles.textMobile}>
+          <AppearTitle>
+            <h4 className={clsx('h4', 'bold')}>{clients[3].name}</h4>
+          </AppearTitle>
+          <AppearTitle>{renderCopy(clients[3].copy)}</AppearTitle>
+        </div>
+      ) : null}
+      {!isMobile ? (
+        <div
+          ref={(el) => {
+            textRefs.current[3] = el;
+          }}
+          className={styles.fourthText}
+        >
+          <AppearTitle>
+            <h6 className="h6">{clients[3].year}</h6>
+          </AppearTitle>
+          <AppearTitle>
+            <h4 className={clsx('h4', 'bold', styles.title)}>{clients[3].name}</h4>
+          </AppearTitle>
+          <AppearTitle>{renderCopy(clients[3].copy)}</AppearTitle>
+        </div>
       ) : null}
     </section>
   );

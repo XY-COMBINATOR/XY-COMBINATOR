@@ -10,7 +10,7 @@ import slrImg from './assets/work-imgs/slr-playground.webp'
 import slrHeroImg from './assets/slr-hero.jpg'
 import './App.css'
 
-const EMAIL = 'hello@xycombinators.com'
+const EMAIL = 'contact@xycombinator.com'
 
 const NAV = [
   { label: 'Work', href: '#work' },
@@ -42,7 +42,7 @@ const PROJECTS = [
     tag: 'Catalog site',
     image: slrImg,
     href: 'https://slrplaygroundmalaysia.com/',
-    desc: 'Playground supplier catalog & project gallery for the Malaysian market.',
+    desc: 'Playground supplier catalog & project gallery, built for a team that keeps updating it.',
   },
   {
     name: 'Kasem Garments',
@@ -354,7 +354,7 @@ export default function App() {
           <div className="proof-text">
             <span className="stars">★★★★★</span>
             <span>
-              Trusted by <b>50+ founders</b> across 4 countries
+              Trusted by <b>50+ founders</b> and counting
             </span>
           </div>
         </motion.div>
@@ -471,7 +471,7 @@ export default function App() {
           <span className="kicker">How we work</span>
           <h2>One team. Real releases, every week.</h2>
           <p>
-            No account managers, no handoffs into the void. You work directly with the designers
+            No account managers, no middlemen. You work directly with the designers
             and engineers building your product — and you click new progress every single week.
           </p>
           <ul className="ticks">

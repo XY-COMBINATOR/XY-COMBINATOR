@@ -100,7 +100,7 @@ function Projects() {
           ))}
         </div>
         <div className={styles.buttonContainer}>
-          <ButtonLink href="mailto:hello@xycombinators.com" label="START A PROJECT" />
+          <ButtonLink href="mailto:contact@xycombinator.com" label="START A PROJECT" />
         </div>
       </section>
     </>

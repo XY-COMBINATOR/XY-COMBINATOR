@@ -80,17 +80,16 @@ function Page({ id }) {
 
   const seo = useMemo(
     () => ({
-      title: `Giats - ${currentProject.title} Project`,
-      description: `Check out my work on the ${currentProject.title} project, collaborating with ${currentProject.company}, where I enhanced frontend development with responsive design and optimized user interactions.`,
+      title: `XY Combinators — ${currentProject.title}`,
+      description: `The ${currentProject.title} project for ${currentProject.company}: ${currentProject.desc.join(' ')}`,
       keywords: [
         `${currentProject.title} project`,
         `${currentProject.title} development`,
         `${currentProject.company} collaboration`,
-        `Evangelos Giatsidis ${currentProject.title}`,
-        `Giats ${currentProject.title}`,
-        `Frontend development ${currentProject.title}`,
-        `Responsive design ${currentProject.title}`,
-        `User interactions ${currentProject.title}`,
+        `XY Combinators ${currentProject.title}`,
+        `${currentProject.title} web design`,
+        `${currentProject.title} ecommerce`,
+        `${currentProject.title} mobile app`,
       ],
     }),
     [currentProject],

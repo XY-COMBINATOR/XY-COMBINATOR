@@ -62,8 +62,8 @@ function About() {
           <AppearTitle>
             <div className="p-l">“We design and build web products end to end —</div>
             <div className="p-l">from the first sketch to launch day, and the</div>
-            <div className="p-l">iterations after. One team, no handoffs into</div>
-            <div className="p-l">the void, shipping every single week.”</div>
+            <div className="p-l">fixes after. One team, no middlemen, and</div>
+            <div className="p-l">something clickable every single week.”</div>
           </AppearTitle>
         </div>
         {!isMobile ? renderImageContainer() : null}
@@ -72,20 +72,20 @@ function About() {
             <AppearTitle key="desktop-descWrapperBottom">
               <h6 className="h6">A design &amp; engineering studio for founders</h6>
               <h6 className="h6">who move fast. We turn ideas into live products</h6>
-              <h6 className="h6">with clean, efficient code and an eye for the</h6>
-              <h6 className="h6">details that make software feel effortless —</h6>
-              <h6 className="h6">then we stay through launch and beyond.</h6>
+              <h6 className="h6">with clean, quick code and an eye for the little</h6>
+              <h6 className="h6">details that make software easy to use —</h6>
+              <h6 className="h6">then we stick around through launch.</h6>
             </AppearTitle>
           ) : (
             <AppearTitle key="mobile-descWrapperBottom">
               <h6 className="h6"> A design &amp; engineering studio for founders who move</h6>
-              <h6 className="h6">fast. We turn ideas into live products with clean, efficient</h6>
-              <h6 className="h6">code and an eye for the details that make software feel</h6>
-              <h6 className="h6">effortless — then we stay through launch and beyond.</h6>
+              <h6 className="h6">fast. We turn ideas into live products with clean, quick</h6>
+              <h6 className="h6">code and an eye for the little details that make software</h6>
+              <h6 className="h6">easy to use — then we stick around through launch.</h6>
             </AppearTitle>
           )}
           <div className={clsx(styles.buttonContainer)}>
-            <ButtonLink href="mailto:hello@xycombinators.com" label="START A PROJECT" />
+            <ButtonLink href="mailto:contact@xycombinator.com" label="START A PROJECT" />
           </div>
         </div>
       </div>

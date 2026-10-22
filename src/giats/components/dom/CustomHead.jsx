@@ -12,7 +12,7 @@ const getSchema = () => ({
   description: 'A design & engineering studio for founders who move fast. Websites, apps and e-commerce — from first sketch to live users in weeks.',
   url: SITE_URL,
   image: OG_IMAGE,
-  email: 'mailto:hello@xycombinators.com',
+  email: 'mailto:contact@xycombinator.com',
   sameAs: ['https://jcreationbd.com/shop', 'https://arishbd.com/', 'https://slrplaygroundmalaysia.com/'],
 });
 
@@ -29,7 +29,6 @@ function CustomHead({ title = '', description, keywords }) {
         <meta name="author" content="XY Combinators" />
         <meta name="referrer" content="no-referrer" />
         <meta name="format-detection" content="telephone=no" />
-        <meta name="geo.region" content="US" />
 
         {/* Canonical and Title */}
         <link rel="canonical" href={SITE_URL} />

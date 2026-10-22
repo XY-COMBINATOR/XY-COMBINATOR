@@ -16,7 +16,7 @@ function Quote() {
       <h3 ref={textRef} className={clsx(styles.text, 'h3')}>
         {!isLoading && (
           <TextOpacity textRef={textRef.current} trigger={rootRef.current}>
-            Most agencies sell screens. The risk is everything around them — timing, scope, performance, follow-through. We engineer around that by default, so what we hand over actually works after launch day.
+            Most agencies hand over screens. The hard part is everything around them — timing, scope, speed, and what happens after handoff. We build for that from the start, so what you launch with keeps working.
           </TextOpacity>
         )}
       </h3>

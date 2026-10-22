@@ -93,11 +93,11 @@ function Footer() {
       </div>
       <div className={styles.emailContaineer}>
         <AppearTitle isFooter>
-          <h4 className={clsx(styles.workWithMe, 'h4')}>Start a project:</h4>
+          <h4 className={clsx(styles.workWithMe, 'h4')}>Start a project</h4>
           <div>
             <div className={styles.link}>
-              <Link aria-label="Send email" scroll={false} href="mailto:hello@xycombinators.com">
-                <h4 className={clsx(styles.email, 'h4')}>hello@xycombinators.com</h4>
+              <Link aria-label="Send email" scroll={false} href="mailto:contact@xycombinator.com">
+                <h4 className={clsx(styles.email, 'h4')}>contact@xycombinator.com</h4>
               </Link>
               {/* class="link__graphic link__graphic--slide" */}
               <svg className={clsx(styles.linkGraphic)} width="300%" height="100%" viewBox="0 0 1200 60" preserveAspectRatio="none">
@@ -110,7 +110,7 @@ function Footer() {
 
       <div className={styles.middleContainer} style={{ gridColumn: '1 / 9' }}>
         <AppearTitle isFooter>
-          <div className="p-x">Remote · Working worldwide</div>
+          <div className="p-x">Remote · Working across time zones</div>
           <div className={clsx('p-x', styles.middleText)}>
             Current Time: <Time />
           </div>
@@ -120,7 +120,7 @@ function Footer() {
       <div className={styles.middleContainer} style={{ gridColumn: '9 / 13' }}>
         <AppearTitle isFooter>
           <div className="p-x">Availability</div>
-          <div className={clsx('p-x', styles.middleText)}>Currently available for limited projects</div>
+          <div className={clsx('p-x', styles.middleText)}>Taking on a few projects at a time</div>
         </AppearTitle>
       </div>
       <div className={styles.middleContainer} style={{ gridColumn: '13 / 17', textAlign: isMobile ? 'left' : 'right' }}>

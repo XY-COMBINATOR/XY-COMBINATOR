@@ -44,7 +44,7 @@ function Navbar() {
           </Link>
 
           <div className={styles.rightContainer}>
-            {!isMobile && <ButtonLink href="mailto:hello@xycombinators.com" label="GET IN TOUCH" />}
+            {!isMobile && <ButtonLink href="mailto:contact@xycombinator.com" label="GET IN TOUCH" />}
             <MenuButton />
           </div>
         </div>

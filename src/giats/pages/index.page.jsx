@@ -9,7 +9,7 @@ import CustomHead from '@src/components/dom/CustomHead';
 const seo = {
   title: 'XY Combinators — Design & Engineering Studio',
   description:
-    'XY Combinators is a design & engineering studio for founders who move fast. We build websites, apps and e-commerce — from first sketch to live users in weeks. Fixed scope, weekly releases, no endless decks.',
+    'XY Combinators is a design & engineering studio for founders who move fast. We build websites, apps and e-commerce — from a rough sketch to real users in weeks. Fixed scope, weekly releases, no endless decks.',
   keywords: [
     'XY Combinators',
     'Design Studio',

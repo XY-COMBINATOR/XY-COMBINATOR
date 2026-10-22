@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 function Time() {
-  const formatTime = () => new Intl.DateTimeFormat('el-GR', { hour12: false, hour: '2-digit', minute: '2-digit' }).format(new Date());
+  const formatTime = () => new Intl.DateTimeFormat('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit' }).format(new Date());
   const [time, setTime] = useState(formatTime());
 
   useEffect(() => {

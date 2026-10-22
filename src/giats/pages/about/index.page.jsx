@@ -6,21 +6,23 @@ import Process from '@src/pages/about/components/process/Process';
 import CustomHead from '@src/components/dom/CustomHead';
 
 const seo = {
-  title: 'Giats - About',
-  description: 'Learn about my journey, values, and commitment to quality web and app solutions.',
+  title: 'XY Combinators — Studio',
+  description:
+    'XY Combinators is a design and engineering studio for founders who move fast. We build websites, apps and e-commerce, and we stick around through launch.',
   keywords: [
-    'Giats',
-    'About Evangelos Giatsidis',
-    'About me',
-    'Frontend Developer Journey',
-    'Web Developer Story',
-    'Professional Web Development',
-    'Frontend Development Expertise',
-    'Web Design Skills',
-    'Web Development Services',
-    'Web Design Expertise',
-    'Developer Profile',
-    'Quality Web Solutions',
+    'XY Combinators',
+    'Design Studio',
+    'Engineering Studio',
+    'Web Development',
+    'React',
+    'Next.js',
+    'React Native',
+    'E-commerce',
+    'Responsive Design',
+    'SEO',
+    'Firebase',
+    'Vercel',
+    'Product Design',
   ],
 };
 function Page() {

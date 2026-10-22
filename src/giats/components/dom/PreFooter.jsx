@@ -8,8 +8,7 @@ function PreFooter() {
       <div className={styles.textsContainer}>
         <div>
           <h2 className="h1">Let&apos;s build the product</h2>
-          <h2 className="h1"> your startup is missing</h2>
-          <h2 className="h1"> — together.</h2>
+          <h2 className="h1"> your startup is missing.</h2>
         </div>
         <div>
           <h6 className="h6">Tell us what you&apos;re building. We reply to every message.</h6>

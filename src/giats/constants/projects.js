@@ -21,8 +21,8 @@ const projects = [
       { src: jcreation, tag: 'big', isRight: false },
     ],
     desc: [
-      'Grooms’ exclusive wear, taken online with a full catalog, product pages and a checkout built to convert.',
-      'Design, build, payments and SEO shipped as one project in a single release.',
+      'Grooms’ exclusive wear, taken online with a full catalog, product pages and a checkout that actually completes.',
+      'Design, build, payments and SEO went out together, in one release.',
     ],
   },
   {
@@ -44,7 +44,7 @@ const projects = [
     ],
     desc: [
       'A Hajj and Umrah agency site with packages, visa guidance and online pre-registration.',
-      'Built to rank well, and to turn first-time visitors into confirmed bookings.',
+      'Built to show up in search, and to turn first-time visitors into confirmed bookings.',
     ],
   },
   {
@@ -65,8 +65,8 @@ const projects = [
       { src: slr, tag: 'big', isRight: false },
     ],
     desc: [
-      'A playground supplier catalog and project gallery for the Malaysian market.',
-      'Fast, image-led and easy for the team to keep updated long after launch day.',
+      'A supplier catalog and project gallery for playground equipment.',
+      'Fast and image-led, and easy for the team to keep updating long after launch day.',
     ],
   },
 ];

@@ -12,50 +12,50 @@ import { useWindowSize } from '@darkroom.engineering/hamo';
 const clients = [
   {
     badge: 'company1',
-    year: '2024',
-    name: 'J Creation',
+    year: 'since 2024',
+    name: 'Mihsan',
     copy: [
-      'Grooms’ exclusive wear, taken online.',
-      'A full catalog, product pages and a',
-      'checkout that actually completes.',
-      'Design, build, payments and SEO went',
-      'out together, in one release.',
+      'Full-stack engineer and open-',
+      'source contributor. Ships with',
+      'TypeScript, Next.js and Python.',
+      'Currently at Innovick and',
+      'Iksura Nomoi. mihsanalam.com',
     ],
   },
   {
     badge: 'company2',
-    year: '2023',
-    name: 'Arish Travels',
+    year: 'since 2026',
+    name: 'Mantis',
     copy: [
-      'A Hajj and Umrah agency site with',
-      'packages, visa guidance and online',
-      'pre-registration. Built to show up in',
-      'search, and to turn first-time visitors',
-      'into confirmed bookings.',
+      'Bitten by curiosity, tangled in',
+      'code, chasing what is possible.',
+      'Builds AI agents and playful',
+      'web experiments. 24 public',
+      'repos and counting.',
     ],
   },
   {
     badge: 'company3',
-    year: '2023',
-    name: 'SLR Playground',
+    year: 'since 2026',
+    name: 'Aizen',
     copy: [
-      'A supplier catalog and project',
-      'gallery for playground equipment.',
-      'Fast and image-led, and easy for the',
-      'team to keep updating long after',
-      'launch day.',
+      'Half genius, half chaos, all',
+      'curiosity. Explores design,',
+      'web and AI with thousands of',
+      'ideas in flight. Based in India,',
+      'always building something new.',
     ],
   },
   {
     badge: 'company4',
-    year: '2026',
-    name: 'Idiot Box',
+    year: 'since 2024',
+    name: 'Jignesh D Maru',
     copy: [
-      'A free, open-source code editor and',
-      'IDE for Windows. Project map, code,',
-      'terminal and preview in one calm',
-      'window, so the team could just build.',
-      'Designed and shipped as one release.',
+      'Just a developer making fun',
+      'stuff on the internet. Based in',
+      'Gujarat, India. Builds web apps',
+      'and experiments with AI, agents',
+      'and debug battles.',
     ],
   },
 ];
@@ -104,7 +104,7 @@ function Clients() {
   return (
     <section ref={rootRef} className={clsx(styles.root, 'layout-grid-inner')}>
       <h1 className={clsx(styles.sectionTitle, 'h1')}>
-        <AppearByWords>Clients</AppearByWords>
+        <AppearByWords>Meet Developers</AppearByWords>
       </h1>
       {isMobile ? <div className={styles.mobileEmpty} /> : null}
       {isMobile ? (
@@ -188,7 +188,6 @@ function Clients() {
             </AppearTitle>
             <AppearTitle>{renderCopy(clients[1].copy)}</AppearTitle>
           </div>
-          <div className={styles.fourthEmpty} />
         </>
       ) : null}
       {isMobile ? <div className={styles.mobileEmpty} /> : null}
@@ -205,6 +204,7 @@ function Clients() {
       >
         <Badge name={clients[2].badge} />
       </div>
+      {!isMobile ? <div className={styles.fourthEmpty} /> : null}
       {isMobile ? <div className={styles.mobileEmptySecond} /> : null}
       {isMobile ? (
         <div className={styles.textMobile}>

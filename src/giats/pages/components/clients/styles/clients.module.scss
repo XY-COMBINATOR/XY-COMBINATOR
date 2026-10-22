@@ -162,7 +162,9 @@
     top: 55vw;
     flex-direction: column;
     gap: var(--layout-columns-gap);
-    grid-column: 1 / 6;
+    grid-column: 7 / 12;
+    justify-self: end;
+    width: max-content;
     background-color: var(--white);
   }
   .third {
@@ -301,7 +303,9 @@
     top: 127vw;
     flex-direction: column;
     gap: var(--layout-columns-gap);
-    grid-column: 1 / 6;
+    grid-column: 7 / 12;
+    justify-self: end;
+    width: max-content;
     background-color: var(--white);
   }
 }

@@ -1,8 +1,9 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Transition as ReactTransition, SwitchTransition } from 'react-transition-group';
 
 import Footer from '@src/components/dom/Footer';
 import PreFooter from '@src/components/dom/PreFooter';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import gsap from 'gsap';
 import styles from '@src/components/dom/styles/layout.module.scss';
 import { useShallow } from 'zustand/react/shallow';
@@ -20,6 +21,86 @@ function Layout({ children, layoutRef, mainRef, router }) {
 
   const menuTime = useMemo(() => (isMenuOpen ? 0.8 : 0), [isMenuOpen]);
 
+  useEffect(() => {
+    const darkSections = Array.from(document.querySelectorAll('[data-header-theme="dark"]'));
+    if (!darkSections.length) return undefined;
+
+    const active = new Set();
+    let observer;
+
+    const watch = () => {
+      if (observer) observer.disconnect();
+
+      const logo = document.querySelector('header h4');
+      const logoRect = logo?.getBoundingClientRect();
+      const triggerLine = logoRect ? logoRect.top + logoRect.height * 0.5 : 60;
+      const bottomInset = Math.max(Math.round(window.innerHeight - triggerLine), 24);
+
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              active.add(entry.target);
+              entry.target.classList.add('section-revealed');
+            } else {
+              active.delete(entry.target);
+            }
+          });
+          document.body.classList.toggle('on-dark-section', active.size > 0);
+        },
+        { rootMargin: `0px 0px -${bottomInset}px 0px` },
+      );
+
+      darkSections.forEach((section) => observer.observe(section));
+    };
+
+    const revealed = new Set();
+
+    const revealSection = (el) => {
+      if (revealed.has(el)) return;
+      revealed.add(el);
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+      el.style.transition = 'opacity 1.1s ease, transform 1.1s ease';
+    };
+
+    const hideSection = (el) => {
+      if (revealed.has(el)) return;
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(22px)';
+      el.style.transition = 'opacity 1.1s ease, transform 1.1s ease';
+    };
+
+    const updateReveal = () => {
+      document.querySelectorAll('#mainContainer section').forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) {
+          revealSection(section);
+        } else {
+          hideSection(section);
+        }
+      });
+    };
+
+    updateReveal();
+
+    watch();
+    window.addEventListener('resize', updateReveal);
+
+    if (lenis) {
+      lenis.on('scroll', updateReveal);
+    }
+
+    return () => {
+      if (observer) observer.disconnect();
+      window.removeEventListener('resize', watch);
+      if (lenis) {
+        lenis.off('scroll', updateReveal);
+      }
+      document.body.classList.remove('on-dark-section');
+    };
+  }, [router.asPath, lenis]);
+
   const handleEnter = useCallback(
     () => {
       if (introOut) {
@@ -30,6 +111,7 @@ function Layout({ children, layoutRef, mainRef, router }) {
             setIsAbout(router.asPath === '/about');
             setIsLoading(false);
             lenis.start();
+            ScrollTrigger.refresh();
           },
         });
 

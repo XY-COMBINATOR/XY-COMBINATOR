@@ -16,8 +16,10 @@ export default function Badge({ name }) {
   const el = useRef();
 
   const intersection = useIntersection(el, {
-    threshold: 0.7,
+    threshold: 0,
+    rootMargin: '300px 0px',
   });
+  const active = intersection?.isIntersecting;
 
   return (
     <View
@@ -26,32 +28,22 @@ export default function Badge({ name }) {
       }}
       style={{ position: 'relative', display: 'block', backgroundColor: 'transparent', borderRadius: '1.3888888889vw', height: '100%', width: '100%' }}
     >
-      <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={25} />
-      <ambientLight intensity={Math.PI} />
-      <Physics interpolate gravity={[0, -40, 0]} timeStep={1 / 60}>
-        <Band name={name} intersected={intersection?.isIntersecting} />
-      </Physics>
-      <ambientLight intensity={1.3} />
+      {active ? (
+        <>
+          <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={25} />
+          <ambientLight intensity={Math.PI} />
+          <Physics interpolate gravity={[0, -40, 0]} timeStep={1 / 60}>
+            <Band name={name} intersected={intersection?.isIntersecting} />
+          </Physics>
+          <ambientLight intensity={1.3} />
 
+          <directionalLight position={[5, 5, 5]} intensity={1.5} />
 
-      <directionalLight
-        position={[5, 5, 5]}
-        intensity={1.5}
-        castShadow
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
-        shadow-camera-far={50}
-        shadow-camera-left={-10}
-        shadow-camera-right={10}
-        shadow-camera-top={10}
-        shadow-camera-bottom={-10}
-      />
+          <directionalLight position={[-5, 5, 5]} intensity={1} />
 
-
-      <directionalLight position={[-5, 5, 5]} intensity={1} />
-
-
-      <directionalLight position={[0, 5, -5]} intensity={2} />
+          <directionalLight position={[0, 5, -5]} intensity={2} />
+        </>
+      ) : null}
     </View>
   );
 }

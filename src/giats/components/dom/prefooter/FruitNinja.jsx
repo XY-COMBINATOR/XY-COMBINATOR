@@ -10,18 +10,7 @@ function Lighting() {
   return (
     <>
       <ambientLight intensity={1.3} />
-      <directionalLight
-        position={[5, 5, 5]}
-        intensity={1.5}
-        castShadow
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
-        shadow-camera-far={50}
-        shadow-camera-left={-10}
-        shadow-camera-right={10}
-        shadow-camera-top={10}
-        shadow-camera-bottom={-10}
-      />
+      <directionalLight position={[5, 5, 5]} intensity={1.5} />
       <directionalLight position={[-5, 5, 5]} intensity={1} />
       <directionalLight position={[0, 5, -5]} intensity={1} />
     </>
@@ -45,7 +34,7 @@ function useFruitSpawner(viewport, textures, slicedTextures, isMobile) {
           return <Sticker key={`${Date.now()}-${i}`} positionX={randomX} image={textures[randomImage]} imageSliced={slicedTextures[randomImage]} />;
         });
 
-        return [...prevFruits, ...newFruits];
+        return [...prevFruits, ...newFruits].slice(-18);
       });
     }, interval * 1000);
 

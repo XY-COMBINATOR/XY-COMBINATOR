@@ -25,6 +25,12 @@
   height: 100svh;
   width: 100vw;
 }
+
+#fluidCanvas {
+  @media (hover: none), (pointer: coarse) {
+    display: none !important;
+  }
+}
 .layout {
   background-color: transparent;
   opacity: 1;

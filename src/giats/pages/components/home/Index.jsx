@@ -1,76 +1,64 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
-import Image from 'next/image';
-import InfiniteText from '@src/components/animationComponents/infiniteText/Index';
-import Link from 'next/link';
 import clsx from 'clsx';
-import { gsap } from 'gsap';
-import heroImg from '@/assets/slr-hero.jpg';
+import BinaryStreams from '@src/pages/components/home/components/hero/BinaryStreams';
+import ProductBox from '@src/pages/components/home/components/hero/ProductBox';
 import styles from '@src/pages/components/home/styles/home.module.scss';
 import useIsMobile from '@src/hooks/useIsMobile';
-import { useIsomorphicLayoutEffect } from '@src/hooks/useIsomorphicLayoutEffect';
+import { useShallow } from 'zustand/react/shallow';
+import { useStore } from '@src/store';
+
+const ANCHOR_DESKTOP = { x: 0.69, y: 0.52 };
+const ANCHOR_MOBILE = { x: 0.5, y: 0.66 };
 
 function Home() {
   const isMobile = useIsMobile();
   const rootRef = useRef();
-  const infiniteTextRef = useRef();
+  const [isLoading] = useStore(useShallow((state) => [state.isLoading]));
 
-  useIsomorphicLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: rootRef.current,
-            start: 'top+=3%',
-            end: 'top+=5%',
-            toggleActions: 'play none reverse none',
-            scroller: document.querySelector('main'),
-            invalidateOnRefresh: true,
-          },
-        })
-        .to(infiniteTextRef.current, {
-          opacity: 0,
-          duration: 0.6,
-        });
-    });
+  const anchor = isMobile ? ANCHOR_MOBILE : ANCHOR_DESKTOP;
 
-    return () => ctx.kill();
+  useEffect(() => {
+    const section = rootRef.current;
+    if (!section || typeof IntersectionObserver === 'undefined') return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        document.body.classList.toggle('on-dark-hero', entry.isIntersecting);
+      },
+      { threshold: 0.2 },
+    );
+
+    observer.observe(section);
+
+    return () => {
+      observer.disconnect();
+      document.body.classList.remove('on-dark-hero');
+    };
   }, []);
 
+  const entered = !isLoading;
+
   return (
-    <section ref={rootRef} id="top" className={clsx(styles.root)}>
-      <div className={clsx(styles.topContainer, 'layout-grid-inner')}>
-        <div className={styles.leftContainer}>
-          <h2 className="h2">Design &amp; engineering</h2>
-          <h2 className={clsx('h2', 'bold')}>that ships every week</h2>
-        </div>
-        {!isMobile && (
-          <h6 className={clsx('h6', styles.rightContainer)}>
-            We take products from idea to live users — websites, apps and e-commerce. Fixed scope, weekly clickable releases, and launch support that actually shows up.
-          </h6>
-        )}
-      </div>
-      {isMobile && (
-        <div className={styles.rightContainerMobile}>
-          <h6 className="h6"> We take products from idea to live users — websites, apps and e-commerce. Fixed scope, weekly clickable releases, and launch support that actually shows up.</h6>
-        </div>
-      )}
+    <section
+      ref={rootRef}
+      id="top"
+      className={clsx(styles.root, entered && styles.entered)}
+      style={{ '--anchor-x': anchor.x, '--anchor-y': anchor.y }}
+    >
+      <div className={styles.glow} />
+      <BinaryStreams anchor={anchor} isMobile={isMobile} variant="back" className={styles.streams} />
+      <ProductBox className={styles.product} />
+      <BinaryStreams anchor={anchor} isMobile={isMobile} variant="front" className={styles.streamsFront} />
 
-      <div className={styles.bottomContainer}>
-        <Link
-          target="_blank"
-          rel="noreferrer"
-          aria-label="View SLR Playground — designed and built by XY Combinators"
-          href="https://slrplaygroundmalaysia.com/"
-          className={styles.heroMedia}
-        >
-          <Image priority src={heroImg} alt="SLR Playground — a website designed and built by XY Combinators" fill sizes="100%" />
-          <span className={styles.heroTag}>SLR Playground · live site ↗</span>
-        </Link>
-      </div>
-
-      <div ref={infiniteTextRef} className={styles.infiniteContainer}>
-        <InfiniteText text="Scroll Down" length={5} />
+      <div className={clsx(styles.content, 'layout-block-inner')}>
+        <span className={styles.badge}>Mission</span>
+        <h2 className={styles.headline}>
+          <span className={styles.line}>Design &amp; engineering</span>
+          <span className={styles.line}>
+            that <em>ships</em> every week
+          </span>
+        </h2>
       </div>
     </section>
   );

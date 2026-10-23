@@ -2,22 +2,26 @@ import { useEffect, useRef } from 'react';
 
 import Link from 'next/link';
 import clsx from 'clsx';
-import footerLinks from '@src/components/dom/navbar/constants/footerLinks';
 import gsap from 'gsap';
 import menuLinks from '@src/components/dom/navbar/constants/menuLinks';
-import projectsLinks from '@src/components/dom/navbar/constants/projectsLinks';
 import styles from '@src/components/dom/navbar/styles/menuLinks.module.scss';
 import useIsMobile from '@src/hooks/useIsMobile';
 import { useRouter } from 'next/router';
+import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '@src/store';
 
 function MenuLinks() {
   const timeline = useRef(gsap.timeline({ paused: true, defaults: { duration: 0.92, ease: 'expo.inOut' } }));
   const isMobile = useIsMobile();
-  const [isMenuOpen, setIsMenuOpen, lenis, isLoading] = useStore((state) => [state.isMenuOpen, state.setIsMenuOpen, state.lenis, state.isLoading]);
+  const [isMenuOpen, setIsMenuOpen, lenis, isLoading] = useStore(
+    useShallow((state) => [state.isMenuOpen, state.setIsMenuOpen, state.lenis, state.isLoading]),
+  );
   const menuRef = useRef();
   const menuLinksItemsRef = useRef([]);
+  const hashTimeout = useRef();
   const router = useRouter();
+
+  useEffect(() => () => clearTimeout(hashTimeout.current), []);
 
   const setupMenuAnimation = (gsapTimeline, refs) => {
     const fluidCanvas = document?.getElementById('fluidCanvas');
@@ -81,6 +85,27 @@ function MenuLinks() {
     }, 850);
   };
 
+  const goToHash = (event, href) => {
+    event.preventDefault();
+    setIsMenuOpen(false);
+
+    if (hashTimeout.current) clearTimeout(hashTimeout.current);
+
+    hashTimeout.current = setTimeout(() => {
+      const target = document.querySelector(href);
+      if (!target || !lenis) return;
+
+      lenis.scrollTo(target, {
+        duration: 1.5,
+        force: true,
+        easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
+        onComplete: () => {
+          lenis.start();
+        },
+      });
+    }, 850);
+  };
+
   const renderMenuLinks = (links, refs, pathname) =>
     links.map((link, index) => (
       <div
@@ -91,7 +116,12 @@ function MenuLinks() {
         className={clsx(styles.menuListItem, pathname === link.href && styles.menuListItemActive)}
       >
         {link.href !== undefined ? (
-          <Link aria-label={`Go ${link.title}`} scroll={false} href={link.href}>
+          <Link
+            aria-label={`Go ${link.title}`}
+            scroll={false}
+            href={link.href}
+            onClick={link.href.startsWith('#') ? (event) => goToHash(event, link.href) : undefined}
+          >
             <span>{link.title}</span>
           </Link>
         ) : (
@@ -125,61 +155,15 @@ function MenuLinks() {
         </div>
         <div
           ref={(el) => {
-            menuLinksItemsRef.current[menuLinks.length + 2] = el;
+            menuLinksItemsRef.current[menuLinks.length + 1] = el;
           }}
           className={styles.menuList}
         >
-          {projectsLinks.map((link, index) => (
-            <div
-              ref={(el) => {
-                menuLinksItemsRef.current[menuLinks.length + index + 2] = el;
-              }}
-              key={link.title}
-              className={styles.menuListItem}
-            >
-              <Link aria-label={`Go ${link.title}`} scroll={false} href={link.href}>
-                <span>{link.title}</span>
-              </Link>
-            </div>
-          ))}
-        </div>
-        <div
-          ref={(el) => {
-            menuLinksItemsRef.current[menuLinks.length + projectsLinks.length + 3] = el;
-          }}
-          className={styles.menuList}
-        >
-          <div
-            role="presentation"
-            ref={(el) => {
-              menuLinksItemsRef.current[menuLinks.length + projectsLinks.length + 3] = el;
-            }}
-            className={styles.menuListItem}
-          >
-            <Link aria-label="Send email" scroll={false} href="mailto:hello@xycombinators.com">
+          <div role="presentation" className={styles.menuListItem}>
+            <Link aria-label="Send email" scroll={false} href="mailto:contact@xycombinator.com">
               <span>GET IN TOUCH</span>
             </Link>
           </div>
-        </div>
-        <div
-          ref={(el) => {
-            menuLinksItemsRef.current[menuLinks.length + projectsLinks.length + 4] = el;
-          }}
-          className={styles.menuList}
-        >
-          {footerLinks.map((link, index) => (
-            <div
-              ref={(el) => {
-                menuLinksItemsRef.current[menuLinks.length + projectsLinks.length + index + 4] = el;
-              }}
-              key={link.title}
-              className={styles.menuListItem}
-            >
-              <Link aria-label={`Find me on ${link.title}`} target="_blank" rel="noopener noreferrer" scroll={false} href={link.href}>
-                <span>{link.title}</span>
-              </Link>
-            </div>
-          ))}
         </div>
         <button
           type="button"

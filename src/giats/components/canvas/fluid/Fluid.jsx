@@ -23,6 +23,7 @@ function Fluid({ mainRef, fluidColor }) {
   const FBOs = useFBOs();
   const materials = useMaterials();
   const splatStack = usePointerEvents(mainRef, size, force);
+  const lastActivity = useRef(0);
 
   const setShaderMaterial = useCallback(
     (name) => {
@@ -62,6 +63,12 @@ function Fluid({ mainRef, fluidColor }) {
 
   useFrame(() => {
     if (!meshRef.current || !postRef.current) return;
+
+    if (splatStack.current.length > 0) {
+      lastActivity.current = performance.now();
+    } else if (performance.now() - lastActivity.current > 1800) {
+      return;
+    }
 
     while (splatStack.current.length > 0) {
       const { mouseX, mouseY, velocityX, velocityY } = splatStack.current.pop();

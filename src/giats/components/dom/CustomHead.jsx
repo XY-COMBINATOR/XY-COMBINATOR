@@ -2,17 +2,17 @@ import NextHead from 'next/head';
 import { NextSeo } from 'next-seo';
 import PropTypes from 'prop-types';
 
-const SITE_URL = 'https://xycombinators.com';
+const SITE_URL = 'https://xycombinator.com';
 const OG_IMAGE = `${SITE_URL}/og.png`;
 
 const getSchema = () => ({
   '@context': 'http://schema.org',
   '@type': 'Organization',
-  name: 'XY Combinators',
+  name: 'XY Combinator',
   description: 'A design & engineering studio for founders who move fast. Websites, apps and e-commerce — from first sketch to live users in weeks.',
   url: SITE_URL,
   image: OG_IMAGE,
-  email: 'mailto:hello@xycombinators.com',
+  email: 'mailto:contact@xycombinator.com',
   sameAs: ['https://jcreationbd.com/shop', 'https://arishbd.com/', 'https://slrplaygroundmalaysia.com/'],
 });
 
@@ -26,7 +26,7 @@ function CustomHead({ title = '', description, keywords }) {
         <meta name="robots" content={process.env.NODE_ENV !== 'development' ? 'index,follow' : 'noindex,nofollow'} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="keywords" content={keywords && keywords.length ? keywords.join(',') : keywords} />
-        <meta name="author" content="XY Combinators" />
+        <meta name="author" content="XY Combinator" />
         <meta name="referrer" content="no-referrer" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="geo.region" content="US" />

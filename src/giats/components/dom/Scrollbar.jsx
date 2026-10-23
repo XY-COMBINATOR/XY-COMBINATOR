@@ -9,37 +9,37 @@ import { useStore } from '@src/store';
 function Scrollbar() {
   const progressBar = useRef();
   const scrollbarRef = useRef();
+  const fadeTimeout = useRef();
+  const visible = useRef(false);
   const [isLoading, isMenuOpen, introOut] = useStore(useShallow((state) => [state.isLoading, state.isMenuOpen, state.introOut]));
-  let fadeTimeout;
-
-  const updateScrollbar = (scroll, limit) => {
-    const progress = scroll / limit;
-    const maxTopValueInVh = 80 - 6;
-    const newTopValueInVh = Math.min(maxTopValueInVh, progress * maxTopValueInVh);
-
-    gsap.to(progressBar.current, { top: `${newTopValueInVh}svh`, duration: 0.3 });
-  };
 
   useScroll(({ scroll, limit }) => {
-    if (!isLoading && !isMenuOpen) {
-      gsap.to(scrollbarRef.current, { opacity: 1, duration: 0.3 });
-      updateScrollbar(scroll, limit);
+    if (isLoading || isMenuOpen) return;
+    if (!progressBar.current || !scrollbarRef.current) return;
 
-      clearTimeout(fadeTimeout);
-      fadeTimeout = setTimeout(() => {
-        if (scrollbarRef?.current) {
-          gsap.to(scrollbarRef.current, { opacity: 0, duration: 0.5 });
-        }
-      }, 1500);
+    const progress = limit > 0 ? scroll / limit : 0;
+    const maxTopValueInVh = 80 - 6;
+    const newTopValueInVh = Math.min(maxTopValueInVh, progress * maxTopValueInVh);
+    const nextTop = `${newTopValueInVh}svh`;
+    if (progressBar.current.style.top !== nextTop) {
+      progressBar.current.style.top = nextTop;
     }
+
+    if (!visible.current) {
+      visible.current = true;
+      gsap.to(scrollbarRef.current, { opacity: 1, duration: 0.3, overwrite: true });
+    }
+
+    if (fadeTimeout.current) clearTimeout(fadeTimeout.current);
+    fadeTimeout.current = setTimeout(() => {
+      if (scrollbarRef.current) {
+        visible.current = false;
+        gsap.to(scrollbarRef.current, { opacity: 0, duration: 0.5, overwrite: true });
+      }
+    }, 1500);
   });
 
-  useEffect(
-    () => () => {
-      clearTimeout(fadeTimeout);
-    },
-    [fadeTimeout],
-  );
+  useEffect(() => () => clearTimeout(fadeTimeout.current), []);
 
   if (isLoading && introOut) {
     return null;

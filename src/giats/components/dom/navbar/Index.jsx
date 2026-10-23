@@ -4,14 +4,28 @@ import MenuButton from '@src/components/dom/navbar/components/MenuButton';
 import MenuLinks from '@src/components/dom/navbar/components/MenuLinks';
 import clsx from 'clsx';
 import styles from '@src/components/dom/navbar/styles/index.module.scss';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import useIsMobile from '@src/hooks/useIsMobile';
+import useScroll from '@src/hooks/useScroll';
 import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '@src/store';
 
 function Navbar() {
   const isMobile = useIsMobile();
-  const [lenis] = useStore(useShallow((state) => [state.lenis]));
+  const headerRef = useRef();
+  const [lenis, isMenuOpen] = useStore(useShallow((state) => [state.lenis, state.isMenuOpen]));
+
+  useScroll(({ scroll, direction }) => {
+    if (!headerRef.current) return;
+    const shouldHide = !isMenuOpen && scroll > 240 && direction === 1;
+    headerRef.current.classList.toggle(styles.hidden, shouldHide);
+  });
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      headerRef.current?.classList.remove(styles.hidden);
+    }
+  }, [isMenuOpen]);
 
   const scrollToPosition = useCallback(
     (position, duration = 1.5) => {
@@ -29,22 +43,26 @@ function Navbar() {
     [lenis],
   );
 
-  const goToTop = useCallback(() => {
-    scrollToPosition(0);
-  }, [scrollToPosition]);
+  const goToTop = useCallback(
+    (event) => {
+      event.preventDefault();
+      scrollToPosition(0);
+    },
+    [scrollToPosition],
+  );
 
   return (
     <>
       <MenuLinks />
 
-      <header className={styles.root} role="banner">
+      <header ref={headerRef} className={styles.root} role="banner">
         <div className={styles.innerHeader}>
           <Link onClick={goToTop} aria-label="Go home" scroll={false} href="#top">
-            <h4 className={clsx('bold', 'h4')}>XY COMBINATORS</h4>
+            <h4 className={clsx('bold', 'h4')}>XY COMBINATOR</h4>
           </Link>
 
           <div className={styles.rightContainer}>
-            {!isMobile && <ButtonLink href="mailto:hello@xycombinators.com" label="GET IN TOUCH" />}
+            {!isMobile && <ButtonLink href="mailto:contact@xycombinator.com" label="GET IN TOUCH" />}
             <MenuButton />
           </div>
         </div>

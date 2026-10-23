@@ -14,6 +14,7 @@
     padding-top: calc(var(--layout-columns-gap) * 4);
     @include mobile {
       padding-top: calc(var(--layout-columns-gap) * 1.5);
+      grid-column: 1 / 7;
     }
 
     width: 100%;
@@ -71,15 +72,19 @@
     }
   }
 
-  .emailContaineer {
-    @include mobile {
-      grid-column: 1 / 7;
-      padding-top: var(--layout-columns-gap);
-    }
+  .sitemap {
+    grid-column: 1 / 5;
+  }
 
+  .liveWork {
+    grid-column: 5 / 9;
+  }
+
+  .emailContaineer {
     padding-top: calc(var(--layout-columns-gap) * 4);
     width: min-content;
     grid-column: 9 / 17;
+
     .workWithMe {
       color: var(--white);
     }
@@ -127,6 +132,17 @@
       transition: transform 0.7s;
       transition-timing-function: cubic-bezier(0, 0.25, 0.5, 1);
     }
+
+    @include mobile {
+      grid-column: 1 / 7;
+      width: 100%;
+      padding-top: calc(var(--layout-columns-gap) * 2);
+
+      .link {
+        font-size: 5.9vw;
+        line-height: 1.4;
+      }
+    }
   }
 
   .middleText {
@@ -136,11 +152,29 @@
     @include mobile {
       grid-column: 1 / 7 !important;
       padding-top: var(--layout-columns-gap);
+      text-align: left;
     }
 
     > span > span > span {
       display: flex;
       flex-direction: column;
+    }
+  }
+
+  .location {
+    grid-column: 1 / 9;
+  }
+
+  .availability {
+    grid-column: 9 / 13;
+  }
+
+  .rights {
+    grid-column: 13 / 17;
+    text-align: right;
+
+    @include mobile {
+      text-align: left;
     }
   }
   div {
@@ -149,7 +183,7 @@
 
   .giats {
     @include mobile {
-      grid-column: 1 / 6;
+      grid-column: 1 / 5;
       font-size: 22.2vw;
       line-height: 17.428vw;
     }
@@ -168,7 +202,7 @@
     position: relative;
 
     @include mobile {
-      grid-column: 6 / 7;
+      grid-column: 5 / 7;
     }
     align-self: flex-end;
     justify-self: flex-end;

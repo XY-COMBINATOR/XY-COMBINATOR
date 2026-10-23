@@ -10,7 +10,7 @@ import slrImg from './assets/work-imgs/slr-playground.webp'
 import slrHeroImg from './assets/slr-hero.jpg'
 import './App.css'
 
-const EMAIL = 'hello@xycombinators.com'
+const EMAIL = 'contact@xycombinator.com'
 
 const NAV = [
   { label: 'Work', href: '#work' },
@@ -136,7 +136,7 @@ const PLANS = [
 
 const FAQS = [
   {
-    q: 'What does XY Combinators actually do?',
+    q: 'What does XY Combinator actually do?',
     a: 'We are a design & engineering studio. We take products from idea to live users — product design, websites, e-commerce, mobile apps, and the launch support after day one.',
   },
   {
@@ -263,7 +263,7 @@ export default function App() {
         >
           <a href="#top" className="brand">
             <span className="brand-mark">XY</span>
-            <span className="brand-name">XY Combinators</span>
+            <span className="brand-name">XY Combinator</span>
           </a>
           <nav className="nav-links">
             {NAV.map((l) => (
@@ -373,7 +373,7 @@ export default function App() {
               <em>slrplaygroundmalaysia.com — designed &amp; shipped by XY</em>
             </div>
             <div className="browser-hero-img">
-              <img src={slrHeroImg} alt="SLR Playground website designed and built by XY Combinators" />
+              <img src={slrHeroImg} alt="SLR Playground website designed and built by XY Combinator" />
             </div>
             <motion.a
               href="https://slrplaygroundmalaysia.com/"
@@ -681,7 +681,7 @@ export default function App() {
                   </li>
                 ))}
               </ul>
-              <a href={`mailto:${EMAIL}?subject=${encodeURIComponent(p.name + ' — XY Combinators')}`} className={p.hot ? 'btn-dark' : 'btn-light btn-border'}>
+              <a href={`mailto:${EMAIL}?subject=${encodeURIComponent(p.name + ' — XY Combinator')}`} className={p.hot ? 'btn-dark' : 'btn-light btn-border'}>
                 {p.cta}
               </a>
             </motion.div>
@@ -756,7 +756,7 @@ export default function App() {
           <div className="foot-brand">
             <span className="brand-mark">XY</span>
             <div>
-              <strong>XY Combinators</strong>
+              <strong>XY Combinator</strong>
               <span>A design &amp; engineering studio for founders who move fast.</span>
             </div>
           </div>
@@ -786,7 +786,7 @@ export default function App() {
           </div>
         </div>
         <div className="foot-base">
-          <span>© 2026 XY Combinators. All rights reserved.</span>
+          <span>© 2026 XY Combinator. All rights reserved.</span>
           <span>Designed &amp; shipped by XY — obviously.</span>
         </div>
       </footer>

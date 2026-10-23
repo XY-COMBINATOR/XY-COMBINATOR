@@ -1,109 +1,191 @@
-/* eslint-disable no-return-assign */
-/* eslint-disable no-nested-ternary */
-import AppearByWords from '@src/components/animationComponents/appearByWords/Index';
-import ButtonLink from '@src/components/animationComponents/buttonLink/Index';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
 import clsx from 'clsx';
-import { gsap } from 'gsap';
-import projects from '@src/constants/projects';
+import Link from 'next/link';
+import concepts from '@src/constants/concepts';
 import styles from '@src/pages/components/projects/styles/projects.module.scss';
-import useIsMobile from '@src/hooks/useIsMobile';
-import { useIsomorphicLayoutEffect } from '@src/hooks/useIsomorphicLayoutEffect';
-import { useRef } from 'react';
+import works from '@src/constants/works';
 import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '@src/store';
-import { useWindowSize } from '@darkroom.engineering/hamo';
 
-function Projects() {
-  const isMobile = useIsMobile();
-  const windowSize = useWindowSize();
-  const [isLoading] = useStore(useShallow((state) => [state.isLoading]));
-
-  const rootRef = useRef();
-  const projectRefs = useRef([]);
-
-  const newProjects = [projects[0], projects[1], projects[2]];
-
-  const setupProjectAnimations = () => {
-    const ctx = gsap.context(() => {
-      if (!isLoading) {
-        projectRefs.current.slice(0, -1).forEach((projectRef, index) => {
-          gsap.set(projectRef, { yPercent: 0 });
-          gsap
-            .timeline({
-              scrollTrigger: {
-                id: `projectRef-${index}`,
-                trigger: rootRef.current,
-                start: `top+=${windowSize.height * index}`,
-                end: () => `+=${(projectRefs.current.length - 1) * windowSize.height}`,
-                scrub: true,
-                scroller: document?.querySelector('main'),
-                invalidateOnRefresh: true,
-              },
-            })
-            .to(projectRef, {
-              yPercent: 100,
-              stagger: 1,
-            });
-        });
-      }
-    });
-
-    return ctx;
-  };
-
-  useIsomorphicLayoutEffect(() => {
-    const ctx = setupProjectAnimations();
-    return () => ctx.kill();
-  }, [isLoading, windowSize.height]);
-
+function ProjectCard({ project, index }) {
   return (
-    <>
-      <section className={clsx(styles.titleContainer, 'layout-grid-inner')}>
-        <h1 className={clsx(styles.title, 'h1')}>
-          <AppearByWords>Selected Projects</AppearByWords>
-        </h1>
-      </section>
-      <section ref={rootRef} id="work" className={clsx(styles.root, 'layout-block-inner')}>
-        <div className={styles.innerContainer}>
-          {newProjects.map((project, index) => (
-            <Link aria-label={`Go ${project.title}`} id={project.id} key={project.id} scroll={false} href={project.link} className={clsx(styles.card)}>
-              <div
-                style={
-                  !isMobile
-                    ? {
-                        height: index === newProjects.length - 1 ? '200svh' : `${200 + 100 * index}svh`,
-                        top: index === 0 ? '0px' : '-100svh',
-                      }
-                    : {
-                        height: index === newProjects.length - 1 ? '100svh' : `${200 + 100 * index}svh`,
-                        top: index === 0 ? '0px' : '-50svh',
-                      }
-                }
-                className={styles.projectsWrap}
-              >
-                <div className={clsx(styles.container, 'layout-grid-inner')}>
-                  <div className={styles.projectsDetails}>
-                    <h6 className="h6">{project.date}</h6>
-                    <h3 className="h3">{project.title}</h3>
-                  </div>
-                  <div className={styles.imageContainer}>
-                    <Image src={project.img} fill sizes="100%" alt={project.title} />
-                  </div>
-                </div>
-              </div>
-              <div ref={(el) => (projectRefs.current[index] = el)} className={styles.canvas}>
-                <Image priority className={index === 0 ? styles.firstCard : index === newProjects.length - 1 ? styles.lastCard : undefined} src={project.img} fill sizes="100%" alt={project.title} />
-              </div>
-            </Link>
+    <Link
+      className={styles.card}
+      href={project.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-hidden={false}
+      tabIndex={0}
+    >
+      <span className={clsx(styles.shot, styles.projectShot)}>
+        <img src={project.img} alt={`${project.name}, ${project.tag} project`} loading="lazy" decoding="async" />
+        <span className={styles.view}>View project ↗</span>
+      </span>
+      <span className={styles.cardHead}>
+        <span className={styles.cardIndex}>{String(index + 1).padStart(2, '0')}</span>
+        <span className={styles.cardName}>{project.name}</span>
+        <span className={styles.cardTag}>{project.tag}</span>
+      </span>
+    </Link>
+  );
+}
+
+function ConceptCard({ concept, index, onOpen }) {
+  return (
+    <button type="button" className={clsx(styles.card, styles.conceptCard)} aria-haspopup="dialog" onClick={() => onOpen(index)}>
+      <span className={clsx(styles.shot, styles.conceptShot)}>
+        <img className={styles.conceptBackdrop} src={concept.img} alt="" aria-hidden="true" loading="lazy" />
+        <img className={styles.conceptImage} src={concept.img} alt={concept.alt} loading="lazy" decoding="async" />
+        <span className={styles.view}>Open study ↗</span>
+      </span>
+      <span className={styles.cardHead}>
+        <span className={styles.cardIndex}>C{index + 1}</span>
+        <span className={styles.cardName}>{concept.name}</span>
+        <span className={styles.cardTag}>{concept.brand}</span>
+      </span>
+    </button>
+  );
+}
+
+function Row({ label, items, renderItem, direction }) {
+  return (
+    <div className={styles.strip}>
+      {label && <span className={styles.stripLabel}>{label}</span>}
+      <div className={styles.row}>
+        <div className={clsx(styles.track, direction === 'left' ? styles.moveLeft : styles.moveRight)}>
+          {items.map((item, index) => (
+            <div key={index} className={styles.group}>
+              {renderItem(item, index)}
+            </div>
+          ))}
+          {items.map((item, index) => (
+            <div key={index + items.length} className={styles.group}>
+              {renderItem(item, index)}
+            </div>
           ))}
         </div>
-        <div className={styles.buttonContainer}>
-          <ButtonLink href="mailto:hello@xycombinators.com" label="START A PROJECT" />
+      </div>
+    </div>
+  );
+}
+
+function Projects() {
+  const rootRef = useRef(null);
+  const dialogRef = useRef(null);
+  const [activeConcept, setActiveConcept] = useState(null);
+  const [lenis] = useStore(useShallow((state) => [state.lenis]));
+
+  const openConcept = useCallback(
+    (index) => {
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+      setActiveConcept(index);
+      if (!dialog.open && typeof dialog.showModal === 'function') {
+        dialog.showModal();
+        lenis?.stop();
+      }
+    },
+    [lenis],
+  );
+
+  const closeConcept = useCallback(() => {
+    dialogRef.current?.close();
+  }, []);
+
+  const stepConcept = useCallback((direction) => {
+    setActiveConcept((current) => (current === null ? current : (current + direction + concepts.length) % concepts.length));
+  }, []);
+
+  const handleDialogClose = useCallback(() => {
+    setActiveConcept(null);
+    lenis?.start();
+  }, [lenis]);
+
+  const concept = activeConcept === null ? null : concepts[activeConcept];
+
+  return (
+    <section ref={rootRef} id="work" className={styles.root} data-header-theme="dark">
+      <span className={styles.bgMesh} aria-hidden="true" />
+      <div className={clsx(styles.head, 'layout-block-inner')}>
+        <p className={styles.kicker}>Our work</p>
+        <div className={styles.headRow}>
+          <h2 className={styles.title}>Selected Creations</h2>
+          <div className={styles.meta}>
+            <span>{String(works.length).padStart(2, '0')} projects</span>
+            <span>{String(concepts.length).padStart(2, '0')} visual concepts</span>
+          </div>
         </div>
-      </section>
-    </>
+      </div>
+
+      <div className={styles.strips}>
+        <Row
+          label="06 PROJECTS"
+          items={works}
+          direction="left"
+          renderItem={(item, index) => <ProjectCard key={`p-${index}`} project={item} index={index} />}
+        />
+        <Row
+          label="04 VISUAL CONCEPTS"
+          items={concepts}
+          direction="right"
+          renderItem={(item, index) => <ConceptCard key={`c-${index}`} concept={item} index={index} onOpen={openConcept} />}
+        />
+      </div>
+
+      <div className={clsx(styles.foot, 'layout-block-inner')}>
+        <p>Designed, built and shipped by XY Combinator.</p>
+        <a href="mailto:contact@xycombinator.com">contact@xycombinator.com</a>
+      </div>
+
+      <dialog
+        ref={dialogRef}
+        className={styles.dialog}
+        aria-labelledby={concept ? 'concept-dialog-title' : undefined}
+        data-lenis-prevent-wheel
+        onClose={handleDialogClose}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) closeConcept();
+        }}
+        onKeyDown={(event) => {
+          if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            stepConcept(1);
+          }
+          if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            stepConcept(-1);
+          }
+        }}
+      >
+        {concept && (
+          <div className={styles.dialogInner}>
+            <img className={styles.dialogImage} src={concept.img} alt={concept.alt} decoding="async" />
+            <div className={styles.dialogMeta}>
+              <p className={styles.dialogTitle} id="concept-dialog-title">
+                {concept.name}
+                <span>{concept.brand}</span>
+              </p>
+              <p className={styles.dialogNote}>Independent concept study. Not commissioned work.</p>
+            </div>
+            <div className={styles.dialogNav}>
+              <button type="button" className={styles.dialogArrow} aria-label="Previous concept" onClick={() => stepConcept(-1)}>
+                ←
+              </button>
+              <span className={styles.dialogCounter}>
+                {String(activeConcept + 1).padStart(2, '0')} / {String(concepts.length).padStart(2, '0')}
+              </span>
+              <button type="button" className={styles.dialogArrow} aria-label="Next concept" onClick={() => stepConcept(1)}>
+                →
+              </button>
+            </div>
+            <button type="button" className={styles.dialogClose} aria-label="Close concept" onClick={closeConcept}>
+              ✕
+            </button>
+          </div>
+        )}
+      </dialog>
+    </section>
   );
 }
 

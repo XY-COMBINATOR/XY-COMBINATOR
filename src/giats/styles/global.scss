@@ -6,6 +6,12 @@
 @import '@src/styles/utils.scss';
 @import '@src/styles/fontStyle.scss';
 @import '@src/styles/scroll.scss';
+@import '@src/styles/motion.scss';
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
 
 html {
   font-weight: bolder;
@@ -62,7 +68,6 @@ body {
   background-image: url('/other/noise.png');
   opacity: 0.65;
   pointer-events: none;
-  animation: noise 1s steps(2) infinite;
 }
 
 a,
@@ -108,4 +113,13 @@ main > div > section:nth-last-child(1) {
 .trigger-footer {
   height: 10px;
   width: 100%;
+}
+
+header h4 {
+  transition: color 0.45s ease;
+}
+
+body.on-dark-hero header h4,
+body.on-dark-section header h4 {
+  color: var(--white);
 }

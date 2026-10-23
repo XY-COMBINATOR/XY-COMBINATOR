@@ -25,12 +25,14 @@ import useFoucFix from '@src/hooks/useFoucFix'
 import { useFrame } from '@darkroom.engineering/hamo'
 import { useIsomorphicLayoutEffect } from '@src/hooks/useIsomorphicLayoutEffect'
 import useScroll from '@src/hooks/useScroll'
+import useSmoothScrollInteractions from '@src/hooks/useSmoothScrollInteractions'
 import { useShallow } from 'zustand/react/shallow'
 import { useStore } from '@src/store'
 
 if (typeof window !== 'undefined') {
   gsap.defaults({ ease: 'none' });
   gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
 
   gsap.ticker.lagSmoothing(0);
   gsap.ticker.remove(gsap.updateRoot);
@@ -54,15 +56,19 @@ export default function App() {
 
   useFoucFix();
   useScroll(() => ScrollTrigger.update());
+  useSmoothScrollInteractions(lenis);
 
   useIsomorphicLayoutEffect(() => {
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
     // eslint-disable-next-line no-shadow
     const lenis = new Lenis({
       smoothWheel: true,
-      smoothTouch: true,
-      syncTouch: true,
+      syncTouch: false,
+      lerp: reduceMotion ? 1 : 0.1,
       wrapper: mainRef.current || undefined,
       content: mainContainerRef.current || undefined,
+      eventsTarget: window,
     });
 
     setLenis(lenis);
@@ -111,7 +117,7 @@ export default function App() {
         style={{ zIndex: 0 }}
         resize={{ debounce: { resize: 0, scroll: 0 }, polyfill: undefined }}
         className={styles.canvasContainer}
-        dpr={[0.5, 1.5]}
+        dpr={[0.5, 1]}
       >
         <View.Port />
       </Canvas>

@@ -157,7 +157,7 @@ function Loader() {
       <div className={styles.innerContainer}>
         <div className={styles.fullNameContainer}>
           <h2 ref={fullNameRef} className={clsx(styles.fullName, 'h2')}>
-            {introOut ? 'Loading' : 'XY Combinators'}
+            {introOut ? 'Loading' : 'XY Combinator'}
           </h2>
         </div>
 

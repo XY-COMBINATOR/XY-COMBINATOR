@@ -49,11 +49,16 @@ function ConceptCard({ concept, index, onOpen }) {
 }
 
 function Row({ label, items, renderItem, direction }) {
+  const duration = Math.max(16, items.length * 2.8);
+
   return (
     <div className={styles.strip}>
       {label && <span className={styles.stripLabel}>{label}</span>}
       <div className={styles.row}>
-        <div className={clsx(styles.track, direction === 'left' ? styles.moveLeft : styles.moveRight)}>
+        <div
+          className={clsx(styles.track, direction === 'left' ? styles.moveLeft : styles.moveRight)}
+          style={{ animationDuration: `${duration}s` }}
+        >
           {items.map((item, index) => (
             <div key={index} className={styles.group}>
               {renderItem(item, index)}
@@ -120,13 +125,13 @@ function Projects() {
 
       <div className={styles.strips}>
         <Row
-          label="06 PROJECTS"
+          label={`${String(works.length).padStart(2, '0')} PROJECTS`}
           items={works}
           direction="left"
           renderItem={(item, index) => <ProjectCard key={`p-${index}`} project={item} index={index} />}
         />
         <Row
-          label="04 VISUAL CONCEPTS"
+          label={`${String(concepts.length).padStart(2, '0')} VISUAL CONCEPTS`}
           items={concepts}
           direction="right"
           renderItem={(item, index) => <ConceptCard key={`c-${index}`} concept={item} index={index} onOpen={openConcept} />}

@@ -1,5 +1,9 @@
+/**
+ * GoTop Component
+ * Floating circular button that smoothly scrolls the document back to the top anchor.
+ * Employs magnetic hover cursor reaction and inertial Lenis integration.
+ */
 import { useCallback, useRef } from 'react';
-
 import Arrow from '@src/components/imageComponents/Arrow';
 import gsap from 'gsap';
 import styles from '@src/components/dom/styles/footer.module.scss';
@@ -13,12 +17,12 @@ function GoTop() {
   const [lenis] = useStore(useShallow((state) => [state.lenis]));
 
   const scrollToTop = useCallback(() => {
-    lenis.scrollTo(0, {
+    lenis?.scrollTo(0, {
       duration: 1.5,
       force: true,
       easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
       onComplete: () => {
-        lenis.start();
+        lenis?.start();
       },
     });
   }, [lenis]);
@@ -26,6 +30,8 @@ function GoTop() {
   const handleMouseEnter = useCallback((e) => {
     const button = buttonRef.current;
     const span = spanRef.current;
+    if (!button || !span) return;
+
     const { clientY } = e;
     const parentOffset = button.getBoundingClientRect();
     const isTop = clientY < parentOffset.top + parentOffset.height / 2;
@@ -36,7 +42,6 @@ function GoTop() {
 
     gsap.context(() => {
       gsap.set(span, { top: `${relY}%`, left: `${relX}%` });
-
       gsap.to(span, {
         duration: 0.6,
         ease: 'cubic-bezier(.4,0,.1,1)',
@@ -46,6 +51,7 @@ function GoTop() {
 
   const handleMouseLeave = useCallback(() => {
     const span = spanRef.current;
+    if (!span) return;
     const { relX, relY } = relsRef.current;
 
     gsap.context(() => {
@@ -59,7 +65,15 @@ function GoTop() {
   }, []);
 
   return (
-    <button type="button" ref={buttonRef} aria-label="Go top" onClick={scrollToTop} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className={styles.circleButton}>
+    <button
+      type="button"
+      ref={buttonRef}
+      aria-label="Scroll back to top of page"
+      onClick={scrollToTop}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className={styles.circleButton}
+    >
       <Arrow className={styles.arrowClassic} />
       <span className={styles.ball} ref={spanRef} />
     </button>

@@ -1,3 +1,8 @@
+/**
+ * Loader Component
+ * Cinematic initial brand reveal and loading counter animation.
+ * Splits typography into animated kinetic lines and smoothly reveals the main stage.
+ */
 import SplitType from 'split-type';
 import clsx from 'clsx';
 import gsap from 'gsap';
@@ -9,7 +14,9 @@ import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '@src/store';
 
 function Loader() {
-  const [lenis, introOut, setIntroOut, setIsLoading, setIsAbout] = useStore(useShallow((state) => [state.lenis, state.introOut, state.setIntroOut, state.setIsLoading, state.setIsAbout]));
+  const [lenis, introOut, setIntroOut, setIsLoading, setIsAbout] = useStore(
+    useShallow((state) => [state.lenis, state.introOut, state.setIntroOut, state.setIsLoading, state.setIsAbout]),
+  );
 
   const progressRef = useRef(null);
   const fullNameRef = useRef(null);
@@ -23,8 +30,9 @@ function Loader() {
       setIsAbout(router.asPath === '/about');
 
       ctx = gsap.context(() => {
+        // Counter animation from 0% to 100%
         gsap.to(progressRef.current, {
-          duration: 5,
+          duration: 3.5,
           ease: 'power2.inOut',
           innerText: `${100}%`,
           roundProps: 'innerText',
@@ -37,47 +45,62 @@ function Loader() {
               ease: 'power2.inOut',
             });
 
-            const splitted = new SplitType(fullNameRef.current, {
-              types: 'lines',
-              tagName: 'span',
-            });
-            splitted.lines.forEach((line) => {
-              gsap.to(line, {
-                ease: 'power4.inOut',
-                top: '-12vw',
-                duration: 1,
+            // Split and slide primary studio name
+            if (fullNameRef.current) {
+              const splitted = new SplitType(fullNameRef.current, {
+                types: 'lines',
+                tagName: 'span',
               });
-            });
-            gsap.to(shortNameRef.current, {
-              opacity: 1,
-            });
-            const splittedShort = new SplitType(shortNameRef.current, {
-              types: 'lines',
-              tagName: 'span',
-            });
-            splittedShort.lines.forEach((line) => {
-              gsap.to(line, {
-                ease: 'power4.inOut',
-                top: '0px',
-                duration: 1,
+              splitted.lines.forEach((line) => {
+                gsap.to(line, {
+                  ease: 'power4.inOut',
+                  top: '-12vw',
+                  duration: 1,
+                });
               });
-            });
+            }
 
-            const splittedProgress = new SplitType(progressRef.current, {
-              types: 'lines',
-              tagName: 'span',
-            });
-            splittedProgress.lines.forEach((line) => {
-              gsap.to(line, {
-                ease: 'power4.inOut',
-                top: '-12vw',
-                duration: 1,
+            // Animate studio subtitle
+            if (shortNameRef.current) {
+              gsap.to(shortNameRef.current, {
+                opacity: 1,
               });
-            });
-            lenis.scrollTo(0, { force: true });
-            gsap.set(document?.getElementById('layout'), {
-              height: '90%',
-            });
+              const splittedShort = new SplitType(shortNameRef.current, {
+                types: 'lines',
+                tagName: 'span',
+              });
+              splittedShort.lines.forEach((line) => {
+                gsap.to(line, {
+                  ease: 'power4.inOut',
+                  top: '0px',
+                  duration: 1,
+                });
+              });
+            }
+
+            // Animate progress text exit
+            if (progressRef.current) {
+              const splittedProgress = new SplitType(progressRef.current, {
+                types: 'lines',
+                tagName: 'span',
+              });
+              splittedProgress.lines.forEach((line) => {
+                gsap.to(line, {
+                  ease: 'power4.inOut',
+                  top: '-12vw',
+                  duration: 1,
+                });
+              });
+            }
+
+            lenis?.scrollTo(0, { force: true });
+
+            const layoutNode = document?.getElementById('layout');
+            if (layoutNode) {
+              gsap.set(layoutNode, {
+                height: '90%',
+              });
+            }
 
             gsap.set('main', {
               x: '100%',
@@ -94,6 +117,7 @@ function Loader() {
               duration: 0.5,
               borderRadius: '1.3888888889vw',
             });
+
             gsap.to(root.current, {
               ease: 'power2.inOut',
               delay: 1.7,
@@ -107,6 +131,7 @@ function Loader() {
               duration: 0.5,
               x: '0px',
             });
+
             gsap.to('main', {
               ease: 'power2.inOut',
               delay: 2.2,
@@ -114,18 +139,23 @@ function Loader() {
               scale: 1,
               borderRadius: 0,
             });
-            gsap.to(document?.getElementById('layout'), {
-              ease: 'power2.inOut',
-              delay: 2.2,
-              duration: 0.5,
-              height: '100%',
-            });
+
+            if (layoutNode) {
+              gsap.to(layoutNode, {
+                ease: 'power2.inOut',
+                delay: 2.2,
+                duration: 0.5,
+                height: '100%',
+              });
+            }
+
             gsap.to('header', {
               delay: 2.3,
               duration: 0.5,
               ease: 'power2.inOut',
               autoAlpha: 1,
             });
+
             gsap.to('main', {
               ease: 'power2.inOut',
               delay: 2.7,
@@ -135,7 +165,7 @@ function Loader() {
               onComplete: () => {
                 setIntroOut(true);
                 setIsLoading(false);
-                lenis.start();
+                lenis?.start();
               },
             });
           },
@@ -150,10 +180,10 @@ function Loader() {
         ctx.kill();
       }
     };
-  }, [lenis, introOut]);
+  }, [lenis, introOut, router.asPath, setIsAbout, setIsLoading, setIntroOut]);
 
   return (
-    <div id="loader" ref={root} className={clsx(styles.root, 'layout-block-inner')}>
+    <div id="loader" ref={root} className={clsx(styles.root, 'layout-block-inner')} aria-hidden={introOut}>
       <div className={styles.innerContainer}>
         <div className={styles.fullNameContainer}>
           <h2 ref={fullNameRef} className={clsx(styles.fullName, 'h2')}>

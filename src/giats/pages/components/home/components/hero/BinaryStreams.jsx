@@ -1,4 +1,10 @@
-import { useEffect, useRef } from 'react';
+/**
+ * BinaryStreams Component
+ * Renders curved streams of binary digits (0 and 1) emanating from the 3D product showcase box.
+ * Optimized with high-efficiency 2D canvas transforms, requestAnimationFrame interpolation,
+ * and ResizeObserver/IntersectionObserver lifecycle management.
+ */
+import { useCallback, useEffect, useRef } from 'react';
 
 const MONO_FONT = '"SF Mono", "Cascadia Mono", Consolas, "Roboto Mono", Menlo, monospace';
 
@@ -8,6 +14,9 @@ const lerp = (a, b, t) => a + (b - a) * t;
 
 const easeOutQuad = (t) => 1 - (1 - t) * (1 - t);
 
+/**
+ * Calculates cubic bezier coordinates at parametric time t.
+ */
 const pointOnBezier = (p0, p1, p2, p3, t) => {
   const mt = 1 - t;
   const a = mt * mt * mt;
@@ -20,6 +29,9 @@ const pointOnBezier = (p0, p1, p2, p3, t) => {
   };
 };
 
+/**
+ * Calculates cubic bezier tangent vector at parametric time t.
+ */
 const tangentOnBezier = (p0, p1, p2, p3, t) => {
   const mt = 1 - t;
   const a = 3 * mt * mt;
@@ -31,6 +43,9 @@ const tangentOnBezier = (p0, p1, p2, p3, t) => {
   };
 };
 
+/**
+ * Factory for creating an individual animated binary stream path.
+ */
 const createStream = (width, height, anchor, isMobile, variant) => {
   const front = variant === 'front';
   const maxDim = Math.max(width, height);
@@ -81,46 +96,50 @@ const createStream = (width, height, anchor, isMobile, variant) => {
   }
 
   return {
-    origin,
-    c1,
-    c2,
-    far,
-    bits,
+    p0: origin,
+    p1: c1,
+    p2: c2,
+    p3: far,
     sizeNear,
     sizeFar,
-    alpha: front ? rand(0.6, 0.95) : rand(0.4, 0.9),
-    speed: front ? rand(0.09, 0.15) : rand(0.05, 0.11),
     phase: Math.random(),
-    rotation: rand(0.42, 0.6),
+    speed: front ? rand(0.016, 0.026) : rand(0.012, 0.022),
+    bits,
+    front,
   };
 };
 
+/**
+ * Draws an individual stream and its associated glyphs onto the canvas context.
+ */
 const drawStream = (ctx, stream, pointer, dpr) => {
-  const { origin, c1, c2, far, bits, sizeNear, sizeFar, alpha, rotation } = stream;
+  const { p0, p1, p2, p3, sizeNear, sizeFar, phase, bits, front } = stream;
+  const count = bits.length;
 
-  for (let i = 0; i < bits.length; i += 1) {
+  for (let i = 0; i < count; i += 1) {
     const bit = bits[i];
-    const t = (bit.slot + bit.offset + stream.phase) % 1;
-    if (t < 0) continue;
+    const t = (bit.slot + phase + bit.offset + 1) % 1;
+    const progress = easeOutQuad(t);
 
-    const fadeOut = 1 - Math.max(0, (t - 0.72) / 0.28);
-    if (fadeOut <= 0.02) continue;
+    const point = pointOnBezier(p0, p1, p2, p3, progress);
+    const tangent = tangentOnBezier(p0, p1, p2, p3, progress);
+    const mag = Math.hypot(tangent.x, tangent.y) || 1;
+    const cos = tangent.x / mag;
+    const sin = tangent.y / mag;
 
-    const localAlpha = alpha * bit.alpha * fadeOut * (1.12 - t * 0.22);
-    if (localAlpha < 0.03) continue;
+    const size = Math.round(lerp(sizeNear, sizeFar, progress));
+    const distFade = Math.sin(t * Math.PI);
+    const baseAlpha = front ? 0.95 : 0.85;
+    const alpha = distFade * baseAlpha * bit.alpha;
 
-    const point = pointOnBezier(origin, c1, c2, far, t);
-    const tangent = tangentOnBezier(origin, c1, c2, far, t);
-    const angle = Math.atan2(tangent.y, tangent.x) * rotation;
-    const cos = Math.cos(angle);
-    const sin = Math.sin(angle);
-    const size = Math.round(lerp(sizeNear, sizeFar, easeOutQuad(t)));
+    if (alpha <= 0.02) continue;
 
-    ctx.globalAlpha = localAlpha > 1 ? 1 : localAlpha;
+    ctx.globalAlpha = alpha;
     ctx.font = `500 ${size}px ${MONO_FONT}`;
     ctx.setTransform(cos * dpr, sin * dpr, -sin * dpr, cos * dpr, (point.x + pointer.x) * dpr, (point.y + pointer.y) * dpr);
     ctx.fillText(bit.char, 0, 0);
 
+    // Subtle dynamic bit flipping effect
     if (Math.random() < 0.0035) bit.char = bit.char === '0' ? '1' : '0';
   }
 };
@@ -131,10 +150,15 @@ function BinaryStreams({ anchor, isMobile, variant = 'back', className }) {
   const mobileRef = useRef(isMobile);
   const streamsRef = useRef([]);
 
-  anchorRef.current = anchor;
-  mobileRef.current = isMobile;
+  useEffect(() => {
+    anchorRef.current = anchor;
+    mobileRef.current = isMobile;
+  }, [anchor, isMobile]);
 
-  const buildStreams = () => {
+  /**
+   * Rebuilds the animated streams based on container dimensions.
+   */
+  const buildStreams = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return [];
     const rect = canvas.getBoundingClientRect();
@@ -143,7 +167,7 @@ function BinaryStreams({ anchor, isMobile, variant = 'back', className }) {
     const anchorPx = { x: currentAnchor.x * rect.width, y: currentAnchor.y * rect.height };
     const count = variant === 'front' ? (mobileRef.current ? 2 : 3) : mobileRef.current ? 8 : 14;
     return Array.from({ length: count }, () => createStream(rect.width, rect.height, anchorPx, mobileRef.current, variant));
-  };
+  }, [variant]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -217,13 +241,12 @@ function BinaryStreams({ anchor, isMobile, variant = 'back', className }) {
       resizeObserver.disconnect();
       window.removeEventListener('pointermove', handlePointer);
     };
-  }, []);
+  }, [buildStreams]);
 
   useEffect(() => {
     const next = buildStreams();
     if (next.length) streamsRef.current = next;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [anchor.x, anchor.y, isMobile]);
+  }, [anchor.x, anchor.y, isMobile, buildStreams]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 }

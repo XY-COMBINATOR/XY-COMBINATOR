@@ -1,5 +1,9 @@
+/**
+ * Scrollbar Component
+ * Minimalist custom floating scroll progress indicator.
+ * Fades in during active inertial scrolling and auto-fades out when idle.
+ */
 import { useEffect, useRef } from 'react';
-
 import gsap from 'gsap';
 import styles from '@src/components/dom/styles/scrollbar.module.scss';
 import useScroll from '@src/hooks/useScroll';
@@ -7,11 +11,13 @@ import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '@src/store';
 
 function Scrollbar() {
-  const progressBar = useRef();
-  const scrollbarRef = useRef();
-  const fadeTimeout = useRef();
+  const progressBar = useRef(null);
+  const scrollbarRef = useRef(null);
+  const fadeTimeout = useRef(null);
   const visible = useRef(false);
-  const [isLoading, isMenuOpen, introOut] = useStore(useShallow((state) => [state.isLoading, state.isMenuOpen, state.introOut]));
+  const [isLoading, isMenuOpen, introOut] = useStore(
+    useShallow((state) => [state.isLoading, state.isMenuOpen, state.introOut]),
+  );
 
   useScroll(({ scroll, limit }) => {
     if (isLoading || isMenuOpen) return;

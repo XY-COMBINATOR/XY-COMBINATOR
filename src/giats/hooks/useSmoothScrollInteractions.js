@@ -1,3 +1,8 @@
+/**
+ * useSmoothScrollInteractions Hook
+ * Implements keyboard navigation (Arrow keys, PageUp/Down, Home, End, Spacebar)
+ * and interceptor logic for internal hash anchors to drive smooth Lenis scrolling.
+ */
 import { useIsomorphicLayoutEffect } from '@src/hooks/useIsomorphicLayoutEffect';
 
 const easeOutExpo = (t) => Math.min(1, 1.001 - 2 ** (-10 * t));
@@ -12,6 +17,9 @@ function useSmoothScrollInteractions(lenis) {
   useIsomorphicLayoutEffect(() => {
     if (!lenis) return undefined;
 
+    /**
+     * Intercept clicks on internal hash links to trigger inertial smooth scrolling.
+     */
     const onClick = (event) => {
       if (
         event.defaultPrevented ||
@@ -42,6 +50,9 @@ function useSmoothScrollInteractions(lenis) {
       }
     };
 
+    /**
+     * Handle keyboard navigation keys when focus is not inside form inputs.
+     */
     const onKeyDown = (event) => {
       if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
       if (isTextInput(event.target) || lenis.isStopped) return;

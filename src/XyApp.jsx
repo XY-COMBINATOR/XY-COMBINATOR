@@ -378,7 +378,7 @@ export default function App() {
             <motion.a
               href="https://slrplaygroundmalaysia.com/"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="float-card float-live"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: [0, -7, 0] }}
@@ -624,7 +624,7 @@ export default function App() {
               key={p.name}
               href={p.href}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="work-card"
               initial={{ opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -774,10 +774,10 @@ export default function App() {
           </div>
           <div>
             <h4>Live clients</h4>
-            <a href="https://jcreationbd.com/shop" target="_blank" rel="noreferrer">J Creation</a>
-            <a href="https://arishbd.com/" target="_blank" rel="noreferrer">Arish Travels</a>
-            <a href="https://slrplaygroundmalaysia.com/" target="_blank" rel="noreferrer">SLR Playground</a>
-            <a href="https://innovick.vercel.app/" target="_blank" rel="noreferrer">Innovick</a>
+            <a href="https://jcreationbd.com/shop" target="_blank" rel="noopener noreferrer">J Creation</a>
+            <a href="https://arishbd.com/" target="_blank" rel="noopener noreferrer">Arish Travels</a>
+            <a href="https://slrplaygroundmalaysia.com/" target="_blank" rel="noopener noreferrer">SLR Playground</a>
+            <a href="https://innovick.vercel.app/" target="_blank" rel="noopener noreferrer">Innovick</a>
           </div>
           <div>
             <h4>Contact</h4>

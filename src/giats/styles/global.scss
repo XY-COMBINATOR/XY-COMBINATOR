@@ -1,3 +1,7 @@
+/**
+ * Global Stylesheet
+ * Integrates typography, responsive layout resets, fluid color schemes, and root CSS variables.
+ */
 @import '@src/styles/reset.scss';
 @import '@src/styles/fonts.scss';
 @import '@src/styles/colors.scss';
@@ -16,8 +20,9 @@
 html {
   font-weight: bolder;
   font-family: var(--font-primary), sans-serif;
-
   scrollbar-width: thin;
+  scroll-behavior: auto;
+
   &.nav {
     overflow: hidden;
   }
@@ -28,14 +33,12 @@ main.lenis-stopped {
 }
 
 body {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+  -webkit-touch-callout: none;
   max-height: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background-color: var(--black, #28282b);
+  color: var(--white, #f0f4f1);
 
   > canvas {
     position: fixed;
@@ -43,19 +46,28 @@ body {
     left: 0;
     width: 100vw;
     height: 100%;
+    pointer-events: none;
   }
+}
+
+/* Permit natural text selection on content bodies while keeping controls clean */
+p, h1, h2, h3, h4, h5, h6, li, [role="article"], span.lead, span.sub, span.desc, p.story, figcaption {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 #backgroundWebGl {
   position: fixed;
   width: 100vw;
   height: 100vh;
+  pointer-events: none;
 
   & canvas {
     width: 100%;
     height: 100%;
   }
 }
+
 #layout::before {
   content: '';
   position: fixed;
@@ -64,7 +76,6 @@ body {
   top: 0;
   width: calc(100% + 20rem);
   height: calc(100% + 20rem);
-  /* background-color: red; */
   background-image: url('/other/noise.png');
   opacity: 0.65;
   pointer-events: none;

@@ -1,8 +1,11 @@
+/**
+ * Gallery Component
+ * Presents conceptual design applications across physical and outdoor media.
+ * Employs subtle parallax scroll displacement via GSAP ScrollTrigger and responsive image plates.
+ */
 import { useEffect, useRef } from 'react';
-
 import clsx from 'clsx';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import AppearTitle from '@src/components/animationComponents/appearTitle/Index';
 import useIsMobile from '@src/hooks/useIsMobile';
 import usePrefersReducedMotion from '@src/hooks/usePrefersReducedMotion';
@@ -41,6 +44,7 @@ function Gallery() {
   const reduceMotion = usePrefersReducedMotion();
   const rootRef = useRef(null);
 
+  // IntersectionObserver for entrance reveal animations
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return undefined;
@@ -69,6 +73,7 @@ function Gallery() {
     return () => observer.disconnect();
   }, []);
 
+  // Parallax image displacement on desktop devices
   useIsomorphicLayoutEffect(() => {
     if (isMobile || reduceMotion) return undefined;
 
@@ -102,7 +107,7 @@ function Gallery() {
   }, [isMobile, reduceMotion]);
 
   return (
-    <section ref={rootRef} id="gallery" className={styles.root} data-header-theme="dark">
+    <section ref={rootRef} id="gallery" className={styles.root} data-header-theme="dark" aria-label="Design gallery">
       <header className={clsx(styles.head, 'layout-block-inner')}>
         <div className={styles.headMain}>
           <span className={styles.kicker}>Gallery</span>
@@ -126,7 +131,14 @@ function Gallery() {
             style={{ '--aspect': `${shot.width} / ${shot.height}` }}
           >
             <div className={styles.frame}>
-              <img src={shot.img} alt={shot.alt} width={shot.width} height={shot.height} loading="lazy" decoding="async" />
+              <img 
+                src={shot.img} 
+                alt={shot.alt} 
+                width={shot.width} 
+                height={shot.height} 
+                loading="lazy" 
+                decoding="async" 
+              />
             </div>
             <figcaption className={styles.caption}>
               <span className={styles.index}>{String(i + 1).padStart(2, '0')}</span>

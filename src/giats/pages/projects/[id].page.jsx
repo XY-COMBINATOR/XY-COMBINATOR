@@ -1,6 +1,10 @@
+/**
+ * Project Detail Page Component
+ * Renders individual project showcases with pinned sticky meta information,
+ * dynamic theme color adaptation, and next project recommendations.
+ */
 /* eslint-disable react/jsx-props-no-spreading */
 import { useEffect, useMemo, useRef } from 'react';
-
 import CustomHead from '@src/components/dom/CustomHead';
 import NextProject from '@src/pages/projects/components/nextProject/NextProject';
 import ProjectDetails from '@src/pages/projects/components/projectDetails/ProjectDetails';
@@ -18,15 +22,20 @@ import { useWindowSize } from '@darkroom.engineering/hamo';
 
 function Page({ id }) {
   const isMobile = useIsMobile();
-  const rightContainerRef = useRef();
-  const leftContainerRef = useRef();
+  const rightContainerRef = useRef(null);
+  const leftContainerRef = useRef(null);
   const [isLoading, setFluidColor] = useStore(useShallow((state) => [state.isLoading, state.setFluidColor]));
   const windowSize = useWindowSize();
 
-  const projectIndex = useMemo(() => projects.findIndex((project) => project.id === id), [id]);
+  const projectIndex = useMemo(() => {
+    const idx = projects.findIndex((project) => project.id === id);
+    return idx !== -1 ? idx : 0;
+  }, [id]);
+
   const currentProject = useMemo(() => projects[projectIndex], [projectIndex]);
 
   const updateCSSVariables = (project) => {
+    if (!project) return;
     gsap.set('html', {
       '--black': project.primary,
       '--white': project.secondary,
@@ -39,7 +48,7 @@ function Page({ id }) {
 
   useIsomorphicLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      if (!isLoading && !isMobile) {
+      if (!isLoading && !isMobile && rightContainerRef.current && leftContainerRef.current) {
         ScrollTrigger.create({
           id: 'project',
           trigger: rightContainerRef.current,
@@ -76,25 +85,26 @@ function Page({ id }) {
       });
       setFluidColor('#d7d7d4');
     };
-  }, [currentProject]);
+  }, [currentProject, setFluidColor]);
 
   const seo = useMemo(
     () => ({
-      title: `Giats - ${currentProject.title} Project`,
-      description: `Check out my work on the ${currentProject.title} project, collaborating with ${currentProject.company}, where I enhanced frontend development with responsive design and optimized user interactions.`,
+      title: `XY Combinator — ${currentProject?.title || 'Project'}`,
+      description: `Explore the ${currentProject?.title || 'showcase'} built by XY Combinator, delivering high-performance design and engineering.`,
       keywords: [
-        `${currentProject.title} project`,
-        `${currentProject.title} development`,
-        `${currentProject.company} collaboration`,
-        `Evangelos Giatsidis ${currentProject.title}`,
-        `Giats ${currentProject.title}`,
-        `Frontend development ${currentProject.title}`,
-        `Responsive design ${currentProject.title}`,
-        `User interactions ${currentProject.title}`,
-      ],
+        'XY Combinator',
+        currentProject?.title,
+        'Design Studio',
+        'Engineering Studio',
+        'Web Development',
+        'React',
+        'Next.js',
+      ].filter(Boolean),
     }),
     [currentProject],
   );
+
+  if (!currentProject) return null;
 
   return (
     <>
@@ -110,16 +120,6 @@ function Page({ id }) {
       <NextProject nextProject={projectIndex === projects.length - 1 ? projects[0] : projects[projectIndex + 1]} />
     </>
   );
-}
-
-export async function getStaticPaths() {
-  const paths = projects.map((project) => ({ params: { id: project.id } }));
-  return { paths, fallback: false };
-}
-
-export async function getStaticProps(context) {
-  const { params } = context;
-  return { props: { id: params.id } };
 }
 
 export default Page;

@@ -1,5 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-
+/**
+ * Projects Component
+ * Renders dynamic infinite horizontal carousel strips of selected creations and conceptual design studies.
+ * Includes interactive modal dialog with keyboard navigation for detailed inspection.
+ */
+import { useCallback, useRef, useState } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
 import concepts from '@src/constants/concepts';
@@ -8,6 +12,9 @@ import works from '@src/constants/works';
 import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '@src/store';
 
+/**
+ * Card showcasing a production project with outbound link.
+ */
 function ProjectCard({ project, index }) {
   return (
     <Link
@@ -15,11 +22,16 @@ function ProjectCard({ project, index }) {
       href={project.href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-hidden={false}
+      aria-label={`View live project: ${project.name} (${project.tag})`}
       tabIndex={0}
     >
       <span className={clsx(styles.shot, styles.projectShot)}>
-        <img src={project.img} alt={`${project.name}, ${project.tag} project`} loading="lazy" decoding="async" />
+        <img 
+          src={project.img} 
+          alt={`${project.name} - ${project.tag} showcase preview`} 
+          loading="lazy" 
+          decoding="async" 
+        />
         <span className={styles.view}>View project ↗</span>
       </span>
       <span className={styles.cardHead}>
@@ -31,9 +43,18 @@ function ProjectCard({ project, index }) {
   );
 }
 
+/**
+ * Card showcasing a brand concept study with modal preview.
+ */
 function ConceptCard({ concept, index, onOpen }) {
   return (
-    <button type="button" className={clsx(styles.card, styles.conceptCard)} aria-haspopup="dialog" onClick={() => onOpen(index)}>
+    <button 
+      type="button" 
+      className={clsx(styles.card, styles.conceptCard)} 
+      aria-haspopup="dialog" 
+      aria-label={`Open concept study for ${concept.name} (${concept.brand})`}
+      onClick={() => onOpen(index)}
+    >
       <span className={clsx(styles.shot, styles.conceptShot)}>
         <img className={styles.conceptBackdrop} src={concept.img} alt="" aria-hidden="true" loading="lazy" />
         <img className={styles.conceptImage} src={concept.img} alt={concept.alt} loading="lazy" decoding="async" />
@@ -48,6 +69,9 @@ function ConceptCard({ concept, index, onOpen }) {
   );
 }
 
+/**
+ * Continuous marquee row for smooth scrolling showcase items.
+ */
 function Row({ label, items, renderItem, direction }) {
   const duration = Math.max(16, items.length * 2.8);
 
@@ -59,14 +83,16 @@ function Row({ label, items, renderItem, direction }) {
           className={clsx(styles.track, direction === 'left' ? styles.moveLeft : styles.moveRight)}
           style={{ animationDuration: `${duration}s` }}
         >
+          {/* Primary stream */}
           {items.map((item, index) => (
-            <div key={index} className={styles.group}>
-              {renderItem(item, index)}
+            <div key={`primary-${index}`} className={styles.group}>
+              {renderItem(item, index, 'primary')}
             </div>
           ))}
+          {/* Duplicate loop stream for continuous marquee */}
           {items.map((item, index) => (
-            <div key={index + items.length} className={styles.group}>
-              {renderItem(item, index)}
+            <div key={`loop-${index}`} className={styles.group}>
+              {renderItem(item, index, 'loop')}
             </div>
           ))}
         </div>
@@ -81,6 +107,9 @@ function Projects() {
   const [activeConcept, setActiveConcept] = useState(null);
   const [lenis] = useStore(useShallow((state) => [state.lenis]));
 
+  /**
+   * Opens modal dialog for a selected concept study and pauses page scrolling.
+   */
   const openConcept = useCallback(
     (index) => {
       const dialog = dialogRef.current;
@@ -94,14 +123,23 @@ function Projects() {
     [lenis],
   );
 
+  /**
+   * Closes the dialog modal.
+   */
   const closeConcept = useCallback(() => {
     dialogRef.current?.close();
   }, []);
 
+  /**
+   * Steps forward or backward through the concept carousel.
+   */
   const stepConcept = useCallback((direction) => {
     setActiveConcept((current) => (current === null ? current : (current + direction + concepts.length) % concepts.length));
   }, []);
 
+  /**
+   * Clean up when dialog is closed (via escape key or button).
+   */
   const handleDialogClose = useCallback(() => {
     setActiveConcept(null);
     lenis?.start();
@@ -128,21 +166,31 @@ function Projects() {
           label={`${String(works.length).padStart(2, '0')} PROJECTS`}
           items={works}
           direction="left"
-          renderItem={(item, index) => <ProjectCard key={`p-${index}`} project={item} index={index} />}
+          renderItem={(item, index, streamPrefix) => (
+            <ProjectCard key={`p-${streamPrefix}-${index}`} project={item} index={index} />
+          )}
         />
         <Row
           label={`${String(concepts.length).padStart(2, '0')} VISUAL CONCEPTS`}
           items={concepts}
           direction="right"
-          renderItem={(item, index) => <ConceptCard key={`c-${index}`} concept={item} index={index} onOpen={openConcept} />}
+          renderItem={(item, index, streamPrefix) => (
+            <ConceptCard 
+              key={`c-${streamPrefix}-${index}`} 
+              concept={item} 
+              index={index} 
+              onOpen={openConcept} 
+            />
+          )}
         />
       </div>
 
       <div className={clsx(styles.foot, 'layout-block-inner')}>
         <p>Designed, built and shipped by XY Combinator.</p>
-        <a href="mailto:contact@xycombinator.com">contact@xycombinator.com</a>
+        <a href="mailto:contact@xycombinator.com" rel="noopener noreferrer">contact@xycombinator.com</a>
       </div>
 
+      {/* Accessible Modal Dialog for Concept Studies */}
       <dialog
         ref={dialogRef}
         className={styles.dialog}
@@ -156,10 +204,11 @@ function Projects() {
           if (event.key === 'ArrowRight') {
             event.preventDefault();
             stepConcept(1);
-          }
-          if (event.key === 'ArrowLeft') {
+          } else if (event.key === 'ArrowLeft') {
             event.preventDefault();
             stepConcept(-1);
+          } else if (event.key === 'Escape') {
+            closeConcept();
           }
         }}
       >
@@ -174,17 +223,32 @@ function Projects() {
               <p className={styles.dialogNote}>Independent concept study. Not commissioned work.</p>
             </div>
             <div className={styles.dialogNav}>
-              <button type="button" className={styles.dialogArrow} aria-label="Previous concept" onClick={() => stepConcept(-1)}>
+              <button 
+                type="button" 
+                className={styles.dialogArrow} 
+                aria-label="Previous concept study" 
+                onClick={() => stepConcept(-1)}
+              >
                 ←
               </button>
-              <span className={styles.dialogCounter}>
+              <span className={styles.dialogCounter} aria-live="polite">
                 {String(activeConcept + 1).padStart(2, '0')} / {String(concepts.length).padStart(2, '0')}
               </span>
-              <button type="button" className={styles.dialogArrow} aria-label="Next concept" onClick={() => stepConcept(1)}>
+              <button 
+                type="button" 
+                className={styles.dialogArrow} 
+                aria-label="Next concept study" 
+                onClick={() => stepConcept(1)}
+              >
                 →
               </button>
             </div>
-            <button type="button" className={styles.dialogClose} aria-label="Close concept" onClick={closeConcept}>
+            <button 
+              type="button" 
+              className={styles.dialogClose} 
+              aria-label="Close concept view" 
+              onClick={closeConcept}
+            >
               ✕
             </button>
           </div>

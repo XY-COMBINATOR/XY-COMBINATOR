@@ -1,5 +1,9 @@
+/**
+ * useScroll Hook
+ * Subscribes a callback to active Lenis scroll events using a stable mutable ref,
+ * preventing unnecessary unbind/rebind cycles on re-renders.
+ */
 import { useRef } from 'react';
-
 import { useIsomorphicLayoutEffect } from '@src/hooks/useIsomorphicLayoutEffect';
 import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '@src/store';
@@ -25,4 +29,5 @@ function useScroll(callback) {
     };
   }, [lenis]);
 }
+
 export default useScroll;

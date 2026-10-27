@@ -1,3 +1,9 @@
+/**
+ * Clients / Studio Component
+ * Presents the studio manifesto and execution philosophy.
+ * Optimized with high-efficiency IntersectionObserver reveal triggers,
+ * completely eliminating layout thrashing and scroll stutter.
+ */
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -24,35 +30,58 @@ const beats = [
 
 function Clients() {
   const rootRef = useRef(null);
-  const rafRef = useRef(null);
-  const [entered, setEntered] = useState(new Set());
+  const [entered, setEntered] = useState(() => {
+    if (typeof window !== 'undefined' && typeof IntersectionObserver === 'undefined') {
+      return new Set(beats.map((_, i) => i));
+    }
+    return new Set();
+  });
   const [isLoading] = useStore(useShallow((state) => [state.isLoading]));
 
   useEffect(() => {
     if (isLoading) return undefined;
-    const trigger = window.innerHeight * 0.52;
-    const check = () => {
-      const root = rootRef.current;
-      if (!root) return;
-      let changed = false;
-      const next = new Set(entered);
-      root.querySelectorAll('[class*="beat"]').forEach((el, i) => {
-        if (!entered.has(i) && el.getBoundingClientRect().top <= trigger) {
-          next.add(i);
-          changed = true;
-        }
-      });
-      if (changed) setEntered(next);
-      rafRef.current = requestAnimationFrame(check);
-    };
-    rafRef.current = requestAnimationFrame(check);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
+    const root = rootRef.current;
+    if (!root) return undefined;
+
+    const beatElements = Array.from(root.querySelectorAll('[class*="beat"]'));
+    if (!beatElements.length) return undefined;
+
+    if (typeof IntersectionObserver === 'undefined') {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = Number(entry.target.getAttribute('data-index'));
+            if (!Number.isNaN(index)) {
+              setEntered((prev) => {
+                const next = new Set(prev);
+                next.add(index);
+                return next;
+              });
+              observer.unobserve(entry.target);
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.25,
+        rootMargin: '0px 0px -10% 0px',
+      },
+    );
+
+    beatElements.forEach((el, index) => {
+      el.setAttribute('data-index', String(index));
+      observer.observe(el);
+    });
+
+    return () => observer.disconnect();
   }, [isLoading]);
 
   return (
-    <section ref={rootRef} id="studio" className={styles.root} data-header-theme="dark">
+    <section ref={rootRef} id="studio" className={styles.root} data-header-theme="dark" aria-label="About XY Combinator studio">
       <div className={styles.stage}>
         <span className={styles.bgMark} aria-hidden="true" />
 

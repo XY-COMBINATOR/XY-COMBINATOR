@@ -1,23 +1,30 @@
+/**
+ * ButtonLink Component
+ * Magnetic interactive CTA with directional mouse-following cursor ball effect.
+ * Enforces strict 'noopener noreferrer' on external references for zero tabnabbing risk.
+ */
 import { useCallback, useRef } from 'react';
-
 import Arrow from '@src/components/imageComponents/Arrow';
 import Link from 'next/link';
 import clsx from 'clsx';
 import gsap from 'gsap';
 import styles from '@src/components/animationComponents/buttonLink/buttonLink.module.scss';
 
-function ButtonLink({ href, label, target = false }) {
-  const buttonRef = useRef(null);
+function ButtonLink({ href, label, target = false, className }) {
+  const containerRef = useRef(null);
   const spanRef = useRef(null);
   const relsRef = useRef({ relX: 0, relY: 0 });
 
+  const isExternal = typeof href === 'string' && (href.startsWith('http://') || href.startsWith('https://'));
+  const isTargetBlank = target || isExternal;
+
   const handleMouseEnter = useCallback((e) => {
-    const button = buttonRef.current;
+    const container = containerRef.current;
     const span = spanRef.current;
-    if (!button || !span) return;
+    if (!container || !span) return;
 
     const { clientY } = e;
-    const parentOffset = button.getBoundingClientRect();
+    const parentOffset = container.getBoundingClientRect();
     const isTop = clientY < parentOffset.top + parentOffset.height / 2;
     const relX = ((e.pageX - parentOffset.left) / parentOffset.width) * 100;
     const relY = isTop ? 0 : 100;
@@ -45,12 +52,24 @@ function ButtonLink({ href, label, target = false }) {
   }, []);
 
   return (
-    <Link target={target ? '_blank' : undefined} rel={target ? 'noopener noreferrer' : undefined} aria-label={label} scroll={false} href={href}>
-      <button type="button" aria-label={label} ref={buttonRef} className={clsx('p-xs', styles.btnPosnawr)} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <Link
+      target={isTargetBlank ? '_blank' : undefined}
+      rel={isTargetBlank ? 'noopener noreferrer' : undefined}
+      aria-label={label}
+      scroll={false}
+      href={href}
+      className={clsx(styles.linkWrapper, className)}
+    >
+      <span
+        ref={containerRef}
+        className={clsx('p-xs', styles.btnPosnawr)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         <span className={clsx('p-x', styles.labelClassic)}>{label}</span>
         <Arrow className={styles.arrowClassic} />
         <span className={styles.ball} ref={spanRef} />
-      </button>
+      </span>
     </Link>
   );
 }

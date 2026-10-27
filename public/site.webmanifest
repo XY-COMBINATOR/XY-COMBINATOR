@@ -1,7 +1,7 @@
 {
-  "name": "Giats - Frontend Developer Portfolio",
-  "short_name": "Giats - Portfolio",
-  "description": "Self-taught front-end developer from Greece, crafting sleek and efficient web, desktop, and mobile apps. Combining creativity and technical skill to deliver innovative user-centric solutions.",
+  "name": "XY Combinator — Design & Engineering Studio",
+  "short_name": "XY Combinator",
+  "description": "A design and engineering studio for founders who move fast. We build websites, apps, and e-commerce from first sketch to live users in weeks.",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -17,9 +17,9 @@
     }
   ],
   "theme_color": "#28282b",
-  "background_color": "#f0f4f1",
+  "background_color": "#000000",
   "start_url": "/",
-  "scope": ".",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait"
 }

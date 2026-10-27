@@ -1,9 +1,9 @@
-# *
+# Robots.txt for XY Combinator
 User-agent: *
 Allow: /
 
-# Host
-Host: https://giats.me/
+# Canonical Host
+Host: https://xy-combinator-nu.vercel.app/
 
-# Sitemaps
-Sitemap: https://giats.me/sitemap.xml
+# Sitemap location
+Sitemap: https://xy-combinator-nu.vercel.app/sitemap.xml

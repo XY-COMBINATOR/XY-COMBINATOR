@@ -1,5 +1,10 @@
+/**
+ * Expertise Component
+ * Displays the core design and engineering capabilities offered by XY Combinator.
+ * Features an ambient background video texture with automatic poster fallback,
+ * and intersection-observed list reveal transitions.
+ */
 import { useEffect, useRef, useState } from 'react';
-
 import clsx from 'clsx';
 import AppearTitle from '@src/components/animationComponents/appearTitle/Index';
 import styles from '@src/pages/components/expertise/styles/expertise.module.scss';
@@ -44,6 +49,7 @@ function Expertise() {
   const videoRef = useRef(null);
   const [failed, setFailed] = useState(false);
 
+  // Reveal list items on scroll entrance
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return undefined;
@@ -72,6 +78,7 @@ function Expertise() {
     return () => observer.disconnect();
   }, []);
 
+  // Ambient video playback controller with performance lazy loading
   useEffect(() => {
     const root = rootRef.current;
     const video = videoRef.current;
@@ -124,7 +131,8 @@ function Expertise() {
   }, [failed]);
 
   return (
-    <section ref={rootRef} id="expertise" className={styles.root} data-header-theme="dark">
+    <section ref={rootRef} id="expertise" className={styles.root} data-header-theme="dark" aria-label="Studio expertise">
+      {/* Decorative Background Video / Poster */}
       <div className={styles.media} aria-hidden="true">
         {failed ? (
           <img className={styles.source} src="/videos/expertise-poster.jpg" alt="" decoding="async" />

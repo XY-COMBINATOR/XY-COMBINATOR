@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+*.zip
 
 # Reference source copy (Next.js original) — kept locally, not committed
 giats-portfolio-awwwards/

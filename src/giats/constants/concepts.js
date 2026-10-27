@@ -1,3 +1,7 @@
+/**
+ * Concepts Constants
+ * High-fidelity 3D brand studies exploring conceptual identities for iconic global marques.
+ */
 const concepts = [
   {
     name: 'Midnight Colosseum',

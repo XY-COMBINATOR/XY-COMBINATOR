@@ -1,24 +1,67 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Basic Metadata & Character Encoding -->
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#000000" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>XY Combinator — Design &amp; Engineering Studio</title>
+    
+    <!-- Security & Privacy Policies -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no, address=no, email=no" />
+    
+    <!-- Primary SEO Meta Tags -->
     <meta
       name="description"
-      content="XY Combinators — a design & engineering studio for founders who move fast."
+      content="XY Combinator is an award-winning design &amp; engineering studio for founders who move fast. Websites, mobile apps, and scalable digital products delivered in weeks."
     />
+    <meta name="keywords" content="XY Combinator, Design Studio, Engineering Studio, Web Development, React, Next.js, Creative Direction" />
+    <meta name="author" content="XY Combinator" />
+    <link rel="canonical" href="https://xy-combinator-nu.vercel.app/" />
+
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://xy-combinator-nu.vercel.app/" />
+    <meta property="og:site_name" content="XY Combinator" />
+    <meta property="og:title" content="XY Combinator — Design &amp; Engineering Studio" />
+    <meta property="og:description" content="Design &amp; engineering that ships every week. We build websites, apps, and e-commerce for high-growth startups." />
+    <meta property="og:image" content="https://xy-combinator-nu.vercel.app/og.png" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@xycombinator" />
+    <meta name="twitter:title" content="XY Combinator — Design &amp; Engineering Studio" />
+    <meta name="twitter:description" content="Design &amp; engineering that ships every week." />
+    <meta name="twitter:image" content="https://xy-combinator-nu.vercel.app/og.png" />
+
+    <!-- Favicons & App Icons -->
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#28282b" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- Critical Resource Hints for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>XY Combinators — Design & Engineering Studio</title>
   </head>
   <body>
+    <!-- Accessibility Skip Link -->
+    <noscript>
+      <div style="padding: 2rem; text-align: center; color: #fff; background: #111;">
+        JavaScript is required to view the interactive 3D experience of XY Combinator.
+      </div>
+    </noscript>
+
+    <!-- React Application Mount Point -->
     <div id="root"></div>
+
+    <!-- Application Module Entry -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

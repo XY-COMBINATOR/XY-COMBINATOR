@@ -1,5 +1,9 @@
+/**
+ * ProductBox Component
+ * Interactive 3D CSS hardware console showcase with responsive pointer tilt,
+ * realistic perspective illumination sheen, and soft ambient drop shadows.
+ */
 import { useEffect, useRef } from 'react';
-
 import clsx from 'clsx';
 import styles from '@src/pages/components/home/components/hero/productBox.module.scss';
 
@@ -9,7 +13,9 @@ function ProductBox({ className }) {
   useEffect(() => {
     const device = deviceRef.current;
     if (!device) return undefined;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return undefined;
+    }
 
     const current = { x: 0, y: 0 };
     const target = { x: 0, y: 0 };
@@ -18,6 +24,7 @@ function ProductBox({ className }) {
     let inView = true;
     let dirty = true;
 
+    // Track pointer movement across viewport with damped perspective deflection
     const handlePointer = (event) => {
       const nx = (event.clientX / window.innerWidth - 0.5) * 2;
       const ny = (event.clientY / window.innerHeight - 0.5) * 2;
@@ -77,9 +84,9 @@ function ProductBox({ className }) {
           <div className={styles.top}>
             <div className={styles.brand}>
               <img className={styles.mark} src="/logo.png" alt="" draggable={false} />
-              <span className={styles.wordmark}>XY-COMBINATOR</span>
+              <span className={styles.wordmark}>XY COMBINATOR</span>
             </div>
-            <span className={styles.serial}>XY-01 / 2026</span>
+            <span className={styles.serial}>XY · 2026</span>
             <span className={styles.sheen} />
           </div>
           <div className={styles.front}>

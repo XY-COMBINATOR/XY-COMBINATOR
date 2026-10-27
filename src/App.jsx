@@ -1,34 +1,40 @@
-import '@src/styles/global.scss'
-import '@src/styles/global.css'
+/**
+ * App Component
+ * Primary root orchestrator for XY Combinator.
+ * Combines React Three Fiber WebGL scenes, GLSL fluid simulation,
+ * Lenis smooth inertial scrolling, GSAP ScrollTrigger, and global state management.
+ */
+import '@src/styles/global.scss';
+import '@src/styles/global.css';
 
-import * as THREE from 'three'
+import * as THREE from 'three';
+import { useMemo, useRef } from 'react';
 
-import { useMemo, useRef } from 'react'
+import { Analytics } from '@vercel/analytics/react';
+import Background from '@src/components/canvas/background/Index';
+import { Canvas } from '@react-three/fiber';
+import { EffectComposer } from '@react-three/postprocessing';
+import Fluid from '@src/components/canvas/fluid/Fluid';
+import Layout from '@src/components/dom/Layout';
+import Lenis from 'lenis';
+import Loader from '@src/components/dom/Loader';
+import Navbar from '@src/components/dom/navbar/Index';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import Scrollbar from '@src/components/dom/Scrollbar';
+import Tempus from '@darkroom.engineering/tempus';
+import { View } from '@react-three/drei';
+import { gsap } from 'gsap';
+import LandingPage from '@src/pages/index.page.jsx';
+import styles from '@src/pages/app.module.scss';
+import useFoucFix from '@src/hooks/useFoucFix';
+import { useFrame } from '@darkroom.engineering/hamo';
+import { useIsomorphicLayoutEffect } from '@src/hooks/useIsomorphicLayoutEffect';
+import useScroll from '@src/hooks/useScroll';
+import useSmoothScrollInteractions from '@src/hooks/useSmoothScrollInteractions';
+import { useShallow } from 'zustand/react/shallow';
+import { useStore } from '@src/store';
 
-import { Analytics } from '@vercel/analytics/react'
-import Background from '@src/components/canvas/background/Index'
-import { Canvas } from '@react-three/fiber'
-import { EffectComposer } from '@react-three/postprocessing'
-import Fluid from '@src/components/canvas/fluid/Fluid'
-import Layout from '@src/components/dom/Layout'
-import Lenis from 'lenis'
-import Loader from '@src/components/dom/Loader'
-import Navbar from '@src/components/dom/navbar/Index'
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-import Scrollbar from '@src/components/dom/Scrollbar'
-import Tempus from '@darkroom.engineering/tempus'
-import { View } from '@react-three/drei'
-import { gsap } from 'gsap'
-import LandingPage from '@src/pages/index.page.jsx'
-import styles from '@src/pages/app.module.scss'
-import useFoucFix from '@src/hooks/useFoucFix'
-import { useFrame } from '@darkroom.engineering/hamo'
-import { useIsomorphicLayoutEffect } from '@src/hooks/useIsomorphicLayoutEffect'
-import useScroll from '@src/hooks/useScroll'
-import useSmoothScrollInteractions from '@src/hooks/useSmoothScrollInteractions'
-import { useShallow } from 'zustand/react/shallow'
-import { useStore } from '@src/store'
-
+// Global GSAP ticker and ScrollTrigger configuration
 if (typeof window !== 'undefined') {
   gsap.defaults({ ease: 'none' });
   gsap.registerPlugin(ScrollTrigger);
@@ -45,24 +51,28 @@ if (typeof window !== 'undefined') {
   ScrollTrigger.clearScrollMemory(window.history.scrollRestoration);
 }
 
+// Default static router object for SPA anchor-based navigation
 const staticRouter = { asPath: '/', pathname: '/', route: '/', query: {} };
 
 export default function App() {
-  const [lenis, setLenis, fluidColor, isAbout] = useStore(useShallow((state) => [state.lenis, state.setLenis, state.fluidColor, state.isAbout]));
+  const [lenisInstance, setLenis, fluidColor, isAbout] = useStore(
+    useShallow((state) => [state.lenis, state.setLenis, state.fluidColor, state.isAbout]),
+  );
 
-  const mainRef = useRef();
-  const mainContainerRef = useRef();
-  const layoutRef = useRef();
+  const mainRef = useRef(null);
+  const mainContainerRef = useRef(null);
+  const layoutRef = useRef(null);
 
+  // Hooks for preventing FOUC and binding scroll events
   useFoucFix();
   useScroll(() => ScrollTrigger.update());
-  useSmoothScrollInteractions(lenis);
+  useSmoothScrollInteractions(lenisInstance);
 
+  // Initialize Lenis smooth inertial scrolling
   useIsomorphicLayoutEffect(() => {
     const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-    // eslint-disable-next-line no-shadow
-    const lenis = new Lenis({
+    const createdLenis = new Lenis({
       smoothWheel: true,
       syncTouch: false,
       lerp: reduceMotion ? 1 : 0.1,
@@ -71,27 +81,30 @@ export default function App() {
       eventsTarget: window,
     });
 
-    setLenis(lenis);
-    lenis.stop();
+    setLenis(createdLenis);
+    createdLenis.stop();
 
     return () => {
-      lenis.destroy();
+      createdLenis.destroy();
       setLenis(null);
     };
-  }, []);
+  }, [setLenis]);
 
+  // Synchronize ScrollTrigger with Lenis updates
   useIsomorphicLayoutEffect(() => {
-    if (lenis) {
+    if (lenisInstance) {
       ScrollTrigger.refresh();
     }
-  }, [lenis]);
+  }, [lenisInstance]);
 
+  // Connect Lenis animation frame step to Darkroom Tempus loop
   useFrame((time) => {
-    if (lenis) {
-      lenis.raf(time);
+    if (lenisInstance) {
+      lenisInstance.raf(time);
     }
   }, 0);
 
+  // Memoized persistent DOM elements (Loader, Background, Navigation, Analytics)
   const domElements = useMemo(
     () => (
       <>
@@ -107,6 +120,7 @@ export default function App() {
     [],
   );
 
+  // Memoized 3D Viewport canvas for three-dimensional geometry
   const canvasElements = useMemo(
     () => (
       <Canvas
@@ -126,39 +140,40 @@ export default function App() {
   );
 
   return (
-    <>
-      <div className={styles.root}>
-        {domElements}
-        <div ref={layoutRef} id="layout" className={styles.layout}>
-          {canvasElements}
-          <Canvas
-            id="fluidCanvas"
-            flat
-            gl={{
-              antialias: false,
-              stencil: false,
-              depth: false,
-              pixelRatio: 0.1,
-            }}
-            style={{ mixBlendMode: 'difference', background: 'black' }}
-            linear
-            className={styles.canvasContainer}
-            eventSource={mainRef.current}
-            dpr={[0.1, 0.5]}
-          >
-            <EffectComposer>
-              <Fluid fluidColor={fluidColor} mainRef={mainRef} />
-            </EffectComposer>
-          </Canvas>
-          <main ref={mainRef} className={styles.main}>
-            <div ref={mainContainerRef} id="mainContainer" className={styles.mainContainer}>
-              <Layout layoutRef={layoutRef} mainRef={mainRef} router={staticRouter}>
-                <LandingPage />
-              </Layout>
-            </div>
-          </main>
-        </div>
+    <div className={styles.root}>
+      {domElements}
+      <div ref={layoutRef} id="layout" className={styles.layout}>
+        {canvasElements}
+
+        {/* Offscreen WebGL Fluid Simulation Canvas */}
+        <Canvas
+          id="fluidCanvas"
+          flat
+          gl={{
+            antialias: false,
+            stencil: false,
+            depth: false,
+            pixelRatio: 0.1,
+          }}
+          style={{ mixBlendMode: 'difference', background: 'black' }}
+          linear
+          className={styles.canvasContainer}
+          dpr={[0.1, 0.5]}
+        >
+          <EffectComposer>
+            <Fluid fluidColor={fluidColor} mainRef={mainRef} />
+          </EffectComposer>
+        </Canvas>
+
+        {/* Main Content Viewport */}
+        <main ref={mainRef} className={styles.main}>
+          <div ref={mainContainerRef} id="mainContainer" className={styles.mainContainer}>
+            <Layout layoutRef={layoutRef} mainRef={mainRef} router={staticRouter}>
+              <LandingPage />
+            </Layout>
+          </div>
+        </main>
       </div>
-    </>
+    </div>
   );
 }

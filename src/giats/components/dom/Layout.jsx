@@ -1,3 +1,8 @@
+/**
+ * Layout Component
+ * Manages the top-level structural layout, page transitions with GSAP and React Transition Group,
+ * dynamic theme detection (dark/light sections), and footer composition.
+ */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Transition as ReactTransition, SwitchTransition } from 'react-transition-group';
 
@@ -14,13 +19,14 @@ function Layout({ children, layoutRef, mainRef, router }) {
     useShallow((state) => [state.lenis, state.introOut, state.setIsLoading, state.isMenuOpen, state.setIsMenuOpen, state.setIsAbout]),
   );
 
-  const enterTimelineRef = useRef();
-  const exitTimelineRef = useRef();
+  const enterTimelineRef = useRef(null);
+  const exitTimelineRef = useRef(null);
 
   const [isEntering, setIsEntering] = useState(false);
 
   const menuTime = useMemo(() => (isMenuOpen ? 0.8 : 0), [isMenuOpen]);
 
+  // Track dark sections and toggle body theme classes accordingly
   useEffect(() => {
     const darkSections = Array.from(document.querySelectorAll('[data-header-theme="dark"]'));
     if (!darkSections.length) return undefined;
@@ -83,7 +89,6 @@ function Layout({ children, layoutRef, mainRef, router }) {
     };
 
     updateReveal();
-
     watch();
     window.addEventListener('resize', updateReveal);
 
@@ -93,7 +98,7 @@ function Layout({ children, layoutRef, mainRef, router }) {
 
     return () => {
       if (observer) observer.disconnect();
-      window.removeEventListener('resize', watch);
+      window.removeEventListener('resize', updateReveal);
       if (lenis) {
         lenis.off('scroll', updateReveal);
       }
@@ -101,6 +106,9 @@ function Layout({ children, layoutRef, mainRef, router }) {
     };
   }, [router.asPath, lenis]);
 
+  /**
+   * GSAP Timeline transition executed on page entrance.
+   */
   const handleEnter = useCallback(
     () => {
       if (introOut) {
@@ -110,7 +118,7 @@ function Layout({ children, layoutRef, mainRef, router }) {
           onComplete: () => {
             setIsAbout(router.asPath === '/about');
             setIsLoading(false);
-            lenis.start();
+            lenis?.start();
             ScrollTrigger.refresh();
           },
         });
@@ -189,12 +197,15 @@ function Layout({ children, layoutRef, mainRef, router }) {
     [introOut],
   );
 
+  /**
+   * GSAP Timeline transition executed on page exit.
+   */
   const handleExit = useCallback(
     () => {
       if (introOut) {
         if (enterTimelineRef.current) enterTimelineRef.current.pause();
 
-        lenis.stop();
+        lenis?.stop();
         if (isMenuOpen) {
           setIsMenuOpen(false);
         }
@@ -202,7 +213,7 @@ function Layout({ children, layoutRef, mainRef, router }) {
           const tl = gsap.timeline({
             onComplete: () => {
               setIsLoading(true);
-              lenis.scrollTo(0, { force: true });
+              lenis?.scrollTo(0, { force: true });
             },
           });
 
@@ -312,7 +323,7 @@ function Layout({ children, layoutRef, mainRef, router }) {
       </SwitchTransition>
 
       <PreFooter />
-      <footer className={styles.footer}>
+      <footer className={styles.footer} role="contentinfo">
         <Footer />
       </footer>
     </>

@@ -24,6 +24,8 @@
 .root {
   height: auto;
   width: 100%;
+  position: relative;
+  z-index: 10;
   translate: inherit !important;
   box-shadow: none;
   user-select: text !important;
@@ -31,14 +33,14 @@
   pointer-events: auto !important;
 
   * {
-    user-select: text;
-    -webkit-user-select: text;
+    user-select: text !important;
+    -webkit-user-select: text !important;
   }
 
   button,
   svg {
-    user-select: none;
-    -webkit-user-select: none;
+    user-select: none !important;
+    -webkit-user-select: none !important;
   }
 
   @include mobile {
@@ -47,7 +49,13 @@
   }
 
   .linksContainer {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
     padding-top: calc(var(--layout-columns-gap) * 4);
+
     @include mobile {
       padding-top: calc(var(--layout-columns-gap) * 1.5);
       grid-column: 1 / 7;
@@ -60,6 +68,8 @@
     .title {
       color: var(--white);
       padding-bottom: var(--layout-columns-gap);
+      user-select: text !important;
+      -webkit-user-select: text !important;
     }
 
     .linkTextContainer {
@@ -117,12 +127,19 @@
   }
 
   .emailContaineer {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
     padding-top: calc(var(--layout-columns-gap) * 4);
     width: min-content;
     grid-column: 9 / 17;
 
     .workWithMe {
       color: var(--white);
+      user-select: text !important;
+      -webkit-user-select: text !important;
     }
 
     .link {
@@ -133,6 +150,8 @@
       white-space: nowrap;
       cursor: pointer;
       pointer-events: auto !important;
+      user-select: text !important;
+      -webkit-user-select: text !important;
 
       .emailAnchor {
         display: inline-block;
@@ -140,6 +159,10 @@
         text-decoration: none;
         cursor: pointer;
         pointer-events: auto !important;
+        user-select: text !important;
+        -webkit-user-select: text !important;
+        position: relative;
+        z-index: 20;
       }
 
       .email {
@@ -147,6 +170,7 @@
         pointer-events: auto !important;
         user-select: text !important;
         -webkit-user-select: text !important;
+        cursor: pointer;
       }
     }
 
@@ -195,9 +219,17 @@
 
   .middleText {
     padding-top: calc(var(--layout-columns-gap) * 0.5);
+    user-select: text !important;
+    -webkit-user-select: text !important;
   }
 
   .middleContainer {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+
     @include mobile {
       grid-column: 1 / 7 !important;
       padding-top: var(--layout-columns-gap);
@@ -207,6 +239,8 @@
     > span > span > span {
       display: flex;
       flex-direction: column;
+      user-select: text !important;
+      -webkit-user-select: text !important;
     }
   }
 
@@ -229,9 +263,18 @@
 
   div {
     color: var(--white);
+    user-select: text;
+    -webkit-user-select: text;
   }
 
+  /* Watermark backdrop is strictly non-interactive and sits below text */
   .giats {
+    position: relative;
+    z-index: 0;
+    pointer-events: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+
     @include mobile {
       grid-column: 1 / 5;
       font-size: 22.2vw;
@@ -246,11 +289,15 @@
     color: var(--white);
     > span {
       display: inherit;
+      pointer-events: none !important;
+      user-select: none !important;
     }
   }
 
   .goToTop {
     position: relative;
+    z-index: 15;
+    pointer-events: auto !important;
 
     @include mobile {
       grid-column: 5 / 7;

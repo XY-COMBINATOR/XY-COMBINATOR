@@ -2,13 +2,17 @@
 
 .root {
   position: relative;
+  z-index: 4;
   width: 100%;
   overflow: hidden;
+  margin-top: clamp(-56px, -6vw, -90px);
+  border-top-left-radius: clamp(32px, 4vw, 60px);
+  border-top-right-radius: clamp(32px, 4vw, 60px);
+  box-shadow: 0 -35px 90px rgba(0, 0, 0, 0.95);
   padding-top: clamp(120px, 13vw, 220px);
   padding-bottom: clamp(96px, 10vw, 168px);
-  background-color: #0b0b0d;
+  background-color: #060608;
   color: var(--white);
-  box-shadow: none;
 
   &::before,
   &::after {

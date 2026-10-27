@@ -122,26 +122,31 @@ The Zustand store exposes the following reactive variables:
    - The canonical title format is `XY Combinator Design & Engineering Studio`.
    - Dynamic title formatting strips all hyphens/en-dashes/em-dashes via regex `replace(/[-—–]/g, ' ')`.
 
-2. **Universal Content Selectability**:
-   - Text everywhere in Hero (`.badge`, `.headline`), Manifesto, Showcase, and Footer (`.email`, `.title`, `.middleContainer`) is selectable and copyable (`user-select: text !important;`).
-   - Canvas, SVG artwork, and control buttons remain unselectable (`user-select: none;`) for clean UI ergonomics.
+2. **Universal Content Selectability & Visual Highlighting**:
+   - Text everywhere in Hero (`.badge`, `.headline`, `.line`), Manifesto, Showcase, and Footer (`.email`, `.title`, `.middleContainer`, `.location`, `.availability`, `.rights`) is fully selectable and copyable (`user-select: text !important;`).
+   - Active text selections glow in brand high-contrast neon green (`::selection { background-color: #98ff03; color: #050505; }`).
+   - Background canvas layers and non-interactive watermarks are strictly protected (`pointer-events: none !important; user-select: none !important;`) so they never intercept cursor interactions.
 
-3. **Low-End & Battery-Saver Device Marquee Continuity**:
-   - Marquee tracks (`.track.moveLeft`, `.track.moveRight`) in `Projects` are explicitly exempted from `prefers-reduced-motion: reduce` stops.
-   - Both desktop and budget/battery-saving mobile devices experience continuous, silky 60fps horizontal marquee motion.
+3. **Interactive Marquee Hover & Touch Pause Control**:
+   - Marquee carousels for Selected Projects and Visual Concepts automatically pause when hovered (`:hover`) or touched on mobile devices (`onTouchStart`).
+   - Includes an explicit interactive pause/resume pill button (`❚❚ Paused` / `Hover to pause`) in each strip header, allowing visitors and prospective clients to examine project artwork at their own pace without cards moving away.
 
-4. **Seamless Section Merging & Fading**:
-   - Eliminated the white dividing lines and box-shadow borders between `#studio`, `#work`, and `#expertise`.
-   - Implemented vertical gradient masks transitioning smoothly from `#050505` to `#0b0b0d` without harsh cutoffs.
+4. **Swiped Card Layer Section Transitions**:
+   - Sections employ an elevated physical card-stacking hierarchy.
+   - `#work` (Selected Creations) swipes up over `#studio` with rounded top corners (`border-top-left-radius: clamp(32px, 4vw, 60px)`) and a deep atmospheric shadow (`box-shadow: 0 -35px 90px rgba(0, 0, 0, 0.95)`).
+   - `#expertise` (Our Expertise) similarly swipes up over `#work` with an overlapping negative margin (`margin-top: clamp(-56px, -6vw, -90px)`), creating an award-grade tactile card-swipe transition.
 
-5. **Sequential Studio Manifesto Reveal**:
+5. **Restored Fixed Top Navigation & Buttons**:
+   - Restored original header behavior where the navigation bar and its buttons (`GET IN TOUCH` with magnetic cursor ball animation, and `MenuButton`) remain steadily accessible and are not hidden on scroll.
+
+6. **Sequential Studio Manifesto Reveal**:
    - The "Hey, we're XY Combinator!" manifesto items in `Clients/Index.jsx` reveal sequentially as the user scrolls into view, listening to both Lenis scroll and native window scroll for maximum responsiveness.
 
-6. **Footer Mailto & Kinetic Thread Wave**:
+7. **Footer Mailto & Kinetic Thread Wave**:
    - Clicking `contact@xycombinator.com` directly invokes native mail clients (`mailto:contact@xycombinator.com`).
    - Hovering the link triggers an elastic `@keyframes threadWave` oscillation that vibrates up and down like a plucked musical thread.
 
-7. **Image Drag Prevention**:
+8. **Image Drag Prevention**:
    - All brand imagery and showcase artwork enforce `draggable={false}` / `-webkit-user-drag: none;`, preventing ghost dragging artifacts.
 
 ---

@@ -2,27 +2,22 @@
 
 .root {
   position: relative;
+  z-index: 3;
   overflow: hidden;
   width: 100%;
-  padding-top: clamp(100px, 10vw, 180px);
-  padding-bottom: clamp(100px, 10vw, 240px);
+  margin-top: clamp(-50px, -5.5vw, -80px);
+  border-top-left-radius: clamp(32px, 4vw, 60px);
+  border-top-right-radius: clamp(32px, 4vw, 60px);
+  box-shadow: 0 -35px 90px rgba(0, 0, 0, 0.95);
+  padding-top: clamp(110px, 11vw, 190px);
+  padding-bottom: clamp(140px, 14vw, 240px);
   background-color: #0b0b0d;
-  /* Seamless merge fading between Studio (#050505), Work (#0b0b0d), and Expertise (#0b0b0d) */
-  background-image: linear-gradient(
-    to bottom,
-    #050505 0%,
-    rgba(11, 11, 13, 0.98) 220px,
-    #0b0b0d 50%,
-    rgba(11, 11, 13, 0.98) calc(100% - 220px),
-    #0b0b0d 100%
-  );
   color: var(--white);
-  box-shadow: none !important;
-  border: none !important;
-  border-radius: 0 !important;
 
   @include mobile {
-    border-radius: 0 !important;
+    margin-top: -30px;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
   }
 }
 

@@ -1,7 +1,8 @@
 /**
  * Projects Component
- * Renders dynamic infinite horizontal carousel strips of selected creations and conceptual design studies.
- * Includes interactive modal dialog with keyboard navigation for detailed inspection.
+ * Renders dynamic horizontal carousel strips of selected creations and conceptual design studies.
+ * Fully interactive: strips pause on hover, touch, or click so visitors and clients can comfortably
+ * inspect all projects, read details, and open concept study modals.
  */
 import { useCallback, useRef, useState } from 'react';
 import clsx from 'clsx';
@@ -70,18 +71,47 @@ function ConceptCard({ concept, index, onOpen }) {
 }
 
 /**
- * Continuous marquee row for smooth scrolling showcase items.
+ * Continuous marquee row that reliably halts on hover, touch, or button click,
+ * giving visitors full control to inspect, read, and click cards.
  */
 function Row({ label, items, renderItem, direction }) {
-  const duration = Math.max(16, items.length * 2.8);
+  const [isPaused, setIsPaused] = useState(false);
+  const duration = Math.max(18, items.length * 3.2);
+
+  const togglePause = useCallback(() => {
+    setIsPaused((prev) => !prev);
+  }, []);
 
   return (
-    <div className={styles.strip}>
-      {label && <span className={styles.stripLabel}>{label}</span>}
+    <div
+      className={styles.strip}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setIsPaused(false)}
+    >
+      <div className={styles.stripHeader}>
+        {label && <span className={styles.stripLabel}>{label}</span>}
+        <button
+          type="button"
+          onClick={togglePause}
+          className={clsx(styles.pauseButton, isPaused && styles.isPaused)}
+          aria-label={isPaused ? 'Resume scrolling' : 'Pause scrolling'}
+        >
+          {isPaused ? '❚❚ Paused (Click to resume)' : 'Hover to pause'}
+        </button>
+      </div>
       <div className={styles.row}>
         <div
-          className={clsx(styles.track, direction === 'left' ? styles.moveLeft : styles.moveRight)}
-          style={{ animationDuration: `${duration}s` }}
+          className={clsx(
+            styles.track,
+            direction === 'left' ? styles.moveLeft : styles.moveRight,
+            isPaused && styles.pausedTrack,
+          )}
+          style={{
+            animationDuration: `${duration}s`,
+            animationPlayState: isPaused ? 'paused' : 'running',
+          }}
         >
           {/* Primary stream */}
           {items.map((item, index) => (

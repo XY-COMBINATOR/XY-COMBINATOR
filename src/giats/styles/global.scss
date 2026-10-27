@@ -39,6 +39,8 @@ body {
   overflow-y: hidden;
   background-color: var(--black, #28282b);
   color: var(--white, #f0f4f1);
+  user-select: text;
+  -webkit-user-select: text;
 
   > canvas {
     position: fixed;
@@ -50,10 +52,21 @@ body {
   }
 }
 
-/* Permit natural text selection on content bodies while keeping controls clean */
-p, h1, h2, h3, h4, h5, h6, li, [role="article"], span.lead, span.sub, span.desc, p.story, figcaption {
+/* Permit natural text selection across all content while preserving control ergonomics */
+*,
+*::before,
+*::after {
   user-select: text;
   -webkit-user-select: text;
+}
+
+button,
+[role="button"],
+canvas,
+svg,
+[aria-hidden="true"] {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 #backgroundWebGl {
@@ -110,6 +123,15 @@ section {
       inset calc(var(--layout-margin) * 1.0265) 0 0 0 var(--white),
       0 0 0 calc(var(--layout-columns-gap) * 0.04) var(--white);
   }
+}
+
+/* Seamless merging between studio, work, and expertise sections without dividing lines */
+#studio,
+#work,
+#expertise {
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
 }
 
 main > div > section:nth-last-child(1) {

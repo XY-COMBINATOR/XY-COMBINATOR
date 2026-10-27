@@ -1,15 +1,51 @@
 @import '@src/styles/functions';
 
+@keyframes threadWave {
+  0% {
+    transform: translate3d(-20%, 0px, 0) scaleY(1);
+  }
+  20% {
+    transform: translate3d(-32%, -6px, 0) scaleY(1.4);
+  }
+  40% {
+    transform: translate3d(-44%, 5px, 0) scaleY(0.7);
+  }
+  65% {
+    transform: translate3d(-56%, -4px, 0) scaleY(1.25);
+  }
+  85% {
+    transform: translate3d(-62%, 2px, 0) scaleY(0.85);
+  }
+  100% {
+    transform: translate3d(-65.5%, 0px, 0) scaleY(1);
+  }
+}
+
 .root {
   height: auto;
   width: 100%;
   translate: inherit !important;
   box-shadow: none;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  pointer-events: auto !important;
+
+  * {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  button,
+  svg {
+    user-select: none;
+    -webkit-user-select: none;
+  }
 
   @include mobile {
     padding-top: var(--layout-columns-gap);
     padding-bottom: var(--layout-columns-gap);
   }
+
   .linksContainer {
     padding-top: calc(var(--layout-columns-gap) * 4);
     @include mobile {
@@ -88,18 +124,32 @@
     .workWithMe {
       color: var(--white);
     }
+
     .link {
       color: var(--white);
       font-size: 2.5vw;
       line-height: 4.1vw;
       position: relative;
       white-space: nowrap;
-
       cursor: pointer;
+      pointer-events: auto !important;
+
+      .emailAnchor {
+        display: inline-block;
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+        pointer-events: auto !important;
+      }
+
       .email {
         color: var(--white);
+        pointer-events: auto !important;
+        user-select: text !important;
+        -webkit-user-select: text !important;
       }
     }
+
     .link::before,
     .link::after {
       position: absolute !important;
@@ -109,18 +159,15 @@
       left: 0;
       pointer-events: none;
     }
+
     .link::before {
       content: '';
-      /* show by default */
     }
-    .link:hover path {
-      // stroke-dashoffset: 0;
-      // transition-timing-function: cubic-bezier(0.8, 1, 0.7, 1);
-      // transition-duration: 0.3s;
-    }
+
     .link:hover .linkGraphic {
-      transform: translate3d(-65.5%, 0, 0);
+      animation: threadWave 0.85s cubic-bezier(0.33, 1, 0.68, 1) infinite alternate;
     }
+
     .linkGraphic {
       position: absolute !important;
       left: 0;
@@ -129,6 +176,7 @@
       stroke: var(--white);
       bottom: 0;
       stroke-width: 0.03em;
+      transform-origin: center bottom;
       transition: transform 0.7s;
       transition-timing-function: cubic-bezier(0, 0.25, 0.5, 1);
     }
@@ -148,6 +196,7 @@
   .middleText {
     padding-top: calc(var(--layout-columns-gap) * 0.5);
   }
+
   .middleContainer {
     @include mobile {
       grid-column: 1 / 7 !important;
@@ -177,6 +226,7 @@
       text-align: left;
     }
   }
+
   div {
     color: var(--white);
   }
@@ -198,6 +248,7 @@
       display: inherit;
     }
   }
+
   .goToTop {
     position: relative;
 
@@ -209,6 +260,7 @@
     grid-column: 13 / 17;
   }
 }
+
 .circleButton {
   z-index: 2;
   box-shadow:
@@ -261,6 +313,7 @@
     z-index: 1;
   }
 }
+
 .circleButton:hover {
   .ball {
     width: 25vw;

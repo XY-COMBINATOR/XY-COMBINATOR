@@ -2,6 +2,7 @@
  * CustomHead Component
  * Manages document head metadata, OpenGraph tags, schema structured data,
  * and security headers for search engines and social platforms.
+ * Strictly dash-free titles per branding guidelines.
  */
 import NextHead from 'next/head';
 import { NextSeo } from 'next-seo';
@@ -35,7 +36,14 @@ const getSchema = () => ({
 });
 
 function CustomHead({ title = '', description, keywords }) {
-  const displayTitle = title ? `${title} | XY Combinator` : 'XY Combinator — Design & Engineering Studio';
+  // Enforce zero dashes anywhere in the browser tab title
+  const cleanTitle = title.replace(/[-—–]/g, ' ').replace(/\s+/g, ' ').trim();
+  let displayTitle = cleanTitle || 'XY Combinator Design & Engineering Studio';
+  if (cleanTitle && !cleanTitle.toLowerCase().includes('xy combinator')) {
+    displayTitle = `${cleanTitle} · XY Combinator`;
+  }
+  displayTitle = displayTitle.replace(/[-—–]/g, ' ').replace(/\s+/g, ' ').trim();
+
   const displayDesc = description || 'A design and engineering studio for founders who move fast. Websites, apps, and e-commerce from first sketch to live users in weeks.';
 
   return (
@@ -65,25 +73,35 @@ function CustomHead({ title = '', description, keywords }) {
         <meta property="og:title" content={displayTitle} />
         <meta property="og:description" content={displayDesc} />
         <meta property="og:url" content={SITE_URL} />
+        <meta property="og:locale" content="en_US" />
 
         {/* Twitter Card Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@xycombinator" />
+        <meta name="twitter:creator" content="@xycombinator" />
         <meta name="twitter:title" content={displayTitle} />
         <meta name="twitter:description" content={displayDesc} />
         <meta name="twitter:image" content={OG_IMAGE} />
 
-        {/* Application Icons & Theming */}
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        {/* Icons and Theme Colors */}
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#28282b" />
+        <meta name="apple-mobile-web-app-title" content="XY Combinator" />
+        <meta name="application-name" content="XY Combinator" />
         <meta name="msapplication-TileColor" content="#28282b" />
         <meta name="theme-color" content="#28282b" />
 
-        {/* JSON-LD Structured Data */}
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(getSchema()) }} />
+        {/* JSON-LD Schema.org Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(getSchema()),
+          }}
+        />
       </NextHead>
       <NextSeo title={displayTitle} description={displayDesc} />
     </>
@@ -93,13 +111,7 @@ function CustomHead({ title = '', description, keywords }) {
 CustomHead.propTypes = {
   title: PropTypes.string,
   description: PropTypes.string,
-  keywords: PropTypes.arrayOf(PropTypes.string),
-};
-
-CustomHead.defaultProps = {
-  title: '',
-  description: '',
-  keywords: [],
+  keywords: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
 };
 
 export default CustomHead;

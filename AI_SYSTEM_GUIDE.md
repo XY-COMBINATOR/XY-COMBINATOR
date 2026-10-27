@@ -107,7 +107,7 @@ The Zustand store exposes the following reactive variables:
 
 ## 6. Performance & Responsive Optimization Guidelines
 
-- **Zero Forced Reflow**: Eliminated continuous `getBoundingClientRect()` calls inside `requestAnimationFrame` by replacing them with high-efficiency `IntersectionObserver` triggers.
+- **Zero Forced Reflow**: Eliminated continuous `getBoundingClientRect()` calls inside `requestAnimationFrame` by replacing them with high-efficiency `IntersectionObserver` triggers and throttled scroll listeners.
 - **Fluid Layout Formulas**: Layout dimensions leverage CSS variables (`--layout-columns-count`, `--layout-columns-gap`, `--layout-margin`) calculated via `mobile-vw` and `desktop-vw` Sass functions.
 - **Accessible Viewport**: Enforces `viewport="width=device-width, initial-scale=1.0, maximum-scale=5.0"` allowing pinch-to-zoom for WCAG 2.1 compliance.
 - **Hardware Acceleration**: Transform and opacity properties are isolated to composited layers with `will-change: transform, opacity`.
@@ -115,10 +115,42 @@ The Zustand store exposes the following reactive variables:
 
 ---
 
-## 7. Instructions for Future AI Assistants
+## 7. UX, Typography & Motion Refinements
+
+1. **Dash-Free Branding Constraint**:
+   - Browser tab titles, OpenGraph titles, meta descriptions, and schema entries strictly omit hyphens or dashes (`-`).
+   - The canonical title format is `XY Combinator Design & Engineering Studio`.
+   - Dynamic title formatting strips all hyphens/en-dashes/em-dashes via regex `replace(/[-—–]/g, ' ')`.
+
+2. **Universal Content Selectability**:
+   - Text everywhere in Hero (`.badge`, `.headline`), Manifesto, Showcase, and Footer (`.email`, `.title`, `.middleContainer`) is selectable and copyable (`user-select: text !important;`).
+   - Canvas, SVG artwork, and control buttons remain unselectable (`user-select: none;`) for clean UI ergonomics.
+
+3. **Low-End & Battery-Saver Device Marquee Continuity**:
+   - Marquee tracks (`.track.moveLeft`, `.track.moveRight`) in `Projects` are explicitly exempted from `prefers-reduced-motion: reduce` stops.
+   - Both desktop and budget/battery-saving mobile devices experience continuous, silky 60fps horizontal marquee motion.
+
+4. **Seamless Section Merging & Fading**:
+   - Eliminated the white dividing lines and box-shadow borders between `#studio`, `#work`, and `#expertise`.
+   - Implemented vertical gradient masks transitioning smoothly from `#050505` to `#0b0b0d` without harsh cutoffs.
+
+5. **Sequential Studio Manifesto Reveal**:
+   - The "Hey, we're XY Combinator!" manifesto items in `Clients/Index.jsx` reveal sequentially as the user scrolls into view, listening to both Lenis scroll and native window scroll for maximum responsiveness.
+
+6. **Footer Mailto & Kinetic Thread Wave**:
+   - Clicking `contact@xycombinator.com` directly invokes native mail clients (`mailto:contact@xycombinator.com`).
+   - Hovering the link triggers an elastic `@keyframes threadWave` oscillation that vibrates up and down like a plucked musical thread.
+
+7. **Image Drag Prevention**:
+   - All brand imagery and showcase artwork enforce `draggable={false}` / `-webkit-user-drag: none;`, preventing ghost dragging artifacts.
+
+---
+
+## 8. Instructions for Future AI Assistants
 When extending or updating this repository:
 1. Always preserve clean code architecture with comprehensive explanatory comments.
 2. Ensure responsive breakpoints (`$mobile-breakpoint: 812px`) are respected across every new layout component.
 3. Validate that any new outbound link includes `rel="noopener noreferrer"`.
 4. Keep all asset references synchronized with modern WebP and WOFF2 formats.
 5. Avoid hardcoding magic numbers; leverage design tokens in `variables.scss` and `colors.scss`.
+6. Enforce zero dashes in document and brand titles.

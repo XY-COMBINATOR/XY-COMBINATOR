@@ -1,13 +1,14 @@
 /**
  * Clients / Studio Component
  * Presents the studio manifesto and execution philosophy.
- * Optimized with high-efficiency IntersectionObserver reveal triggers,
- * completely eliminating layout thrashing and scroll stutter.
+ * Features smooth scroll-triggered sequential reveal across all devices,
+ * providing a premium, cinematic reading experience on both high-end and low-end hardware.
  */
 import clsx from 'clsx';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '@src/store';
+import useScroll from '@src/hooks/useScroll';
 import styles from '@src/pages/components/clients/styles/clients.module.scss';
 
 const beats = [
@@ -30,58 +31,60 @@ const beats = [
 
 function Clients() {
   const rootRef = useRef(null);
-  const [entered, setEntered] = useState(() => {
-    if (typeof window !== 'undefined' && typeof IntersectionObserver === 'undefined') {
-      return new Set(beats.map((_, i) => i));
-    }
-    return new Set();
-  });
+  const [entered, setEntered] = useState(() => new Set());
   const [isLoading] = useStore(useShallow((state) => [state.isLoading]));
 
+  const checkBeats = useCallback(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const trigger = window.innerHeight * 0.62;
+    const beatElements = root.querySelectorAll('[class*="beat"]');
+
+    setEntered((prev) => {
+      let changed = false;
+      const next = new Set(prev);
+
+      beatElements.forEach((el, index) => {
+        if (!next.has(index)) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= trigger) {
+            next.add(index);
+            changed = true;
+          }
+        }
+      });
+
+      return changed ? next : prev;
+    });
+  }, []);
+
+  // Listen to Lenis smooth scroll updates
+  useScroll(checkBeats);
+
+  // Fallback to window scroll, resize, and initial trigger
   useEffect(() => {
     if (isLoading) return undefined;
-    const root = rootRef.current;
-    if (!root) return undefined;
 
-    const beatElements = Array.from(root.querySelectorAll('[class*="beat"]'));
-    if (!beatElements.length) return undefined;
+    checkBeats();
 
-    if (typeof IntersectionObserver === 'undefined') {
-      return undefined;
-    }
+    window.addEventListener('scroll', checkBeats, { passive: true });
+    window.addEventListener('resize', checkBeats, { passive: true });
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = Number(entry.target.getAttribute('data-index'));
-            if (!Number.isNaN(index)) {
-              setEntered((prev) => {
-                const next = new Set(prev);
-                next.add(index);
-                return next;
-              });
-              observer.unobserve(entry.target);
-            }
-          }
-        });
-      },
-      {
-        threshold: 0.25,
-        rootMargin: '0px 0px -10% 0px',
-      },
-    );
-
-    beatElements.forEach((el, index) => {
-      el.setAttribute('data-index', String(index));
-      observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, [isLoading]);
+    return () => {
+      window.removeEventListener('scroll', checkBeats);
+      window.removeEventListener('resize', checkBeats);
+    };
+  }, [isLoading, checkBeats]);
 
   return (
-    <section ref={rootRef} id="studio" className={styles.root} data-header-theme="dark" aria-label="About XY Combinator studio">
+    <section
+      ref={rootRef}
+      id="studio"
+      className={styles.root}
+      data-header-theme="dark"
+      aria-label="About XY Combinator studio"
+    >
       <div className={styles.stage}>
         <span className={styles.bgMark} aria-hidden="true" />
 

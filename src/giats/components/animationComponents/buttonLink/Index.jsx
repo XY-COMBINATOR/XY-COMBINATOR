@@ -1,7 +1,7 @@
 /**
  * ButtonLink Component
  * Magnetic interactive CTA with directional mouse-following cursor ball effect.
- * Enforces strict 'noopener noreferrer' on external references for zero tabnabbing risk.
+ * Enforces strict 'noopener noreferrer' on external references.
  */
 import { useCallback, useRef } from 'react';
 import Arrow from '@src/components/imageComponents/Arrow';
@@ -10,8 +10,8 @@ import clsx from 'clsx';
 import gsap from 'gsap';
 import styles from '@src/components/animationComponents/buttonLink/buttonLink.module.scss';
 
-function ButtonLink({ href, label, target = false, className }) {
-  const containerRef = useRef(null);
+function ButtonLink({ href, label, target = false }) {
+  const buttonRef = useRef(null);
   const spanRef = useRef(null);
   const relsRef = useRef({ relX: 0, relY: 0 });
 
@@ -19,12 +19,12 @@ function ButtonLink({ href, label, target = false, className }) {
   const isTargetBlank = target || isExternal;
 
   const handleMouseEnter = useCallback((e) => {
-    const container = containerRef.current;
+    const button = buttonRef.current;
     const span = spanRef.current;
-    if (!container || !span) return;
+    if (!button || !span) return;
 
     const { clientY } = e;
-    const parentOffset = container.getBoundingClientRect();
+    const parentOffset = button.getBoundingClientRect();
     const isTop = clientY < parentOffset.top + parentOffset.height / 2;
     const relX = ((e.pageX - parentOffset.left) / parentOffset.width) * 100;
     const relY = isTop ? 0 : 100;
@@ -58,10 +58,11 @@ function ButtonLink({ href, label, target = false, className }) {
       aria-label={label}
       scroll={false}
       href={href}
-      className={clsx(styles.linkWrapper, className)}
     >
-      <span
-        ref={containerRef}
+      <button
+        type="button"
+        aria-label={label}
+        ref={buttonRef}
         className={clsx('p-xs', styles.btnPosnawr)}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -69,7 +70,7 @@ function ButtonLink({ href, label, target = false, className }) {
         <span className={clsx('p-x', styles.labelClassic)}>{label}</span>
         <Arrow className={styles.arrowClassic} />
         <span className={styles.ball} ref={spanRef} />
-      </span>
+      </button>
     </Link>
   );
 }

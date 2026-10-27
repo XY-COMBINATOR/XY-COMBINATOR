@@ -1,7 +1,7 @@
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *:not([class*="track"]):not([class*="moveLeft"]):not([class*="moveRight"]):not([class*="card"]),
+  *:not([class*="track"]):not([class*="moveLeft"]):not([class*="moveRight"]):not([class*="card"])::before,
+  *:not([class*="track"]):not([class*="moveLeft"]):not([class*="moveRight"]):not([class*="card"])::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

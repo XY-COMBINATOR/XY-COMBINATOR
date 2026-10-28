@@ -1,8 +1,8 @@
 /**
  * Projects Component
  * Renders dynamic horizontal carousel strips of selected creations and conceptual design studies.
- * Fully interactive: strips pause on hover, touch, or click so visitors and clients can comfortably
- * inspect all projects, read details, and open concept study modals.
+ * On hover or touch, the strip gently decelerates so visitors can comfortably inspect each card.
+ * No text UI labels are used — interactions are purely intuitive and visual.
  */
 import { useCallback, useRef, useState } from 'react';
 import clsx from 'clsx';
@@ -27,13 +27,14 @@ function ProjectCard({ project, index }) {
       tabIndex={0}
     >
       <span className={clsx(styles.shot, styles.projectShot)}>
-        <img 
-          src={project.img} 
-          alt={`${project.name} - ${project.tag} showcase preview`} 
-          loading="lazy" 
-          decoding="async" 
+        <img
+          src={project.img}
+          alt={`${project.name} - ${project.tag} showcase preview`}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
         />
-        <span className={styles.view}>View project ↗</span>
+        <span className={styles.view}>View project</span>
       </span>
       <span className={styles.cardHead}>
         <span className={styles.cardIndex}>{String(index + 1).padStart(2, '0')}</span>
@@ -49,17 +50,31 @@ function ProjectCard({ project, index }) {
  */
 function ConceptCard({ concept, index, onOpen }) {
   return (
-    <button 
-      type="button" 
-      className={clsx(styles.card, styles.conceptCard)} 
-      aria-haspopup="dialog" 
+    <button
+      type="button"
+      className={clsx(styles.card, styles.conceptCard)}
+      aria-haspopup="dialog"
       aria-label={`Open concept study for ${concept.name} (${concept.brand})`}
       onClick={() => onOpen(index)}
     >
       <span className={clsx(styles.shot, styles.conceptShot)}>
-        <img className={styles.conceptBackdrop} src={concept.img} alt="" aria-hidden="true" loading="lazy" />
-        <img className={styles.conceptImage} src={concept.img} alt={concept.alt} loading="lazy" decoding="async" />
-        <span className={styles.view}>Open study ↗</span>
+        <img
+          className={styles.conceptBackdrop}
+          src={concept.img}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          draggable={false}
+        />
+        <img
+          className={styles.conceptImage}
+          src={concept.img}
+          alt={concept.alt}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+        />
+        <span className={styles.view}>Open study</span>
       </span>
       <span className={styles.cardHead}>
         <span className={styles.cardIndex}>C{index + 1}</span>
@@ -71,47 +86,45 @@ function ConceptCard({ concept, index, onOpen }) {
 }
 
 /**
- * Continuous marquee row that reliably halts on hover, touch, or button click,
- * giving visitors full control to inspect, read, and click cards.
+ * Continuous marquee row that smoothly decelerates on hover or touch,
+ * giving visitors time to read and interact with cards.
+ * No text labels or pause buttons — behavior is purely visual and intuitive.
  */
 function Row({ label, items, renderItem, direction }) {
-  const [isPaused, setIsPaused] = useState(false);
+  const trackRef = useRef(null);
   const duration = Math.max(18, items.length * 3.2);
 
-  const togglePause = useCallback(() => {
-    setIsPaused((prev) => !prev);
-  }, []);
+  /* On hover or touch: slow the strip to a gentle crawl (6x slower). */
+  const handleSlowStart = useCallback(() => {
+    if (trackRef.current) {
+      trackRef.current.style.animationDuration = `${duration * 6}s`;
+    }
+  }, [duration]);
+
+  /* On leave or touch end: restore the normal speed. */
+  const handleSlowEnd = useCallback(() => {
+    if (trackRef.current) {
+      trackRef.current.style.animationDuration = `${duration}s`;
+    }
+  }, [duration]);
 
   return (
     <div
       className={styles.strip}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={() => setIsPaused(true)}
-      onTouchEnd={() => setIsPaused(false)}
+      onMouseEnter={handleSlowStart}
+      onMouseLeave={handleSlowEnd}
+      onTouchStart={handleSlowStart}
+      onTouchEnd={handleSlowEnd}
     >
-      <div className={styles.stripHeader}>
-        {label && <span className={styles.stripLabel}>{label}</span>}
-        <button
-          type="button"
-          onClick={togglePause}
-          className={clsx(styles.pauseButton, isPaused && styles.isPaused)}
-          aria-label={isPaused ? 'Resume scrolling' : 'Pause scrolling'}
-        >
-          {isPaused ? '❚❚ Paused (Click to resume)' : 'Hover to pause'}
-        </button>
-      </div>
+      {label && <span className={styles.stripLabel}>{label}</span>}
       <div className={styles.row}>
         <div
+          ref={trackRef}
           className={clsx(
             styles.track,
             direction === 'left' ? styles.moveLeft : styles.moveRight,
-            isPaused && styles.pausedTrack,
           )}
-          style={{
-            animationDuration: `${duration}s`,
-            animationPlayState: isPaused ? 'paused' : 'running',
-          }}
+          style={{ animationDuration: `${duration}s` }}
         >
           {/* Primary stream */}
           {items.map((item, index) => (
@@ -119,7 +132,7 @@ function Row({ label, items, renderItem, direction }) {
               {renderItem(item, index, 'primary')}
             </div>
           ))}
-          {/* Duplicate loop stream for continuous marquee */}
+          {/* Duplicate loop stream for seamless continuous marquee */}
           {items.map((item, index) => (
             <div key={`loop-${index}`} className={styles.group}>
               {renderItem(item, index, 'loop')}
@@ -138,7 +151,7 @@ function Projects() {
   const [lenis] = useStore(useShallow((state) => [state.lenis]));
 
   /**
-   * Opens modal dialog for a selected concept study and pauses page scrolling.
+   * Opens the modal dialog for a selected concept study and pauses page scrolling.
    */
   const openConcept = useCallback(
     (index) => {
@@ -164,11 +177,13 @@ function Projects() {
    * Steps forward or backward through the concept carousel.
    */
   const stepConcept = useCallback((direction) => {
-    setActiveConcept((current) => (current === null ? current : (current + direction + concepts.length) % concepts.length));
+    setActiveConcept((current) =>
+      current === null ? current : (current + direction + concepts.length) % concepts.length,
+    );
   }, []);
 
   /**
-   * Clean up when dialog is closed (via escape key or button).
+   * Resumes page scroll when dialog is closed via escape key or close button.
    */
   const handleDialogClose = useCallback(() => {
     setActiveConcept(null);
@@ -205,11 +220,11 @@ function Projects() {
           items={concepts}
           direction="right"
           renderItem={(item, index, streamPrefix) => (
-            <ConceptCard 
-              key={`c-${streamPrefix}-${index}`} 
-              concept={item} 
-              index={index} 
-              onOpen={openConcept} 
+            <ConceptCard
+              key={`c-${streamPrefix}-${index}`}
+              concept={item}
+              index={index}
+              onOpen={openConcept}
             />
           )}
         />
@@ -217,7 +232,9 @@ function Projects() {
 
       <div className={clsx(styles.foot, 'layout-block-inner')}>
         <p>Designed, built and shipped by XY Combinator.</p>
-        <a href="mailto:contact@xycombinator.com" rel="noopener noreferrer">contact@xycombinator.com</a>
+        <a href="mailto:contact@xycombinator.com" rel="noopener noreferrer">
+          contact@xycombinator.com
+        </a>
       </div>
 
       {/* Accessible Modal Dialog for Concept Studies */}
@@ -244,7 +261,13 @@ function Projects() {
       >
         {concept && (
           <div className={styles.dialogInner}>
-            <img className={styles.dialogImage} src={concept.img} alt={concept.alt} decoding="async" />
+            <img
+              className={styles.dialogImage}
+              src={concept.img}
+              alt={concept.alt}
+              decoding="async"
+              draggable={false}
+            />
             <div className={styles.dialogMeta}>
               <p className={styles.dialogTitle} id="concept-dialog-title">
                 {concept.name}
@@ -253,33 +276,33 @@ function Projects() {
               <p className={styles.dialogNote}>Independent concept study. Not commissioned work.</p>
             </div>
             <div className={styles.dialogNav}>
-              <button 
-                type="button" 
-                className={styles.dialogArrow} 
-                aria-label="Previous concept study" 
+              <button
+                type="button"
+                className={styles.dialogArrow}
+                aria-label="Previous concept study"
                 onClick={() => stepConcept(-1)}
               >
-                ←
+                &larr;
               </button>
               <span className={styles.dialogCounter} aria-live="polite">
                 {String(activeConcept + 1).padStart(2, '0')} / {String(concepts.length).padStart(2, '0')}
               </span>
-              <button 
-                type="button" 
-                className={styles.dialogArrow} 
-                aria-label="Next concept study" 
+              <button
+                type="button"
+                className={styles.dialogArrow}
+                aria-label="Next concept study"
                 onClick={() => stepConcept(1)}
               >
-                →
+                &rarr;
               </button>
             </div>
-            <button 
-              type="button" 
-              className={styles.dialogClose} 
-              aria-label="Close concept view" 
+            <button
+              type="button"
+              className={styles.dialogClose}
+              aria-label="Close concept view"
               onClick={closeConcept}
             >
-              ✕
+              &times;
             </button>
           </div>
         )}

@@ -1,4 +1,4 @@
-@import '@src/styles/functions';
+﻿@import '@src/styles/functions';
 
 .root {
   position: relative;
@@ -122,13 +122,13 @@
 }
 
 .track.moveLeft {
-  animation: marqueeLeft 16s linear infinite !important;
-  animation-play-state: running !important;
+  animation: marqueeLeft linear infinite;
+  animation-play-state: running;
 }
 
 .track.moveRight {
-  animation: marqueeRight 16s linear infinite !important;
-  animation-play-state: running !important;
+  animation: marqueeRight linear infinite;
+  animation-play-state: running;
 }
 
 .group {
@@ -556,3 +556,4 @@
     animation: none;
   }
 }
+

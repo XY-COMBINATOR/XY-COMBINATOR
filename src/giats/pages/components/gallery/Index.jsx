@@ -131,13 +131,14 @@ function Gallery() {
             style={{ '--aspect': `${shot.width} / ${shot.height}` }}
           >
             <div className={styles.frame}>
-              <img 
-                src={shot.img} 
-                alt={shot.alt} 
-                width={shot.width} 
-                height={shot.height} 
-                loading="lazy" 
-                decoding="async" 
+              <img
+                src={shot.img}
+                alt={shot.alt}
+                width={shot.width}
+                height={shot.height}
+                loading="lazy"
+                decoding="async"
+                draggable={false}
               />
             </div>
             <figcaption className={styles.caption}>

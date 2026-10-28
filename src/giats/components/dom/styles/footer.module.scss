@@ -1,25 +1,12 @@
 @import '@src/styles/functions';
 
-@keyframes threadWave {
-  0% {
-    transform: translate3d(-20%, 0px, 0) scaleY(1);
-  }
-  20% {
-    transform: translate3d(-32%, -6px, 0) scaleY(1.4);
-  }
-  40% {
-    transform: translate3d(-44%, 5px, 0) scaleY(0.7);
-  }
-  65% {
-    transform: translate3d(-56%, -4px, 0) scaleY(1.25);
-  }
-  85% {
-    transform: translate3d(-62%, 2px, 0) scaleY(0.85);
-  }
-  100% {
-    transform: translate3d(-65.5%, 0px, 0) scaleY(1);
-  }
-}
+/* ============================================================
+   Footer Component Styles
+   Full-bleed dark footer with email contact, site links,
+   location info, and go-to-top button.
+   All text is selectable. Email launches native mail client.
+   The underline SVG gently slides on hover (thread effect).
+   ============================================================ */
 
 .root {
   height: auto;
@@ -48,6 +35,7 @@
     padding-bottom: var(--layout-columns-gap);
   }
 
+  /* ---- Navigation links column ---- */
   .linksContainer {
     position: relative;
     z-index: 10;
@@ -65,6 +53,7 @@
     > div {
       width: 100%;
     }
+
     .title {
       color: var(--white);
       padding-bottom: var(--layout-columns-gap);
@@ -74,15 +63,18 @@
 
     .linkTextContainer {
       padding-top: calc(var(--layout-columns-gap) * 0.5);
+
       @include mobile {
         padding-top: calc(var(--layout-columns-gap) * 0.25);
       }
+
       .linkText {
         cursor: pointer;
         overflow: unset;
         display: flex;
         align-items: center;
         position: relative;
+
         > svg {
           height: 0.75vw;
           width: 0.75vw;
@@ -90,6 +82,7 @@
           overflow: unset;
           fill: var(--white);
           stroke: var(--white);
+
           @include mobile {
             height: 2vw;
             width: 2vw;
@@ -101,6 +94,7 @@
           svg {
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.1, 1) !important;
             transform: translate3d(1vw, 0, 0) rotate(-150deg) !important;
+
             @include mobile {
               transform: translate3d(2vw, 0, 0) rotate(-150deg) !important;
             }
@@ -109,6 +103,7 @@
           span {
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.1, 1) !important;
             transform: translate3d(0.6vw, 0, 0);
+
             @include mobile {
               transform: translate3d(1.8vw, 0, 0);
             }
@@ -126,6 +121,7 @@
     grid-column: 5 / 9;
   }
 
+  /* ---- Email contact column ---- */
   .emailContaineer {
     position: relative;
     z-index: 10;
@@ -142,6 +138,7 @@
       -webkit-user-select: text !important;
     }
 
+    /* Large email address text */
     .link {
       color: var(--white);
       font-size: 2.5vw;
@@ -153,6 +150,7 @@
       user-select: text !important;
       -webkit-user-select: text !important;
 
+      /* Anchor wraps the email text so the whole block is clickable */
       .emailAnchor {
         display: inline-block;
         color: inherit;
@@ -174,6 +172,7 @@
       }
     }
 
+    /* Pseudo-element reservations (no content shown) */
     .link::before,
     .link::after {
       position: absolute !important;
@@ -188,10 +187,12 @@
       content: '';
     }
 
+    /* SVG thread slides laterally on hover — clean, no keyframe jank */
     .link:hover .linkGraphic {
-      animation: threadWave 0.85s cubic-bezier(0.33, 1, 0.68, 1) infinite alternate;
+      transform: translate3d(-65.5%, 0, 0);
     }
 
+    /* SVG underline thread — smooth lateral glide */
     .linkGraphic {
       position: absolute !important;
       left: 0;
@@ -217,6 +218,7 @@
     }
   }
 
+  /* ---- Bottom meta row ---- */
   .middleText {
     padding-top: calc(var(--layout-columns-gap) * 0.5);
     user-select: text !important;
@@ -267,7 +269,7 @@
     -webkit-user-select: text;
   }
 
-  /* Watermark backdrop is strictly non-interactive and sits below text */
+  /* Watermark backdrop is strictly decorative — non-interactive, sits below text */
   .giats {
     position: relative;
     z-index: 0;
@@ -280,13 +282,14 @@
       font-size: 22.2vw;
       line-height: 17.428vw;
     }
+
     align-self: flex-end;
     grid-column: 1 / 13;
-
     font-size: 15.2vw;
     line-height: 12.628vw;
     transform: translate(-0.3vw, 2.1vw);
     color: var(--white);
+
     > span {
       display: inherit;
       pointer-events: none !important;
@@ -294,6 +297,7 @@
     }
   }
 
+  /* ---- Go to top button ---- */
   .goToTop {
     position: relative;
     z-index: 15;
@@ -302,21 +306,25 @@
     @include mobile {
       grid-column: 5 / 7;
     }
+
     align-self: flex-end;
     justify-self: flex-end;
     grid-column: 13 / 17;
   }
 }
 
+/* ---- Circular go-to-top button with magnetic ball fill ---- */
 .circleButton {
   z-index: 2;
   box-shadow:
     0 0.32vw 0.52vw #0000000a,
     0 0.12vw 0.22vw #0000000a;
+
   @include mobile {
     width: 10vw;
     height: 10vw;
   }
+
   width: 4vw;
   height: 4vw;
   background-color: var(--white);
@@ -326,12 +334,14 @@
 
   .arrowClassic {
     z-index: 2;
+
     @include mobile {
       width: 4vw;
       height: 4vw;
       top: 3.05vw;
       left: 3.05vw;
     }
+
     position: absolute;
     top: 1.25vw;
     left: 1.25vw;
@@ -366,6 +376,7 @@
     width: 25vw;
     height: 25vw;
     z-index: 1;
+
     @include mobile {
       width: 80vw;
       height: 80vw;

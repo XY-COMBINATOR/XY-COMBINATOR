@@ -47,20 +47,6 @@
   user-select: none;
 }
 
-/* Drag wrapper — carries the horizontal drag offset without clipping the track */
-.dragWrap {
-  display: flex;
-  width: max-content;
-  cursor: grab;
-  will-change: transform;
-  touch-action: pan-y;
-
-  &:active {
-    cursor: grabbing;
-  }
-}
-
-
 .head {
   position: relative;
   z-index: 1;
@@ -118,6 +104,13 @@
 }
 
 .strip {
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
   position: relative;
   z-index: 1;
   overflow: hidden;
@@ -135,6 +128,7 @@
 }
 
 .row {
+  overflow: hidden;
   position: relative;
   z-index: 1;
   
@@ -501,6 +495,8 @@
 
 @include mobile {
   .strip {
+  touch-action: pan-y;
+  user-select: none;
     width: 100%;
   }
 
@@ -587,5 +583,6 @@
     animation: none;
   }
 }
+
 
 

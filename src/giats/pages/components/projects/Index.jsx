@@ -1,14 +1,13 @@
 /**
  * Projects Component
- * Renders dynamic horizontal carousel strips of selected creations and conceptual design studies.
+ * Renders continuous horizontal marquee strips of selected creations and concept studies.
  *
- * Interaction model:
- *   - The strips auto-scroll continuously via CSS animation.
- *   - On hover/touch START: the strip decelerates smoothly (6x slower) so visitors can inspect cards.
- *   - Pointer DRAG: grab the strip and drag horizontally — it follows the hand precisely.
- *     Release it and the animation resumes from the current drag-offset position, then eases back to normal.
- *   - Cards remain fully clickable; a short drag (< 6 px) is treated as a tap/click.
- *   - No text UI labels are ever shown — all interactions are purely intuitive.
+ * Interaction model (purely intuitive, zero text labels):
+ *   Hover / touch   → strip smoothly decelerates (6x slower) for comfortable reading.
+ *   Pointer drag    → grabs the strip exactly like a physical conveyor belt.
+ *                     Drag left/right and the content follows the hand 1:1.
+ *                     On release the animation resumes seamlessly from the drag position.
+ *   Cards           → moves < 6 px are treated as taps, so clicks still open projects/modals.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
@@ -92,171 +91,170 @@ function ConceptCard({ concept, index, onOpen }) {
 }
 
 /**
- * Continuous marquee row with:
- *   - Smooth deceleration on hover (6x slower, CSS transition on animation-duration)
- *   - Pointer drag-to-scroll: grab and move horizontally; drag follows the hand
- *   - Post-drag: animation resumes; drag offset eases back to 0 over ~600 ms
- *   - Click vs drag: moves < 6 px count as taps so card clicks still fire
+ * Returns the current translateX value in px from a computed CSS transform string.
+ * Uses DOMMatrix when available (all modern browsers), falls back to regex.
+ */
+function readCurrentX(element) {
+  const transform = getComputedStyle(element).transform;
+  if (!transform || transform === 'none') return 0;
+  try {
+    return new DOMMatrix(transform).m41;
+  } catch {
+    const match = transform.match(/matrix\([^,]+,[^,]+,[^,]+,[^,]+,([^,]+),/);
+    return match ? parseFloat(match[1]) : 0;
+  }
+}
+
+/**
+ * Continuous marquee row.
+ *
+ * Drag-to-scroll algorithm:
+ *   1. pointerdown  → read animated position via DOMMatrix, pause animation, fix transform
+ *   2. pointermove  → update transform = capturedX + totalDragDelta (wraps for infinite feel)
+ *   3. pointerup    → calculate animation-delay that puts the animation at the current px offset,
+ *                     then resume — the strip continues from exactly where the hand left it.
  */
 function Row({ label, items, renderItem, direction }) {
   const stripRef = useRef(null);
   const trackRef = useRef(null);
-  const rowRef = useRef(null);
 
-  /* Base animation duration from item count */
   const baseDuration = Math.max(18, items.length * 3.2);
 
-  /* Drag state — kept in a ref to avoid re-renders on every pointer move */
-  const drag = useRef({
+  /* Mutable drag state — no re-renders needed */
+  const ds = useRef({
     active: false,
     startX: 0,
-    lastX: 0,
-    delta: 0,       /* total px dragged this session */
-    velocity: 0,    /* px / ms at release */
-    rafId: null,
-    offset: 0,      /* accumulated drag offset in px, persists across sessions */
+    totalDelta: 0,
+    capturedX: 0,
+    halfWidth: 0,
   });
 
-  /* Apply current drag offset to the track as a translateX transform that
-     stacks ON TOP of the CSS keyframe animation (which drives translateX via
-     the animation engine). We use a wrapper layer approach: the `.row` clips,
-     the `.track` animates normally, and a `data-drag-wrap` div inside `.row`
-     carries the drag translation. */
-  const applyOffset = useCallback((px) => {
-    const wrap = rowRef.current;
-    if (!wrap) return;
-    wrap.style.transform = `translateX(${px}px)`;
-  }, []);
-
-  /* Ease the drag offset back to 0 after release */
-  const easeBack = useCallback(() => {
-    const d = drag.current;
-    if (d.rafId) cancelAnimationFrame(d.rafId);
-
-    let start = null;
-    const from = d.offset;
-    const duration = 600;
-
-    function step(ts) {
-      if (!start) start = ts;
-      const progress = Math.min((ts - start) / duration, 1);
-      /* Ease-out cubic */
-      const eased = 1 - (1 - progress) ** 3;
-      const current = from * (1 - eased);
-      d.offset = current;
-      applyOffset(current);
-      if (progress < 1) {
-        d.rafId = requestAnimationFrame(step);
-      } else {
-        d.offset = 0;
-        applyOffset(0);
-      }
-    }
-
-    d.rafId = requestAnimationFrame(step);
-  }, [applyOffset]);
-
-  /* Slow-down on hover (not active drag) */
-  const handleMouseEnter = useCallback(() => {
-    if (drag.current.active) return;
-    if (trackRef.current) {
+  /* ── Decelerate on hover (when not dragging) ── */
+  const onMouseEnter = useCallback(() => {
+    if (!ds.current.active && trackRef.current) {
       trackRef.current.style.animationDuration = `${baseDuration * 6}s`;
     }
   }, [baseDuration]);
 
-  const handleMouseLeave = useCallback(() => {
-    if (drag.current.active) return;
-    if (trackRef.current) {
+  const onMouseLeave = useCallback(() => {
+    if (!ds.current.active && trackRef.current) {
       trackRef.current.style.animationDuration = `${baseDuration}s`;
     }
   }, [baseDuration]);
 
-  /* ---- Pointer drag handlers ---- */
+  /* ── Drag start ── */
   const onPointerDown = useCallback((e) => {
-    /* Only primary button / single touch */
     if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const track = trackRef.current;
+    if (!track) return;
 
-    const d = drag.current;
-    if (d.rafId) cancelAnimationFrame(d.rafId);
+    /* Read where the animation currently is */
+    const currentX = readCurrentX(track);
 
-    d.active = true;
-    d.startX = e.clientX;
-    d.lastX = e.clientX;
-    d.delta = 0;
-    d.velocity = 0;
+    /* Freeze animation at this pixel */
+    track.style.animationPlayState = 'paused';
+    track.style.transform = `translateX(${currentX}px)`;
 
-    /* Slow animation while dragging */
-    if (trackRef.current) {
-      trackRef.current.style.animationDuration = `${baseDuration * 6}s`;
-    }
+    ds.current = {
+      active: true,
+      startX: e.clientX,
+      totalDelta: 0,
+      capturedX: currentX,
+      halfWidth: track.scrollWidth / 2,
+    };
 
-    /* Capture pointer so move/up fire even outside element */
+    /* Capture pointer for reliable move/up even outside strip */
     e.currentTarget.setPointerCapture(e.pointerId);
-
-    /* Prevent text selection during drag */
     e.preventDefault();
-  }, [baseDuration]);
 
+    /* Switch cursor */
+    if (stripRef.current) stripRef.current.style.cursor = 'grabbing';
+  }, []);
+
+  /* ── Drag move — follows hand 1:1 ── */
   const onPointerMove = useCallback((e) => {
-    const d = drag.current;
+    const d = ds.current;
     if (!d.active) return;
+    const track = trackRef.current;
+    if (!track) return;
 
-    const dx = e.clientX - d.lastX;
-    d.velocity = dx;
-    d.lastX = e.clientX;
-    d.delta = e.clientX - d.startX;
-    d.offset += dx;
+    d.totalDelta = e.clientX - d.startX;
 
-    applyOffset(d.offset);
-  }, [applyOffset]);
+    let newX = d.capturedX + d.totalDelta;
 
-  const onPointerUp = useCallback((e) => {
-    const d = drag.current;
+    /* Wrap within the infinite loop range so it never feels like it stops */
+    const half = d.halfWidth;
+    if (newX > 0) newX -= half;
+    if (newX < -half) newX += half;
+
+    track.style.transform = `translateX(${newX}px)`;
+  }, []);
+
+  /* ── Drag end — resume animation from current position ── */
+  const onPointerUp = useCallback(() => {
+    const d = ds.current;
     if (!d.active) return;
     d.active = false;
 
-    /* Restore normal animation speed */
-    if (trackRef.current) {
-      trackRef.current.style.animationDuration = `${baseDuration}s`;
-    }
+    const track = trackRef.current;
+    if (!track) return;
 
-    /* If the pointer barely moved, treat it as a click — do nothing special */
-    if (Math.abs(d.delta) < 6) {
-      easeBack();
-      return;
-    }
+    if (stripRef.current) stripRef.current.style.cursor = '';
 
-    /* Apply a momentum flick, then ease back */
-    d.offset += d.velocity * 8;
-    applyOffset(d.offset);
-    easeBack();
-  }, [baseDuration, applyOffset, easeBack]);
+    /* Read the final dragged position */
+    const finalX = readCurrentX(track);
+    const half = d.halfWidth || track.scrollWidth / 2;
+    const dur = baseDuration;
 
-  /* Touch equivalents (for devices that only fire touch, not pointer) */
-  const onTouchStart = useCallback(() => {
-    if (trackRef.current && !drag.current.active) {
-      trackRef.current.style.animationDuration = `${baseDuration * 6}s`;
-    }
-  }, [baseDuration]);
+    /*
+     * Work out what animation-delay puts the animation at finalX.
+     *
+     * marqueeLeft  : goes 0 → -half  over `dur` seconds.
+     *   progress   = finalX / (-half)         → [0, 1)
+     *   delay      = -progress * dur          (negative = start partway through)
+     *
+     * marqueeRight : goes -half → 0 over `dur` seconds.
+     *   progress   = 1 - finalX / (-half)     → [0, 1)
+     */
+    let progress = direction === 'left'
+      ? finalX / -half
+      : 1 - finalX / -half;
 
-  const onTouchEnd = useCallback(() => {
-    if (!drag.current.active && trackRef.current) {
-      trackRef.current.style.animationDuration = `${baseDuration}s`;
-    }
-  }, [baseDuration]);
+    /* Keep in [0, 1) */
+    progress = ((progress % 1) + 1) % 1;
 
-  /* Suppress clicks on child elements if the user dragged more than 6 px */
+    /* Clear the frozen transform and resume with adjusted delay */
+    track.style.transform = '';
+    track.style.animationDelay = `-${progress * dur}s`;
+    track.style.animationDuration = `${dur}s`;
+    track.style.animationPlayState = 'running';
+  }, [baseDuration, direction]);
+
+  /* Suppress click on child if drag moved more than 6 px */
   const onClickCapture = useCallback((e) => {
-    if (Math.abs(drag.current.delta) >= 6) {
+    if (Math.abs(ds.current.totalDelta) >= 6) {
       e.stopPropagation();
       e.preventDefault();
     }
   }, []);
 
-  /* Cleanup any pending rAF on unmount */
+  /* Touch-only devices: just decelerate; pointer events handle drag on hybrid */
+  const onTouchStart = useCallback(() => {
+    if (!ds.current.active && trackRef.current) {
+      trackRef.current.style.animationDuration = `${baseDuration * 6}s`;
+    }
+  }, [baseDuration]);
+
+  const onTouchEnd = useCallback(() => {
+    if (!ds.current.active && trackRef.current) {
+      trackRef.current.style.animationDuration = `${baseDuration}s`;
+    }
+  }, [baseDuration]);
+
+  /* Cleanup on unmount */
   useEffect(() => {
     return () => {
-      if (drag.current.rafId) cancelAnimationFrame(drag.current.rafId);
+      ds.current.active = false;
     };
   }, []);
 
@@ -264,60 +262,54 @@ function Row({ label, items, renderItem, direction }) {
     <div
       ref={stripRef}
       className={styles.strip}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+      onClickCapture={onClickCapture}
     >
       {label && <span className={styles.stripLabel}>{label}</span>}
-
-      {/* The .row clips overflow; the drag wrapper shifts without clipping */}
       <div className={styles.row}>
         <div
-          ref={rowRef}
-          className={styles.dragWrap}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
-          onClickCapture={onClickCapture}
+          ref={trackRef}
+          className={clsx(
+            styles.track,
+            direction === 'left' ? styles.moveLeft : styles.moveRight,
+          )}
+          style={{ animationDuration: `${baseDuration}s` }}
         >
-          <div
-            ref={trackRef}
-            className={clsx(
-              styles.track,
-              direction === 'left' ? styles.moveLeft : styles.moveRight,
-            )}
-            style={{ animationDuration: `${baseDuration}s` }}
-          >
-            {/* Primary stream */}
-            {items.map((item, index) => (
-              <div key={`primary-${index}`} className={styles.group}>
-                {renderItem(item, index, 'primary')}
-              </div>
-            ))}
-            {/* Duplicate loop stream for seamless continuous marquee */}
-            {items.map((item, index) => (
-              <div key={`loop-${index}`} className={styles.group}>
-                {renderItem(item, index, 'loop')}
-              </div>
-            ))}
-          </div>
+          {/* Primary stream */}
+          {items.map((item, index) => (
+            <div key={`primary-${index}`} className={styles.group}>
+              {renderItem(item, index, 'primary')}
+            </div>
+          ))}
+          {/* Duplicate loop stream for seamless infinite marquee */}
+          {items.map((item, index) => (
+            <div key={`loop-${index}`} className={styles.group}>
+              {renderItem(item, index, 'loop')}
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
+/* ═══════════════════════════════════════════════════
+   Main Projects section
+   ═══════════════════════════════════════════════════ */
 function Projects() {
   const rootRef = useRef(null);
   const dialogRef = useRef(null);
   const [activeConcept, setActiveConcept] = useState(null);
   const [lenis] = useStore(useShallow((state) => [state.lenis]));
 
-  /**
-   * Opens the modal dialog for a selected concept study and pauses page scrolling.
-   */
+  /** Opens the modal for a concept study and pauses page scrolling. */
   const openConcept = useCallback(
     (index) => {
       const dialog = dialogRef.current;
@@ -331,25 +323,19 @@ function Projects() {
     [lenis],
   );
 
-  /**
-   * Closes the dialog modal.
-   */
+  /** Closes the concept modal. */
   const closeConcept = useCallback(() => {
     dialogRef.current?.close();
   }, []);
 
-  /**
-   * Steps forward or backward through the concept carousel inside the modal.
-   */
+  /** Steps through concept carousel inside the modal. */
   const stepConcept = useCallback((direction) => {
     setActiveConcept((current) =>
       current === null ? current : (current + direction + concepts.length) % concepts.length,
     );
   }, []);
 
-  /**
-   * Resumes page scroll when dialog is closed via escape key or close button.
-   */
+  /** Resumes page scroll when modal closes. */
   const handleDialogClose = useCallback(() => {
     setActiveConcept(null);
     lenis?.start();
@@ -359,7 +345,7 @@ function Projects() {
 
   return (
     <section ref={rootRef} id="work" className={styles.root} data-header-theme="dark">
-      {/* Top fade — blends the dark studio section into this section */}
+      {/* Gradient veil that blends the studio section into this one */}
       <span className={styles.topFade} aria-hidden="true" />
       <span className={styles.bgMesh} aria-hidden="true" />
 

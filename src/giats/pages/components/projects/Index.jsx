@@ -1,10 +1,16 @@
 /**
  * Projects Component
  * Renders dynamic horizontal carousel strips of selected creations and conceptual design studies.
- * On hover or touch, the strip gently decelerates so visitors can comfortably inspect each card.
- * No text UI labels are used — interactions are purely intuitive and visual.
+ *
+ * Interaction model:
+ *   - The strips auto-scroll continuously via CSS animation.
+ *   - On hover/touch START: the strip decelerates smoothly (6x slower) so visitors can inspect cards.
+ *   - Pointer DRAG: grab the strip and drag horizontally — it follows the hand precisely.
+ *     Release it and the animation resumes from the current drag-offset position, then eases back to normal.
+ *   - Cards remain fully clickable; a short drag (< 6 px) is treated as a tap/click.
+ *   - No text UI labels are ever shown — all interactions are purely intuitive.
  */
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
 import concepts from '@src/constants/concepts';
@@ -86,58 +92,217 @@ function ConceptCard({ concept, index, onOpen }) {
 }
 
 /**
- * Continuous marquee row that smoothly decelerates on hover or touch,
- * giving visitors time to read and interact with cards.
- * No text labels or pause buttons — behavior is purely visual and intuitive.
+ * Continuous marquee row with:
+ *   - Smooth deceleration on hover (6x slower, CSS transition on animation-duration)
+ *   - Pointer drag-to-scroll: grab and move horizontally; drag follows the hand
+ *   - Post-drag: animation resumes; drag offset eases back to 0 over ~600 ms
+ *   - Click vs drag: moves < 6 px count as taps so card clicks still fire
  */
 function Row({ label, items, renderItem, direction }) {
+  const stripRef = useRef(null);
   const trackRef = useRef(null);
-  const duration = Math.max(18, items.length * 3.2);
+  const rowRef = useRef(null);
 
-  /* On hover or touch: slow the strip to a gentle crawl (6x slower). */
-  const handleSlowStart = useCallback(() => {
-    if (trackRef.current) {
-      trackRef.current.style.animationDuration = `${duration * 6}s`;
-    }
-  }, [duration]);
+  /* Base animation duration from item count */
+  const baseDuration = Math.max(18, items.length * 3.2);
 
-  /* On leave or touch end: restore the normal speed. */
-  const handleSlowEnd = useCallback(() => {
-    if (trackRef.current) {
-      trackRef.current.style.animationDuration = `${duration}s`;
+  /* Drag state — kept in a ref to avoid re-renders on every pointer move */
+  const drag = useRef({
+    active: false,
+    startX: 0,
+    lastX: 0,
+    delta: 0,       /* total px dragged this session */
+    velocity: 0,    /* px / ms at release */
+    rafId: null,
+    offset: 0,      /* accumulated drag offset in px, persists across sessions */
+  });
+
+  /* Apply current drag offset to the track as a translateX transform that
+     stacks ON TOP of the CSS keyframe animation (which drives translateX via
+     the animation engine). We use a wrapper layer approach: the `.row` clips,
+     the `.track` animates normally, and a `data-drag-wrap` div inside `.row`
+     carries the drag translation. */
+  const applyOffset = useCallback((px) => {
+    const wrap = rowRef.current;
+    if (!wrap) return;
+    wrap.style.transform = `translateX(${px}px)`;
+  }, []);
+
+  /* Ease the drag offset back to 0 after release */
+  const easeBack = useCallback(() => {
+    const d = drag.current;
+    if (d.rafId) cancelAnimationFrame(d.rafId);
+
+    let start = null;
+    const from = d.offset;
+    const duration = 600;
+
+    function step(ts) {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      /* Ease-out cubic */
+      const eased = 1 - (1 - progress) ** 3;
+      const current = from * (1 - eased);
+      d.offset = current;
+      applyOffset(current);
+      if (progress < 1) {
+        d.rafId = requestAnimationFrame(step);
+      } else {
+        d.offset = 0;
+        applyOffset(0);
+      }
     }
-  }, [duration]);
+
+    d.rafId = requestAnimationFrame(step);
+  }, [applyOffset]);
+
+  /* Slow-down on hover (not active drag) */
+  const handleMouseEnter = useCallback(() => {
+    if (drag.current.active) return;
+    if (trackRef.current) {
+      trackRef.current.style.animationDuration = `${baseDuration * 6}s`;
+    }
+  }, [baseDuration]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (drag.current.active) return;
+    if (trackRef.current) {
+      trackRef.current.style.animationDuration = `${baseDuration}s`;
+    }
+  }, [baseDuration]);
+
+  /* ---- Pointer drag handlers ---- */
+  const onPointerDown = useCallback((e) => {
+    /* Only primary button / single touch */
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+    const d = drag.current;
+    if (d.rafId) cancelAnimationFrame(d.rafId);
+
+    d.active = true;
+    d.startX = e.clientX;
+    d.lastX = e.clientX;
+    d.delta = 0;
+    d.velocity = 0;
+
+    /* Slow animation while dragging */
+    if (trackRef.current) {
+      trackRef.current.style.animationDuration = `${baseDuration * 6}s`;
+    }
+
+    /* Capture pointer so move/up fire even outside element */
+    e.currentTarget.setPointerCapture(e.pointerId);
+
+    /* Prevent text selection during drag */
+    e.preventDefault();
+  }, [baseDuration]);
+
+  const onPointerMove = useCallback((e) => {
+    const d = drag.current;
+    if (!d.active) return;
+
+    const dx = e.clientX - d.lastX;
+    d.velocity = dx;
+    d.lastX = e.clientX;
+    d.delta = e.clientX - d.startX;
+    d.offset += dx;
+
+    applyOffset(d.offset);
+  }, [applyOffset]);
+
+  const onPointerUp = useCallback((e) => {
+    const d = drag.current;
+    if (!d.active) return;
+    d.active = false;
+
+    /* Restore normal animation speed */
+    if (trackRef.current) {
+      trackRef.current.style.animationDuration = `${baseDuration}s`;
+    }
+
+    /* If the pointer barely moved, treat it as a click — do nothing special */
+    if (Math.abs(d.delta) < 6) {
+      easeBack();
+      return;
+    }
+
+    /* Apply a momentum flick, then ease back */
+    d.offset += d.velocity * 8;
+    applyOffset(d.offset);
+    easeBack();
+  }, [baseDuration, applyOffset, easeBack]);
+
+  /* Touch equivalents (for devices that only fire touch, not pointer) */
+  const onTouchStart = useCallback(() => {
+    if (trackRef.current && !drag.current.active) {
+      trackRef.current.style.animationDuration = `${baseDuration * 6}s`;
+    }
+  }, [baseDuration]);
+
+  const onTouchEnd = useCallback(() => {
+    if (!drag.current.active && trackRef.current) {
+      trackRef.current.style.animationDuration = `${baseDuration}s`;
+    }
+  }, [baseDuration]);
+
+  /* Suppress clicks on child elements if the user dragged more than 6 px */
+  const onClickCapture = useCallback((e) => {
+    if (Math.abs(drag.current.delta) >= 6) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  }, []);
+
+  /* Cleanup any pending rAF on unmount */
+  useEffect(() => {
+    return () => {
+      if (drag.current.rafId) cancelAnimationFrame(drag.current.rafId);
+    };
+  }, []);
 
   return (
     <div
+      ref={stripRef}
       className={styles.strip}
-      onMouseEnter={handleSlowStart}
-      onMouseLeave={handleSlowEnd}
-      onTouchStart={handleSlowStart}
-      onTouchEnd={handleSlowEnd}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
     >
       {label && <span className={styles.stripLabel}>{label}</span>}
+
+      {/* The .row clips overflow; the drag wrapper shifts without clipping */}
       <div className={styles.row}>
         <div
-          ref={trackRef}
-          className={clsx(
-            styles.track,
-            direction === 'left' ? styles.moveLeft : styles.moveRight,
-          )}
-          style={{ animationDuration: `${duration}s` }}
+          ref={rowRef}
+          className={styles.dragWrap}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          onClickCapture={onClickCapture}
         >
-          {/* Primary stream */}
-          {items.map((item, index) => (
-            <div key={`primary-${index}`} className={styles.group}>
-              {renderItem(item, index, 'primary')}
-            </div>
-          ))}
-          {/* Duplicate loop stream for seamless continuous marquee */}
-          {items.map((item, index) => (
-            <div key={`loop-${index}`} className={styles.group}>
-              {renderItem(item, index, 'loop')}
-            </div>
-          ))}
+          <div
+            ref={trackRef}
+            className={clsx(
+              styles.track,
+              direction === 'left' ? styles.moveLeft : styles.moveRight,
+            )}
+            style={{ animationDuration: `${baseDuration}s` }}
+          >
+            {/* Primary stream */}
+            {items.map((item, index) => (
+              <div key={`primary-${index}`} className={styles.group}>
+                {renderItem(item, index, 'primary')}
+              </div>
+            ))}
+            {/* Duplicate loop stream for seamless continuous marquee */}
+            {items.map((item, index) => (
+              <div key={`loop-${index}`} className={styles.group}>
+                {renderItem(item, index, 'loop')}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -174,7 +339,7 @@ function Projects() {
   }, []);
 
   /**
-   * Steps forward or backward through the concept carousel.
+   * Steps forward or backward through the concept carousel inside the modal.
    */
   const stepConcept = useCallback((direction) => {
     setActiveConcept((current) =>
@@ -194,7 +359,10 @@ function Projects() {
 
   return (
     <section ref={rootRef} id="work" className={styles.root} data-header-theme="dark">
+      {/* Top fade — blends the dark studio section into this section */}
+      <span className={styles.topFade} aria-hidden="true" />
       <span className={styles.bgMesh} aria-hidden="true" />
+
       <div className={clsx(styles.head, 'layout-block-inner')}>
         <p className={styles.kicker}>Our work</p>
         <div className={styles.headRow}>

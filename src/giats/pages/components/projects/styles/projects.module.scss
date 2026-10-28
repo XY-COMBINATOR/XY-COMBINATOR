@@ -34,6 +34,33 @@
   user-select: none;
 }
 
+/* Gradient veil that fades the studio section into this one — no hard line */
+.topFade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: clamp(120px, 14vw, 220px);
+  z-index: 2;
+  background: linear-gradient(to bottom, #050505 0%, rgba(11, 11, 13, 0) 100%);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Drag wrapper — carries the horizontal drag offset without clipping the track */
+.dragWrap {
+  display: flex;
+  width: max-content;
+  cursor: grab;
+  will-change: transform;
+  touch-action: pan-y;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+
 .head {
   position: relative;
   z-index: 1;
@@ -110,7 +137,7 @@
 .row {
   position: relative;
   z-index: 1;
-  overflow: hidden;
+  
   display: flex;
   align-items: center;
 }
@@ -551,9 +578,14 @@
     animation: none;
   }
 
+/* Gradient veil that fades the studio section into this one — no hard line */
+
+
+
   .dialogInner,
   .dialog[open]::backdrop {
     animation: none;
   }
 }
+
 

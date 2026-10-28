@@ -1,7 +1,8 @@
-﻿@import '@src/styles/functions';
+@import '@src/styles/functions';
 
 .root {
   position: relative;
+  z-index: 2;
   width: 100%;
   min-height: 200svh;
   background-color: #050505;
@@ -127,19 +128,29 @@
 
 .label {
   position: absolute;
-  bottom: clamp(20px, 2.4vw, 36px);
+  bottom: clamp(100px, 8.5vw, 135px);
   left: 50%;
-  z-index: 2;
+  z-index: 5;
   transform: translateX(-50%);
-  font-size: clamp(9px, 0.7vw, 12px);
-  font-weight: 550;
+  font-family: 'SF Mono', 'Cascadia Mono', Consolas, 'Roboto Mono', Menlo, monospace;
+  font-size: clamp(10px, 0.72vw, 13px);
+  font-weight: 600;
   letter-spacing: 0.42em;
   text-transform: uppercase;
-  color: rgba(240, 244, 241, 0.62);
+  color: rgba(240, 244, 241, 0.75);
   pointer-events: none;
+  white-space: nowrap;
 
   @include mobile {
-    display: none;
+    position: relative;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    display: block;
+    text-align: center;
+    margin-top: clamp(40px, 10vw, 70px);
+    margin-bottom: clamp(16px, 4vw, 24px);
+    font-size: clamp(10px, 2.5vw, 12px);
   }
 }
 
@@ -182,4 +193,3 @@
     height: 180vmax;
   }
 }
-

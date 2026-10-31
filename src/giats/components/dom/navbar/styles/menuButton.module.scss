@@ -1,4 +1,4 @@
-@import '@src/styles/functions';
+@use '@src/styles/functions' as *;
 .button {
   height: 2.5vw;
   @include mobile {

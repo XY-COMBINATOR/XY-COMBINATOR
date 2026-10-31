@@ -9,9 +9,7 @@ import kasem from '@/assets/work-imgs/kasem-garments.webp';
 import innovick from '@/assets/work-imgs/innovick.webp';
 import idiotbox from '@/assets/work-imgs/idiot-box.webp';
 import mhini from '@/assets/work-imgs/mhini.webp';
-import cosmic from '@/assets/work-imgs/cosmic.webp';
 import ultraviolette from '@/assets/work-imgs/ultraviolette.webp';
-import mantis from '@/assets/work-imgs/mantis.webp';
 import mrNews from '@/assets/work-imgs/mr-news.webp';
 import xyCombinator from '@/assets/work-imgs/xy-combinator.webp';
 import herStori from '@/assets/work-imgs/her-stori.webp';
@@ -24,9 +22,7 @@ const works = [
   { name: 'Neon', tag: 'Studio site', img: innovick, href: 'https://innovick.vercel.app/' },
   { name: 'Form', tag: 'E-commerce', img: jcreation, href: 'https://jcreationbd.com/shop' },
   { name: 'Mantis', tag: 'Personal site', img: mhini, href: 'https://mhini.vercel.app/' },
-  { name: 'Cosmic', tag: 'Developer platform', img: cosmic, href: 'https://cosmic-nu-ebon.vercel.app/' },
   { name: 'Ultraviolette', tag: 'Automotive site', img: ultraviolette, href: 'https://ultraviolette-automobile-clone.vercel.app/' },
-  { name: 'Mantis AI', tag: 'AI portfolio', img: mantis, href: 'https://mantis-eta.vercel.app/' },
   { name: 'MR News', tag: 'AI newsletter', img: mrNews, href: 'https://mr-news-ashy.vercel.app/' },
   { name: 'XY Combinator', tag: 'Studio site', img: xyCombinator, href: 'https://xy-combinator-nu.vercel.app/' },
   { name: 'Her Story', tag: 'Investigation game', img: herStori, href: 'https://her-stori.pages.dev/' },

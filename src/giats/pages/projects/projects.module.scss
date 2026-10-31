@@ -1,4 +1,4 @@
-@import '@src/styles/functions';
+@use '@src/styles/functions' as *;
 .titleContainer {
   display: block;
   position: relative;

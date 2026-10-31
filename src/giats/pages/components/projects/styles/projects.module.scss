@@ -1,4 +1,4 @@
-﻿@import '@src/styles/functions';
+﻿@use '@src/styles/functions' as *;
 
 .root {
   position: relative;
@@ -142,14 +142,12 @@
   will-change: transform;
 }
 
-.track.moveLeft {
-  animation: marqueeLeft linear infinite;
-  animation-play-state: running;
-}
-
+/* Marquee animation is driven by GSAP in Index.jsx (Row component) so that
+   hovering slows the strip via timeScale without restarting its position
+   (no jump / no lag). CSS animation removed to avoid fighting transform. */
+.track.moveLeft,
 .track.moveRight {
-  animation: marqueeRight linear infinite;
-  animation-play-state: running;
+  animation: none;
 }
 
 .group {

@@ -3,18 +3,21 @@
  * Renders continuous horizontal marquee strips of selected creations and concept studies.
  *
  * Interaction model (purely intuitive, zero text labels):
- *   Hover / touch   → strip smoothly decelerates (6x slower) for comfortable reading.
+ *   Hover / touch   → strip smoothly slows to half speed so cards stay readable;
+ *                     the marquee never stops or recenters under the cursor.
  *   Pointer drag    → grabs the strip exactly like a physical conveyor belt.
  *                     Drag left/right and the content follows the hand 1:1.
  *                     On release the animation resumes seamlessly from the drag position.
  *   Cards           → moves < 6 px are treated as taps, so clicks still open projects/modals.
  */
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { gsap } from 'gsap';
 import concepts from '@src/constants/concepts';
 import styles from '@src/pages/components/projects/styles/projects.module.scss';
 import works from '@src/constants/works';
+import { useIsomorphicLayoutEffect } from '@src/hooks/useIsomorphicLayoutEffect';
 import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '@src/store';
 
@@ -117,6 +120,7 @@ function readCurrentX(element) {
 function Row({ label, items, renderItem, direction }) {
   const stripRef = useRef(null);
   const trackRef = useRef(null);
+  const tweenRef = useRef(null);
 
   const baseDuration = Math.max(18, items.length * 3.2);
 
@@ -129,18 +133,76 @@ function Row({ label, items, renderItem, direction }) {
     halfWidth: 0,
   });
 
-  /* ── Decelerate on hover (when not dragging) ── */
-  const onMouseEnter = useCallback(() => {
-    if (!ds.current.active && trackRef.current) {
-      trackRef.current.style.animationDuration = `${baseDuration * 6}s`;
+  /* Mutable hover state — tracks whether the strip itself is hovered */
+  const hoverRef = useRef({
+    overStrip: false,
+  });
+
+  /* ── Infinite marquee driven by GSAP ──
+   * GSAP owns `transform` on the track (CSS `animation` on
+   * `.track.moveLeft/moveRight` is removed so the two never fight).
+   */
+  useIsomorphicLayoutEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const halfWidth = track.scrollWidth / 2;
+    ds.current.halfWidth = halfWidth;
+
+    /* marqueeLeft : 0 → -halfWidth ; marqueeRight : -halfWidth → 0 */
+    const startX = direction === 'left' ? 0 : -halfWidth;
+    const endX = direction === 'left' ? -halfWidth : 0;
+
+    gsap.set(track, { x: startX });
+
+    tweenRef.current = gsap.to(track, {
+      x: endX,
+      duration: baseDuration,
+      repeat: -1,
+      ease: 'none',
+    });
+
+    return () => {
+      if (tweenRef.current) {
+        tweenRef.current.kill();
+        tweenRef.current = null;
+      }
+    };
+  }, [baseDuration, direction]);
+
+  /* ── Hover helpers ── */
+  /* Halves the marquee speed while the strip (or any card on it) is hovered,
+   * so the artwork stays readable without the strip fighting the cursor.
+   */
+  const slowDown = useCallback(() => {
+    if (!ds.current.active && tweenRef.current) {
+      gsap.to(tweenRef.current, {
+        timeScale: 0.5,
+        duration: 0.35,
+        ease: 'power2.out',
+      });
     }
-  }, [baseDuration]);
+  }, [tweenRef]);
+
+  const restoreSpeed = useCallback(() => {
+    if (!ds.current.active && tweenRef.current) {
+      gsap.to(tweenRef.current, {
+        timeScale: 1,
+        duration: 0.35,
+        ease: 'power2.out',
+      });
+    }
+  }, [tweenRef]);
+
+  /* ── Strip enter / leave (hover → slow to half speed) ── */
+  const onMouseEnter = useCallback(() => {
+    hoverRef.current.overStrip = true;
+    slowDown();
+  }, [slowDown]);
 
   const onMouseLeave = useCallback(() => {
-    if (!ds.current.active && trackRef.current) {
-      trackRef.current.style.animationDuration = `${baseDuration}s`;
-    }
-  }, [baseDuration]);
+    hoverRef.current.overStrip = false;
+    restoreSpeed();
+  }, [restoreSpeed]);
 
   /* ── Drag start ── */
   const onPointerDown = useCallback((e) => {
@@ -148,12 +210,10 @@ function Row({ label, items, renderItem, direction }) {
     const track = trackRef.current;
     if (!track) return;
 
-    /* Read where the animation currently is */
-    const currentX = readCurrentX(track);
-
-    /* Freeze animation at this pixel */
-    track.style.animationPlayState = 'paused';
-    track.style.transform = `translateX(${currentX}px)`;
+    /* Read where the animation currently is, then pause + lock it */
+    const currentX = gsap.getProperty(track, 'x');
+    tweenRef.current?.pause();
+    gsap.set(track, { x: currentX });
 
     ds.current = {
       active: true,
@@ -187,7 +247,7 @@ function Row({ label, items, renderItem, direction }) {
     if (newX > 0) newX -= half;
     if (newX < -half) newX += half;
 
-    track.style.transform = `translateX(${newX}px)`;
+    gsap.set(track, { x: newX });
   }, []);
 
   /* ── Drag end — resume animation from current position ── */
@@ -201,34 +261,22 @@ function Row({ label, items, renderItem, direction }) {
 
     if (stripRef.current) stripRef.current.style.cursor = '';
 
-    /* Read the final dragged position */
-    const finalX = readCurrentX(track);
+    const finalX = gsap.getProperty(track, 'x');
     const half = d.halfWidth || track.scrollWidth / 2;
-    const dur = baseDuration;
 
-    /*
-     * Work out what animation-delay puts the animation at finalX.
-     *
-     * marqueeLeft  : goes 0 → -half  over `dur` seconds.
-     *   progress   = finalX / (-half)         → [0, 1)
-     *   delay      = -progress * dur          (negative = start partway through)
-     *
-     * marqueeRight : goes -half → 0 over `dur` seconds.
-     *   progress   = 1 - finalX / (-half)     → [0, 1)
-     */
-    let progress = direction === 'left'
-      ? finalX / -half
-      : 1 - finalX / -half;
+    /* Map finalX back into the tween's progress [0, 1) */
+    let progress =
+      direction === 'left' ? -finalX / half : (finalX + half) / half;
 
     /* Keep in [0, 1) */
     progress = ((progress % 1) + 1) % 1;
 
-    /* Clear the frozen transform and resume with adjusted delay */
-    track.style.transform = '';
-    track.style.animationDelay = `-${progress * dur}s`;
-    track.style.animationDuration = `${dur}s`;
-    track.style.animationPlayState = 'running';
-  }, [baseDuration, direction]);
+    /* Resume the GSAP tween from the dragged position (no jump) */
+    tweenRef.current?.progress(progress).play();
+
+    /* Restore normal speed in case we let go while slowed */
+    restoreSpeed();
+  }, [baseDuration, direction, restoreSpeed]);
 
   /* Suppress click on child if drag moved more than 6 px */
   const onClickCapture = useCallback((e) => {
@@ -238,25 +286,18 @@ function Row({ label, items, renderItem, direction }) {
     }
   }, []);
 
-  /* Touch-only devices: just decelerate; pointer events handle drag on hybrid */
+  /* Touch-only devices: slow on touch, restore on release */
   const onTouchStart = useCallback(() => {
-    if (!ds.current.active && trackRef.current) {
-      trackRef.current.style.animationDuration = `${baseDuration * 6}s`;
+    if (!ds.current.active && tweenRef.current) {
+      hoverRef.current.overStrip = true;
+      slowDown();
     }
-  }, [baseDuration]);
+  }, [slowDown]);
 
   const onTouchEnd = useCallback(() => {
-    if (!ds.current.active && trackRef.current) {
-      trackRef.current.style.animationDuration = `${baseDuration}s`;
-    }
-  }, [baseDuration]);
-
-  /* Cleanup on unmount */
-  useEffect(() => {
-    return () => {
-      ds.current.active = false;
-    };
-  }, []);
+    hoverRef.current.overStrip = false;
+    restoreSpeed();
+  }, [restoreSpeed]);
 
   return (
     <div
@@ -280,7 +321,6 @@ function Row({ label, items, renderItem, direction }) {
             styles.track,
             direction === 'left' ? styles.moveLeft : styles.moveRight,
           )}
-          style={{ animationDuration: `${baseDuration}s` }}
         >
           {/* Primary stream */}
           {items.map((item, index) => (

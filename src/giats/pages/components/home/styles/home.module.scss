@@ -15,14 +15,8 @@
     inset 0 0 0 1px rgba(255, 255, 255, 0.07),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   background:
-    radial-gradient(
-      64% 52% at calc(var(--anchor-x, 0.69) * 100%) calc(var(--anchor-y, 0.52) * 88%),
-      rgba(154, 14, 32, 0.26) 0%,
-      rgba(7, 7, 10, 0) 62%
-    ),
-    radial-gradient(58% 42% at 32% 0%, rgba(255, 255, 255, 0.035) 0%, rgba(7, 7, 10, 0) 62%),
-    linear-gradient(108deg, transparent 38%, rgba(255, 255, 255, 0.024) 46%, transparent 56%),
-    linear-gradient(180deg, #0b0b10 0%, #07070a 55%, #040406 100%);
+    url('https://files.catbox.moe/drl7g2.jpg') center/cover no-repeat,
+    linear-gradient(180deg, rgba(11, 11, 16, 0.85) 0%, rgba(7, 7, 10, 0.9) 55%, rgba(4, 4, 6, 0.95) 100%);
 
   @include mobile {
     border-radius: clamp(18px, 5vw, 28px);
@@ -35,80 +29,14 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background:
-    repeating-linear-gradient(28deg, rgba(255, 255, 255, 0.016) 0 1px, transparent 1px 3px),
-    repeating-linear-gradient(-62deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 4px);
-  opacity: 0.45;
-  mix-blend-mode: overlay;
-}
-
-.root::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
   background: radial-gradient(115% 95% at 50% 46%, transparent 52%, rgba(0, 0, 0, 0.52) 100%);
-}
-
-.glow {
-  position: absolute;
-  z-index: 0;
-  left: calc(var(--anchor-x, 0.68) * 100%);
-  top: calc(var(--anchor-y, 0.5) * 100%);
-  width: 58vw;
-  height: 58vw;
-  max-width: 960px;
-  max-height: 960px;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(214, 22, 44, 0.16) 0%,
-    rgba(130, 10, 26, 0.07) 40%,
-    rgba(7, 7, 10, 0) 68%
-  );
-}
-
-.streams {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1.6s ease 0.2s;
-}
-
-.streamsFront {
-  position: absolute;
-  z-index: 3;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1.8s ease 0.7s;
-}
-
-.product {
-  position: absolute;
-  z-index: 2;
-  left: calc(var(--anchor-x, 0.68) * 100%);
-  top: calc(var(--anchor-y, 0.5) * 100%);
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  transition: opacity 1.2s ease 0.55s;
 }
 
 .content {
   position: absolute;
   z-index: 20;
   left: 0;
-  top: 50%;
+  top: 40%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -201,15 +129,6 @@
 }
 
 .entered {
-  .streams {
-    opacity: 1;
-  }
-  .streamsFront {
-    opacity: 1;
-  }
-  .product {
-    opacity: 1;
-  }
   .badge {
     opacity: 1;
     transform: translateY(0);

@@ -8,8 +8,6 @@ import { useCallback, useEffect, useRef } from 'react';
 
 const MONO_FONT = '"SF Mono", "Cascadia Mono", Consolas, "Roboto Mono", Menlo, monospace';
 
-const rand = (min, max) => min + Math.random() * (max - min);
-
 const lerp = (a, b, t) => a + (b - a) * t;
 
 /**
@@ -42,96 +40,93 @@ const tangentOnBezier = (p0, p1, p2, p3, t) => {
 };
 
 /**
- * Factory for creating an individual sequential binary stream.
- * Bits are placed at even intervals along a bezier path and flow together like a tape.
+ * Fixed stream bundles arranged around the product box, matching the
+ * reference composition: a fan of parallel lines from the top-left, a pair
+ * from the top-right, a horizontal bundle on the right and a bundle running
+ * down from the bottom edge. Corner coordinates are expressed in box
+ * half-extents, angles in radians (canvas space, y-down).
  */
-const createStream = (width, height, anchor, isMobile, variant, streamIndex, totalStreams) => {
+const BACK_BUNDLES = [
+  { corner: [-1, -1], angle: (234 * Math.PI) / 180, count: 4, spacing: 0.038, length: 1.15, bend: 0.05, sizes: [8, 13] },
+  { corner: [1, -1], angle: (-71 * Math.PI) / 180, count: 2, spacing: 0.03, length: 1.15, bend: -0.04, sizes: [8, 12] },
+  { corner: [1, 0], angle: 2 * (Math.PI / 180), count: 3, spacing: 0.055, length: 0.52, bend: 0.05, sizes: [10, 14] },
+  { corner: [-0.1, 1], angle: (86 * Math.PI) / 180, count: 4, spacing: 0.05, length: 0.52, bend: -0.04, sizes: [8, 12] },
+];
+
+const FRONT_BUNDLES = [
+  { corner: [-0.2, -1.15], angle: (94 * Math.PI) / 180, count: 3, spacing: 0.03, length: 0.55, bend: 0.06, sizes: [6, 10] },
+];
+
+/**
+ * Builds every sequential binary stream for one layer (back/front).
+ * Bits are placed at even intervals along a bezier path and flow together
+ * like a tape. Geometry is fully fixed; only the 0/1 characters are random.
+ */
+const createStreams = (width, height, anchor, isMobile, variant) => {
   const front = variant === 'front';
   const maxDim = Math.max(width, height);
   const scale = Math.min(1.15, Math.max(0.6, maxDim / 1400));
+  const half = isMobile ? { w: width * 0.24, h: height * 0.1 } : { w: width * 0.11, h: height * 0.16 };
+  const bundles = front ? FRONT_BUNDLES : BACK_BUNDLES;
+  const streams = [];
 
-  // Organized angles: 11 streams distributed as 2 top + 3 left + 3 right + 3 bottom
-  let angle;
-  if (front) {
-    angle = rand(Math.PI * 0.35, Math.PI * 0.65);
-  } else {
-    // Distribution: indices 0-1 → top (2 streams), 2-4 → left (3 streams),
-    //               indices 5-7 → right (3 streams), 8-10 → bottom (3 streams)
-    const idx = streamIndex;
-    if (idx <= 1) {
-      // 2 from top: angles near 3PI/2 (upward in math, upward on screen since y-down)
-      angle = rand(Math.PI * 1.2, Math.PI * 1.3);
-    } else if (idx <= 4) {
-      // 3 from left: angles near PI (leftward)
-      angle = rand(Math.PI - 0.3, Math.PI + 0.3);
-    } else if (idx <= 7) {
-      // 3 from right: angles near 0 (rightward)
-      angle = rand(-Math.PI * 0.15, Math.PI * 0.15);
-    } else {
-      // 3 from bottom: angles near PI/2 (downward)
-      angle = rand(Math.PI * 0.45, Math.PI * 0.55);
+  bundles.forEach((bundle) => {
+    const dir = { x: Math.cos(bundle.angle), y: Math.sin(bundle.angle) };
+    const perp = { x: -dir.y, y: dir.x };
+    const length = bundle.length * maxDim;
+    const spacing = bundle.spacing * maxDim;
+
+    for (let i = 0; i < bundle.count; i += 1) {
+      const streamIndex = streams.length;
+      const offset = (i - (bundle.count - 1) / 2) * spacing;
+      const origin = {
+        x: anchor.x + bundle.corner[0] * half.w + perp.x * offset,
+        y: anchor.y + bundle.corner[1] * half.h + perp.y * offset,
+      };
+      const far = { x: origin.x + dir.x * length, y: origin.y + dir.y * length };
+      const bend = bundle.bend * length;
+      const c1 = {
+        x: lerp(origin.x, far.x, 0.33) + perp.x * bend,
+        y: lerp(origin.y, far.y, 0.33) + perp.y * bend,
+      };
+      const c2 = {
+        x: lerp(origin.x, far.x, 0.67) + perp.x * bend * 0.5,
+        y: lerp(origin.y, far.y, 0.67) + perp.y * bend * 0.5,
+      };
+
+      // Smaller near the box, larger toward the far end (depth cue)
+      const sizeNear = bundle.sizes[0] * scale;
+      const sizeFar = bundle.sizes[1] * scale;
+      const count = Math.round(Math.max(14, length / (sizeNear * 2)));
+      const bits = [];
+
+      // Random binary characters, chosen once per build so they do not flicker per frame
+      for (let b = 0; b < count; b += 1) {
+        const slot = count === 1 ? 0 : b / (count - 1);
+        bits.push({
+          slot,
+          char: Math.random() < 0.5 ? '1' : '0',
+          size: lerp(sizeNear, sizeFar, slot),
+          alpha: 0.5 + 0.5 * Math.sin(slot * Math.PI), // fade in/out along path
+        });
+      }
+
+      streams.push({
+        p0: origin,
+        p1: c1,
+        p2: c2,
+        p3: far,
+        bits,
+        phase: streamIndex * 0.07, // staggered start per stream
+        speed: front ? 0.02 : 0.015, // consistent speed, all streams move together
+        front,
+      });
     }
-  }
+  });
 
-  const length = front ? maxDim * rand(0.28, 0.42) : maxDim * rand(0.45, 0.75);
-  const dir = { x: Math.cos(angle), y: Math.sin(angle) };
-  const perp = { x: -dir.y, y: dir.x };
-
-  // Origin points organized around anchor with slight perpendicular offset per stream
-  const originOffset = (streamIndex - (totalStreams - 1) / 2) * (isMobile ? 16 : 26);
-  const origin = {
-    x: anchor.x + perp.x * originOffset + dir.x * (isMobile ? 40 : 70) * scale,
-    y: anchor.y + perp.y * originOffset + dir.y * (isMobile ? 40 : 70) * scale,
-  };
-
-  const far = { x: origin.x + dir.x * length, y: origin.y + dir.y * length };
-
-  // Gentle consistent bend, alternating direction per stream
-  const bend = (streamIndex % 2 === 0 ? 1 : -1) * rand(0.08, 0.14) * length;
-  const c1 = {
-    x: lerp(origin.x, far.x, 0.33) + perp.x * bend,
-    y: lerp(origin.y, far.y, 0.33) + perp.y * bend,
-  };
-  const c2 = {
-    x: lerp(origin.x, far.x, 0.67) + perp.x * bend * 0.5,
-    y: lerp(origin.y, far.y, 0.67) + perp.y * bend * 0.5,
-  };
-
-  // Consistent sizes: smaller near origin, larger toward far end
-  const sizeNear = (front ? 10 : 8) * scale;
-  const sizeFar = (front ? 16 : 13) * scale;
-
-  // Even bit count with consistent spacing along the path
-  const count = front ? Math.round(Math.max(14, length / (sizeNear * 1.5))) : Math.round(Math.max(18, length / (sizeNear * 1.4)));
-  const bits = [];
-
-  // Pre-generate a pseudo-random binary sequence that stays fixed (no random flipping per frame)
-  for (let i = 0; i < count; i += 1) {
-    const slot = count === 1 ? 0 : i / (count - 1);
-    const char = (i * 3 + streamIndex * 7) % 3 === 0 ? '1' : '0';
-    bits.push({
-      slot,
-      char,
-      size: lerp(sizeNear, sizeFar, slot),
-      alpha: 0.5 + 0.5 * Math.sin(slot * Math.PI), // fade in/out along path
-      x: 0,
-      y: 0,
-      cos: 1,
-      sin: 0,
-    });
-  }
-
-  return {
-    p0: origin,
-    p1: c1,
-    p2: c2,
-    p3: far,
-    bits,
-    phase: streamIndex * 0.07, // staggered start per stream
-    speed: front ? 0.02 : 0.015, // consistent speed, all streams move together
-    front,
-  };
+  return streams;
 };
+
 
 /**
  * Draws an individual sequential stream. Bits flow along the bezier path together.
@@ -195,12 +190,7 @@ function BinaryStreams({ anchor, isMobile, variant = 'back', className }) {
     if (!rect.width || !rect.height) return [];
     const currentAnchor = anchorRef.current;
     const anchorPx = { x: currentAnchor.x * rect.width, y: currentAnchor.y * rect.height };
-    // 3 from bottom + 3 from right + 3 from left + 2 from top = 11 total streams
-    const total = 11;
-    const count = variant === 'front' ? (mobileRef.current ? 2 : 3) : total;
-    return Array.from({ length: count }, (_, i) =>
-      createStream(rect.width, rect.height, anchorPx, mobileRef.current, variant, i, total),
-    );
+    return createStreams(rect.width, rect.height, anchorPx, mobileRef.current, variant);
   }, [variant]);
 
   useEffect(() => {

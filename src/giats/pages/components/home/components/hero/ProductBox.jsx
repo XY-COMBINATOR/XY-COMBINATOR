@@ -1,7 +1,7 @@
 /**
  * ProductBox Component
- * Interactive 3D CSS hardware console showcase with responsive pointer tilt,
- * realistic perspective illumination sheen, and soft ambient drop shadows.
+ * Premium 3D device showcase with responsive pointer tilt, realistic materials,
+ * soft ambient shadows, and a sophisticated slate-gray color palette.
  */
 import { useEffect, useRef } from 'react';
 import clsx from 'clsx';
@@ -24,12 +24,12 @@ function ProductBox({ className }) {
     let inView = true;
     let dirty = true;
 
-    // Track pointer movement across viewport with damped perspective deflection
+    // Subtle pointer-driven perspective tilt
     const handlePointer = (event) => {
       const nx = (event.clientX / window.innerWidth - 0.5) * 2;
       const ny = (event.clientY / window.innerHeight - 0.5) * 2;
-      target.x = nx * 7;
-      target.y = ny * -5;
+      target.x = nx * 6;
+      target.y = ny * -4;
       dirty = true;
     };
 
@@ -43,8 +43,8 @@ function ProductBox({ className }) {
       rafId = requestAnimationFrame(loop);
       if (!inView || document.hidden || !dirty) return;
 
-      current.x += (target.x - current.x) * 0.06;
-      current.y += (target.y - current.y) * 0.06;
+      current.x += (target.x - current.x) * 0.05;
+      current.y += (target.y - current.y) * 0.05;
 
       if (Math.abs(target.x - current.x) < 0.01 && Math.abs(target.y - current.y) < 0.01) {
         current.x = target.x;
@@ -77,7 +77,6 @@ function ProductBox({ className }) {
     <div className={clsx(styles.stage, className)} aria-hidden="true">
       <div className={styles.ground}>
         <span className={styles.shadow} />
-        <span className={styles.bloom} />
       </div>
       <div className={styles.float}>
         <div className={styles.device} ref={deviceRef}>
@@ -87,15 +86,13 @@ function ProductBox({ className }) {
               <span className={styles.wordmark}>XY COMBINATOR</span>
             </div>
             <span className={styles.serial}>XY · 2026</span>
-            <span className={styles.sheen} />
           </div>
           <div className={styles.front}>
-            <span className={styles.led} />
-            <span className={styles.ports}>
-              <span className={styles.port} />
-              <span className={styles.port} />
-              <span className={styles.port} />
-            </span>
+            <div className={styles.bezel}>
+              <div className={styles.screen} />
+              <div className={styles.statusBar} />
+            </div>
+            <div className={styles.chin} />
           </div>
           <div className={styles.left} />
           <div className={styles.right} />

@@ -1,8 +1,8 @@
 /**
  * BinaryStreams Component
- * Renders curved streams of binary digits (0 and 1) emanating from the 3D product showcase box.
- * Optimized with high-efficiency 2D canvas transforms, requestAnimationFrame interpolation,
- * and ResizeObserver/IntersectionObserver lifecycle management.
+ * Renders clean, sequential streams of binary digits (0 and 1) flowing in organized
+ * parallel arcs around the hero product showcase. Bits move like a tape in one
+ * direction with consistent spacing and subtle, non-distracting flicker.
  */
 import { useCallback, useEffect, useRef } from 'react';
 
@@ -11,8 +11,6 @@ const MONO_FONT = '"SF Mono", "Cascadia Mono", Consolas, "Roboto Mono", Menlo, m
 const rand = (min, max) => min + Math.random() * (max - min);
 
 const lerp = (a, b, t) => a + (b - a) * t;
-
-const easeOutQuad = (t) => 1 - (1 - t) * (1 - t);
 
 /**
  * Calculates cubic bezier coordinates at parametric time t.
@@ -44,54 +42,82 @@ const tangentOnBezier = (p0, p1, p2, p3, t) => {
 };
 
 /**
- * Factory for creating an individual animated binary stream path.
+ * Factory for creating an individual sequential binary stream.
+ * Bits are placed at even intervals along a bezier path and flow together like a tape.
  */
-const createStream = (width, height, anchor, isMobile, variant) => {
+const createStream = (width, height, anchor, isMobile, variant, streamIndex, totalStreams) => {
   const front = variant === 'front';
   const maxDim = Math.max(width, height);
   const scale = Math.min(1.15, Math.max(0.6, maxDim / 1400));
-  const radiusX = (isMobile ? 86 : 140) * scale;
-  const radiusY = (isMobile ? 56 : 94) * scale;
 
-  const angle = front ? rand(Math.PI * 0.22, Math.PI * 0.78) : rand(0, Math.PI * 2);
-  const length = front ? maxDim * rand(0.3, 0.52) : maxDim * rand(0.55, 1.05);
+  // Organized angles: 11 streams distributed as 2 top + 3 left + 3 right + 3 bottom
+  let angle;
+  if (front) {
+    angle = rand(Math.PI * 0.35, Math.PI * 0.65);
+  } else {
+    // Distribution: indices 0-1 → top (2 streams), 2-4 → left (3 streams),
+    //               indices 5-7 → right (3 streams), 8-10 → bottom (3 streams)
+    const idx = streamIndex;
+    if (idx <= 1) {
+      // 2 from top: angles near 3PI/2 (upward in math, upward on screen since y-down)
+      angle = rand(Math.PI * 1.2, Math.PI * 1.3);
+    } else if (idx <= 4) {
+      // 3 from left: angles near PI (leftward)
+      angle = rand(Math.PI - 0.3, Math.PI + 0.3);
+    } else if (idx <= 7) {
+      // 3 from right: angles near 0 (rightward)
+      angle = rand(-Math.PI * 0.15, Math.PI * 0.15);
+    } else {
+      // 3 from bottom: angles near PI/2 (downward)
+      angle = rand(Math.PI * 0.45, Math.PI * 0.55);
+    }
+  }
+
+  const length = front ? maxDim * rand(0.28, 0.42) : maxDim * rand(0.45, 0.75);
   const dir = { x: Math.cos(angle), y: Math.sin(angle) };
   const perp = { x: -dir.y, y: dir.x };
 
-  const origin = front
-    ? { x: anchor.x + radiusX * 0.3 + rand(-14, 14), y: anchor.y + radiusY * 0.72 + rand(-6, 10) }
-    : { x: anchor.x + dir.x * radiusX * rand(0.94, 1.04), y: anchor.y + dir.y * radiusY * rand(0.94, 1.04) };
+  // Origin points organized around anchor with slight perpendicular offset per stream
+  const originOffset = (streamIndex - (totalStreams - 1) / 2) * (isMobile ? 16 : 26);
+  const origin = {
+    x: anchor.x + perp.x * originOffset + dir.x * (isMobile ? 40 : 70) * scale,
+    y: anchor.y + perp.y * originOffset + dir.y * (isMobile ? 40 : 70) * scale,
+  };
 
   const far = { x: origin.x + dir.x * length, y: origin.y + dir.y * length };
-  const bend = rand(-0.15, 0.15) * length;
+
+  // Gentle consistent bend, alternating direction per stream
+  const bend = (streamIndex % 2 === 0 ? 1 : -1) * rand(0.08, 0.14) * length;
   const c1 = {
-    x: lerp(origin.x, far.x, 0.34) + perp.x * bend,
-    y: lerp(origin.y, far.y, 0.34) + perp.y * bend,
+    x: lerp(origin.x, far.x, 0.33) + perp.x * bend,
+    y: lerp(origin.y, far.y, 0.33) + perp.y * bend,
   };
   const c2 = {
-    x: lerp(origin.x, far.x, 0.72) + perp.x * bend * 0.5,
-    y: lerp(origin.y, far.y, 0.72) + perp.y * bend * 0.5,
+    x: lerp(origin.x, far.x, 0.67) + perp.x * bend * 0.5,
+    y: lerp(origin.y, far.y, 0.67) + perp.y * bend * 0.5,
   };
 
-  const sizeNear = (front ? rand(11, 14) : rand(9, 12)) * scale;
-  const sizeFar = (front ? rand(19, 26) : rand(15, 23)) * scale;
-  const count = Math.round(Math.min(front ? 36 : 44, Math.max(front ? 16 : 20, length / (sizeNear * 1.35))));
+  // Consistent sizes: smaller near origin, larger toward far end
+  const sizeNear = (front ? 10 : 8) * scale;
+  const sizeFar = (front ? 16 : 13) * scale;
+
+  // Even bit count with consistent spacing along the path
+  const count = front ? Math.round(Math.max(14, length / (sizeNear * 1.5))) : Math.round(Math.max(18, length / (sizeNear * 1.4)));
   const bits = [];
 
+  // Pre-generate a pseudo-random binary sequence that stays fixed (no random flipping per frame)
   for (let i = 0; i < count; i += 1) {
     const slot = count === 1 ? 0 : i / (count - 1);
-    if (i > 0 && i < count - 1 && Math.random() < 0.06) continue;
+    const char = (i * 3 + streamIndex * 7) % 3 === 0 ? '1' : '0';
     bits.push({
       slot,
-      char: Math.random() > 0.5 ? '1' : '0',
-      alpha: rand(0.7, 1),
-      offset: rand(-0.0015, 0.0015),
-      cos: 0,
-      sin: 0,
+      char,
+      size: lerp(sizeNear, sizeFar, slot),
+      alpha: 0.5 + 0.5 * Math.sin(slot * Math.PI), // fade in/out along path
       x: 0,
       y: 0,
-      size: 0,
-      visible: false,
+      cos: 1,
+      sin: 0,
     });
   }
 
@@ -100,47 +126,50 @@ const createStream = (width, height, anchor, isMobile, variant) => {
     p1: c1,
     p2: c2,
     p3: far,
-    sizeNear,
-    sizeFar,
-    phase: Math.random(),
-    speed: front ? rand(0.016, 0.026) : rand(0.012, 0.022),
     bits,
+    phase: streamIndex * 0.07, // staggered start per stream
+    speed: front ? 0.02 : 0.015, // consistent speed, all streams move together
     front,
   };
 };
 
 /**
- * Draws an individual stream and its associated glyphs onto the canvas context.
+ * Draws an individual sequential stream. Bits flow along the bezier path together.
  */
-const drawStream = (ctx, stream, pointer, dpr) => {
-  const { p0, p1, p2, p3, sizeNear, sizeFar, phase, bits, front } = stream;
+const drawStream = (ctx, stream, pointer, dpr, time) => {
+  const { p0, p1, p2, p3, bits, phase, speed } = stream;
   const count = bits.length;
+
+  // Global stream progress moves over time (tape-like flow)
+  const flow = (phase + time * speed) % 1;
 
   for (let i = 0; i < count; i += 1) {
     const bit = bits[i];
-    const t = (bit.slot + phase + bit.offset + 1) % 1;
-    const progress = easeOutQuad(t);
-
-    const point = pointOnBezier(p0, p1, p2, p3, progress);
-    const tangent = tangentOnBezier(p0, p1, p2, p3, progress);
+    // Each bit follows the flow with its slot offset
+    const t = (bit.slot + flow) % 1;
+    const point = pointOnBezier(p0, p1, p2, p3, t);
+    const tangent = tangentOnBezier(p0, p1, p2, p3, t);
     const mag = Math.hypot(tangent.x, tangent.y) || 1;
     const cos = tangent.x / mag;
     const sin = tangent.y / mag;
 
-    const size = Math.round(lerp(sizeNear, sizeFar, progress));
-    const distFade = Math.sin(t * Math.PI);
-    const baseAlpha = front ? 0.95 : 0.85;
-    const alpha = distFade * baseAlpha * bit.alpha;
+    // Fade based on position along path (dim at ends, bright in middle)
+    const pathAlpha = Math.sin(t * Math.PI);
+    const alpha = pathAlpha * bit.alpha;
 
-    if (alpha <= 0.02) continue;
+    if (alpha <= 0.03) continue;
 
     ctx.globalAlpha = alpha;
-    ctx.font = `500 ${size}px ${MONO_FONT}`;
-    ctx.setTransform(cos * dpr, sin * dpr, -sin * dpr, cos * dpr, (point.x + pointer.x) * dpr, (point.y + pointer.y) * dpr);
+    ctx.font = `${bit.size}px ${MONO_FONT}`;
+    ctx.setTransform(
+      cos * dpr,
+      sin * dpr,
+      -sin * dpr,
+      cos * dpr,
+      (point.x + pointer.x) * dpr,
+      (point.y + pointer.y) * dpr,
+    );
     ctx.fillText(bit.char, 0, 0);
-
-    // Subtle dynamic bit flipping effect
-    if (Math.random() < 0.0035) bit.char = bit.char === '0' ? '1' : '0';
   }
 };
 
@@ -149,6 +178,7 @@ function BinaryStreams({ anchor, isMobile, variant = 'back', className }) {
   const anchorRef = useRef(anchor);
   const mobileRef = useRef(isMobile);
   const streamsRef = useRef([]);
+  const startTimeRef = useRef(performance.now());
 
   useEffect(() => {
     anchorRef.current = anchor;
@@ -165,8 +195,12 @@ function BinaryStreams({ anchor, isMobile, variant = 'back', className }) {
     if (!rect.width || !rect.height) return [];
     const currentAnchor = anchorRef.current;
     const anchorPx = { x: currentAnchor.x * rect.width, y: currentAnchor.y * rect.height };
-    const count = variant === 'front' ? (mobileRef.current ? 2 : 3) : mobileRef.current ? 8 : 14;
-    return Array.from({ length: count }, () => createStream(rect.width, rect.height, anchorPx, mobileRef.current, variant));
+    // 3 from bottom + 3 from right + 3 from left + 2 from top = 11 total streams
+    const total = 11;
+    const count = variant === 'front' ? (mobileRef.current ? 2 : 3) : total;
+    return Array.from({ length: count }, (_, i) =>
+      createStream(rect.width, rect.height, anchorPx, mobileRef.current, variant, i, total),
+    );
   }, [variant]);
 
   useEffect(() => {
@@ -181,7 +215,6 @@ function BinaryStreams({ anchor, isMobile, variant = 'back', className }) {
     let dpr = 1;
     let rafId = 0;
     let visible = true;
-    let lastTime = performance.now();
 
     const sizeCanvas = () => {
       const rect = canvas.getBoundingClientRect();
@@ -195,36 +228,34 @@ function BinaryStreams({ anchor, isMobile, variant = 'back', className }) {
       streamsRef.current = buildStreams();
     };
 
-    const render = (dt) => {
+    const render = (now) => {
+      const time = (now - startTimeRef.current) / 1000;
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = 'rgba(228, 234, 255, 0.92)';
       streamsRef.current.forEach((stream) => {
-        stream.phase = (stream.phase + stream.speed * dt) % 1;
-        drawStream(ctx, stream, pointer, dpr);
+        drawStream(ctx, stream, pointer, dpr, time);
       });
       ctx.globalAlpha = 1;
     };
 
     const loop = (now) => {
       rafId = requestAnimationFrame(loop);
-      const dt = Math.min(0.05, (now - lastTime) / 1000);
-      lastTime = now;
       if (!visible || document.hidden) return;
 
-      pointer.x += (pointer.tx - pointer.x) * 0.05;
-      pointer.y += (pointer.ty - pointer.y) * 0.05;
-      render(dt);
+      pointer.x += (pointer.tx - pointer.x) * 0.04;
+      pointer.y += (pointer.ty - pointer.y) * 0.04;
+      render(now);
     };
 
     const handlePointer = (event) => {
-      pointer.tx = (event.clientX / window.innerWidth - 0.5) * 18;
-      pointer.ty = (event.clientY / window.innerHeight - 0.5) * 12;
+      pointer.tx = (event.clientX / window.innerWidth - 0.5) * 14;
+      pointer.ty = (event.clientY / window.innerHeight - 0.5) * 10;
     };
 
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
-      if (visible) lastTime = performance.now();
+      if (visible) startTimeRef.current = performance.now();
     });
     observer.observe(canvas);
 

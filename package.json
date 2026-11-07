@@ -28,7 +28,6 @@
     "react-use": "^17.5.1",
     "split-type": "^0.3.4",
     "three": "^0.167.1",
-    "vgpu": "^0.6.0",
     "zustand": "^4.5.5"
   },
   "devDependencies": {

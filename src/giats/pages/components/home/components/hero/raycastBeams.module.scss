@@ -1,0 +1,160 @@
+@use '@src/styles/functions' as *;
+
+.stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #000000;
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  --tilt-x: 0;
+  --tilt-y: 0;
+}
+
+// Ambient luminous red bloom behind the slats
+.ambientGlow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 75vmin;
+  height: 75vmin;
+  max-width: 900px;
+  max-height: 900px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(235, 15, 45, 0.32) 0%,
+    rgba(190, 8, 30, 0.18) 38%,
+    rgba(120, 5, 18, 0.08) 58%,
+    transparent 74%
+  );
+  filter: blur(50px);
+  opacity: 0.9;
+}
+
+.tiltWrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  transform:
+    rotateX(calc(var(--tilt-y, 0) * -6deg))
+    rotateY(calc(var(--tilt-x, 0) * 6deg))
+    translate3d(calc(var(--tilt-x, 0) * 14px), calc(var(--tilt-y, 0) * 14px), 0);
+  transition: transform 0.12s ease-out;
+}
+
+// Cluster of diagonal slats tilted at -42deg
+.slatsCluster {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-42deg);
+  transform-origin: 50% 50%;
+
+  @include mobile {
+    transform: rotate(-42deg) scale(0.9);
+  }
+}
+
+.slat {
+  position: absolute;
+  left: calc(50% + var(--offset, 0px));
+  top: calc(50% + var(--shift-y, 0px));
+  width: var(--width, 80px);
+  height: var(--height, 80vmin);
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  opacity: var(--opacity, 1);
+  filter: blur(var(--blur, 14px));
+  will-change: transform, opacity;
+
+  @include mobile {
+    filter: blur(calc(var(--blur, 14px) * 0.75));
+  }
+}
+
+// Primary gradient body of the slat (scarlet to dark wine)
+.slatBody {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(30, 2, 6, 0.4) 10%,
+    rgba(190, 10, 32, 0.88) 28%,
+    rgba(255, 24, 56, 1) 48%,
+    rgba(235, 14, 42, 0.96) 64%,
+    rgba(130, 6, 20, 0.8) 80%,
+    rgba(20, 3, 8, 0.4) 90%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  box-shadow:
+    0 0 28px rgba(255, 18, 48, 0.55),
+    0 0 60px rgba(210, 10, 32, 0.25);
+}
+
+// Intense luminous core down the center of each slat
+.slatCore {
+  position: absolute;
+  top: 24%;
+  bottom: 28%;
+  left: 22%;
+  right: 22%;
+  border-radius: 9999px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 60, 85, 0) 0%,
+    rgba(255, 65, 90, 0.8) 32%,
+    rgba(255, 25, 60, 0.95) 58%,
+    rgba(255, 18, 48, 0) 100%
+  );
+  filter: blur(5px);
+}
+
+// Signature Raycast dark indigo/navy shadow fringe at the lower cutoff edge
+.slatNavyFringe {
+  position: absolute;
+  bottom: 6%;
+  left: 0;
+  right: 0;
+  height: 24%;
+  border-radius: 9999px;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 24, 52, 0) 0%,
+    rgba(14, 28, 62, 0.75) 45%,
+    rgba(8, 16, 38, 0.95) 75%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mix-blend-mode: hard-light;
+  filter: blur(6px);
+}
+
+// Authentic analog film grain / dither texture overlay
+.grainOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.25;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+// Soft radial vignette keeping the outer edges pitch black
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 85% 75% at 50% 50%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.5) 70%,
+    #000000 95%
+  );
+}

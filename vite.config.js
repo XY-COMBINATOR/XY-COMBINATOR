@@ -23,6 +23,13 @@ function glslRaw() {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [glslRaw(), react()],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'legacy',
+      },
+    },
+  },
   resolve: {
     alias: [
       // giats portfolio sources

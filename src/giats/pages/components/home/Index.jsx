@@ -1,10 +1,12 @@
 /**
  * Home (Hero) Component
- * Main landing view for XY Combinator.
- * Contains headline statement with background image.
+ * Integrated with React Bits <ShapeWaves /> WebGL background:
+ * - GPU interactive wave field with 'XYC' carved glyph cutout
+ * - Kinetic unmasked statement: Mission / Design & engineering that ships every week
  */
 import { useEffect, useRef } from 'react';
 import clsx from 'clsx';
+import ShapeWaves from '@src/pages/components/home/components/hero/ShapeWaves';
 import styles from '@src/pages/components/home/styles/home.module.scss';
 import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '@src/store';
@@ -41,14 +43,37 @@ function Home() {
       className={clsx(styles.root, entered && styles.entered)}
       aria-label="Studio mission and hero"
     >
-      <div className={clsx(styles.content, 'layout-block-inner')}>
-        <span className={styles.badge}>Mission</span>
-        <h2 className={styles.headline}>
-          <span className={styles.line}>Design &amp; engineering</span>
-          <span className={styles.line}>
-            that <em>ships</em> every week
+      {/* React Bits ShapeWaves WebGL background with 'XYC' text cutout */}
+      <div className={styles.shapeWavesWrapper}>
+        <ShapeWaves
+          text="XYC"
+          fontFamily='Geist, "Geist Sans", "Neue Haas Grotesk Display Pro", system-ui, sans-serif'
+          fontWeight={600}
+          textSize={0.65}
+          cellSize={12}
+          dotSize={0.75}
+          color="#929292"
+          hoverColor="#ffffff"
+          backgroundColor="#000000"
+          speed={1}
+        />
+      </div>
+
+      {/* Centered Statement with Kinetic Unmask */}
+      <div className={styles.content}>
+        <div className={styles.mask}>
+          <span className={styles.badge}>Mission</span>
+        </div>
+        <h1 className={styles.headline}>
+          <span className={styles.mask}>
+            <span className={clsx(styles.line, styles.line1)}>Design &amp; engineering</span>
           </span>
-        </h2>
+          <span className={styles.mask}>
+            <span className={clsx(styles.line, styles.line2)}>
+              that <em>ships</em> every week
+            </span>
+          </span>
+        </h1>
       </div>
     </section>
   );

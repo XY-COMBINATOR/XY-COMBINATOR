@@ -23,6 +23,8 @@ function Fluid({ mainRef, fluidColor }) {
   // Use useMemo for stable Three.js scene instances instead of ref access during render
   const bufferScene = useMemo(() => new Scene(), []);
   const bufferCamera = useMemo(() => new Camera(), []);
+  const pointerVec = useMemo(() => new Vector2(), []);
+  const colorVec = useMemo(() => new Vector3(), []);
   
   const meshRef = useRef(null);
   const postRef = useRef(null);
@@ -95,8 +97,10 @@ function Fluid({ mainRef, fluidColor }) {
 
       setShaderMaterial('splat');
       setUniforms('splat', 'uTarget', FBOs.velocity.read.texture);
-      setUniforms('splat', 'uPointer', new Vector2(mouseX, mouseY));
-      setUniforms('splat', 'uColor', new Vector3(velocityX, velocityY, 10.0));
+      pointerVec.set(mouseX, mouseY);
+      colorVec.set(velocityX, velocityY, 10.0);
+      setUniforms('splat', 'uPointer', pointerVec);
+      setUniforms('splat', 'uColor', colorVec);
       setUniforms('splat', 'uRadius', radius / 100.0);
       setRenderTarget('velocity');
       setUniforms('splat', 'uTarget', FBOs.density.read.texture);

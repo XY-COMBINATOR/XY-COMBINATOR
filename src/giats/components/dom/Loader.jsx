@@ -32,7 +32,7 @@ function Loader() {
       ctx = gsap.context(() => {
         // Counter animation from 0% to 100%
         gsap.to(progressRef.current, {
-          duration: 3.5,
+          duration: 1.3,
           ease: 'power2.inOut',
           innerText: `${100}%`,
           roundProps: 'innerText',

@@ -3,138 +3,146 @@
 .root {
   z-index: 4;
   position: relative;
-  display: block;
-  height: 100vh;
-  height: calc(100 * var(--svh, 1vh));
-  height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: calc(100 * var(--svh, 1vh));
+  min-height: 100svh;
+  width: 100%;
   padding: 0;
   overflow: hidden;
-  color: var(--white);
-  border-radius: clamp(24px, 2.4vw, 44px);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.07),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  background:
-    url('https://files.catbox.moe/drl7g2.jpg') center/cover no-repeat,
-    linear-gradient(180deg, rgba(11, 11, 16, 0.85) 0%, rgba(7, 7, 10, 0.9) 55%, rgba(4, 4, 6, 0.95) 100%);
+  background: #000000;
+  color: #ffffff;
 
   @include mobile {
-    border-radius: clamp(18px, 5vw, 28px);
+    min-height: 100svh;
+    padding: 0 16px;
   }
 }
 
-.root::before {
-  content: '';
+// ShapeWaves WebGL background layer
+.shapeWavesWrapper {
   position: absolute;
   inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: radial-gradient(115% 95% at 50% 46%, transparent 52%, rgba(0, 0, 0, 0.52) 100%);
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: auto;
+  overflow: hidden;
+  opacity: 1;
 }
 
+// Main centered content layer
 .content {
-  position: absolute;
-  z-index: 20;
-  left: 0;
-  top: 40%;
+  position: relative;
+  z-index: 10;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  transform: translateY(-50%);
-  pointer-events: auto !important;
-  user-select: text !important;
-  -webkit-user-select: text !important;
-  width: max-content;
-  max-width: calc(100% - var(--layout-margin) * 2);
-  margin-left: var(--layout-margin);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  max-width: 960px;
+  padding: 0 24px;
+  margin: 0 auto;
+  transform: translateY(-3.5vh);
+  pointer-events: auto;
+  user-select: text;
 
   @include mobile {
-    top: 15%;
-    transform: none;
-    margin-left: var(--layout-margin);
-    width: calc(100% - var(--layout-margin) * 2);
+    padding: 0 12px;
+    transform: translateY(-2vh);
   }
 }
 
-.badge {
+// Kinetic unmask container: hides text below baseline until revealed
+.mask {
   display: block;
-  margin-bottom: clamp(18px, 1.8vw, 30px);
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+// Minimalist monospaced mission badge
+.badge {
+  display: inline-block;
+  margin-bottom: clamp(24px, 2.6vw, 40px);
   font-family: 'SF Mono', 'Cascadia Mono', Consolas, 'Roboto Mono', Menlo, monospace;
-  font-size: clamp(9px, 0.66vw, 12px);
+  font-size: clamp(10px, 0.72vw, 13px);
   font-weight: 500;
   line-height: 1;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: rgba(240, 244, 241, 0.6);
+  color: rgba(255, 255, 255, 0.7);
   opacity: 0;
-  transform: translateY(14px);
-  pointer-events: auto !important;
-  user-select: text !important;
-  -webkit-user-select: text !important;
-  cursor: text;
+  transform: translateY(115%);
+  will-change: transform, opacity;
   transition:
-    opacity 0.8s ease 0.35s,
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+    opacity 0.8s ease 0.2s,
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
 
   @include mobile {
-    margin-bottom: 5vw;
-    font-size: 2.6vw;
-    letter-spacing: 0.26em;
+    margin-bottom: 7vw;
+    font-size: 2.8vw;
+    letter-spacing: 0.28em;
   }
 }
 
+// Bold, authoritative headline matching Raycast typographic scale
 .headline {
   margin: 0;
-  max-width: 52vw;
-  font-size: 4.2vw;
-  line-height: 1.06;
-  font-weight: 550;
-  letter-spacing: -0.028em;
-  color: var(--white);
-  opacity: 0;
-  transform: translateY(22px);
-  pointer-events: auto !important;
-  user-select: text !important;
-  -webkit-user-select: text !important;
-  cursor: text;
-  transition:
-    opacity 0.9s ease 0.55s,
-    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.55s;
+  padding: 0;
+  font-family: 'Neue Haas Grotesk Display Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: clamp(40px, 5.8vw, 92px);
+  font-weight: 650;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: #ffffff;
+  text-wrap: balance;
 
   em {
     font-style: italic;
     font-weight: 450;
-    pointer-events: auto !important;
-    user-select: text !important;
-    -webkit-user-select: text !important;
-    cursor: text;
+    color: #ffffff;
   }
 
   @include mobile {
-    max-width: 100%;
-    font-size: 10.4vw;
-    line-height: 1.07;
-    letter-spacing: -0.022em;
-    white-space: normal;
-    overflow-wrap: break-word;
+    font-size: 11.2vw;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
   }
 }
 
 .line {
   display: block;
-  pointer-events: auto !important;
-  user-select: text !important;
-  -webkit-user-select: text !important;
-  cursor: text;
+  opacity: 0;
+  transform: translateY(115%) skewY(1.5deg);
+  filter: blur(8px);
+  will-change: transform, opacity, filter;
+  transition:
+    transform 1.15s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.9s ease,
+    filter 0.85s ease;
 }
 
+.line1 {
+  transition-delay: 0.35s;
+}
+
+.line2 {
+  transition-delay: 0.52s;
+}
+
+// Active entered animations once page is ready
 .entered {
   .badge {
     opacity: 1;
     transform: translateY(0);
   }
-  .headline {
+  .line {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) skewY(0);
+    filter: blur(0);
   }
 }

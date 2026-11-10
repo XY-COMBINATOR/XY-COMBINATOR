@@ -2,8 +2,13 @@
 User-agent: *
 Allow: /
 
+# Disallow admin and private paths
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
+
 # Canonical Host
-Host: https://xy-combinator-nu.vercel.app/
+Host: https://xycombinator.com/
 
 # Sitemap location
-Sitemap: https://xy-combinator-nu.vercel.app/sitemap.xml
+Sitemap: https://xycombinator.com/sitemap.xml

@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://xy-combinator-nu.vercel.app/</loc>
-    <lastmod>2026-10-28T00:00:00.000Z</lastmod>
+    <loc>https://xycombinator.com/</loc>
+    <lastmod>2026-11-10T00:00:00.000Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://xy-combinator-nu.vercel.app/#work</loc>
-    <lastmod>2026-10-28T00:00:00.000Z</lastmod>
+    <loc>https://xycombinator.com/about</loc>
+    <lastmod>2026-11-10T00:00:00.000Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://xycombinator.com/projects</loc>
+    <lastmod>2026-11-10T00:00:00.000Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://xycombinator.com/#work</loc>
+    <lastmod>2026-11-10T00:00:00.000Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://xy-combinator-nu.vercel.app/#studio</loc>
-    <lastmod>2026-10-28T00:00:00.000Z</lastmod>
+    <loc>https://xycombinator.com/#studio</loc>
+    <lastmod>2026-11-10T00:00:00.000Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://xy-combinator-nu.vercel.app/#expertise</loc>
-    <lastmod>2026-10-28T00:00:00.000Z</lastmod>
+    <loc>https://xycombinator.com/#expertise</loc>
+    <lastmod>2026-11-10T00:00:00.000Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

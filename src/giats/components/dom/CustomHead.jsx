@@ -10,8 +10,10 @@ import PropTypes from 'prop-types';
 
 const SITE_URL = typeof window !== 'undefined' && window.location.origin 
   ? window.location.origin 
-  : 'https://xy-combinator-nu.vercel.app';
+  : 'https://xycombinator.com';
 const OG_IMAGE = `${SITE_URL}/og.png`;
+const OG_IMAGE_WIDTH = 1200;
+const OG_IMAGE_HEIGHT = 630;
 
 /**
  * Generates Schema.org JSON-LD structured data for XY Combinator.
@@ -21,17 +23,67 @@ const getSchema = () => ({
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'XY Combinator',
-  alternateName: 'XY Combinators',
-  description: 'An elite design and engineering studio for founders who move fast. We craft websites, apps, and e-commerce from initial concept to deployment in weeks.',
+  alternateName: 'XYC',
+  description: 'A design and engineering studio for founders who move fast. We build websites, apps, and e-commerce from first sketch to live users in weeks.',
   url: SITE_URL,
   logo: `${SITE_URL}/logo.png`,
   image: OG_IMAGE,
   email: 'contact@xycombinator.com',
+  telephone: '+8801700000000',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Dhaka',
+    addressLocality: 'Dhaka',
+    addressRegion: 'Dhaka Division',
+    postalCode: '1200',
+    addressCountry: 'BD',
+  },
+  founder: {
+    '@type': 'Person',
+    name: 'XY Combinator Founding Team',
+  },
+  foundingDate: '2026',
   sameAs: [
-    'https://jcreationbd.com/shop',
-    'https://arishbd.com/',
-    'https://slrplaygroundmalaysia.com/',
-    'https://github.com/XY-COMBINATOR/XY-COMBINATOR'
+    'https://x.com/xycombinators',
+    'https://www.linkedin.com/company/xy-combinator',
+    'https://github.com/XY-COMBINATOR/XY-COMBINATOR',
+  ],
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Design & Engineering Services',
+    itemOffered: [
+      {
+        '@type': 'Service',
+        name: 'Website Design & Development',
+        description: 'High-performance websites built with React, Next.js, and modern frontend technologies.',
+      },
+      {
+        '@type': 'Service',
+        name: 'Mobile App Development',
+        description: 'iOS and Android mobile applications with React Native.',
+      },
+      {
+        '@type': 'Service',
+        name: 'E-commerce Development',
+        description: 'Scalable online stores and digital product platforms.',
+      },
+      {
+        '@type': 'Service',
+        name: 'Brand Strategy & Creative Direction',
+        description: 'Brand identity, visual systems, and creative direction for startups.',
+      },
+    ],
+  },
+  areaServed: ['BD', 'US', 'IN', 'WW'],
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      telephone: '+8801700000000',
+      contactType: 'customer service',
+      email: 'contact@xycombinator.com',
+      areaServed: 'BD',
+      availableLanguage: ['en', 'bn'],
+    },
   ],
 });
 
@@ -60,7 +112,10 @@ function CustomHead({ title = '', description, keywords }) {
         <meta name="author" content="XY Combinator" />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
         <meta name="format-detection" content="telephone=no, address=no, email=no" />
-        <meta name="geo.region" content="US" />
+        <meta name="geo.region" content="BD" />
+        <meta name="geo.placename" content="Dhaka" />
+        <meta name="geo.position" content="23.8103;90.4125" />
+        <meta name="language" content="English" />
 
         {/* Canonical Link */}
         <link rel="canonical" href={SITE_URL} />
@@ -69,19 +124,24 @@ function CustomHead({ title = '', description, keywords }) {
         {/* OpenGraph Meta Tags */}
         <meta property="og:site_name" content="XY Combinator" />
         <meta property="og:image" content={OG_IMAGE} />
+        <meta property="og:image:width" content={OG_IMAGE_WIDTH} />
+        <meta property="og:image:height" content={OG_IMAGE_HEIGHT} />
+        <meta property="og:image:alt" content="XY Combinator — Design & Engineering Studio" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content={displayTitle} />
         <meta property="og:description" content={displayDesc} />
         <meta property="og:url" content={SITE_URL} />
         <meta property="og:locale" content="en_US" />
+        <meta property="og:determiner" content="" />
 
         {/* Twitter Card Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@xycombinator" />
-        <meta name="twitter:creator" content="@xycombinator" />
+        <meta name="twitter:site" content="@xycombinators" />
+        <meta name="twitter:creator" content="@xycombinators" />
         <meta name="twitter:title" content={displayTitle} />
         <meta name="twitter:description" content={displayDesc} />
         <meta name="twitter:image" content={OG_IMAGE} />
+        <meta name="twitter:image:alt" content="XY Combinator — Design & Engineering Studio" />
 
         {/* Icons and Theme Colors */}
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />

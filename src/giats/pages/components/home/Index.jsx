@@ -124,8 +124,8 @@ function Home() {
     <section ref={rootRef} id="top" className={clsx(styles.root)}>
       <div className={clsx(styles.topContainer, 'layout-grid-inner')}>
         <div className={styles.leftContainer}>
-          <h2 className="h2">Design &amp; engineering</h2>
-          <h2 className={clsx('h2', 'bold')}>that ships every week</h2>
+          <h1 className="h2">Design &amp; engineering</h1>
+          <h1 className={clsx('h2', 'bold')}>that ships every week</h1>
         </div>
         {!isMobile && (
           <h6 className={clsx('h6', styles.rightContainer)}>
@@ -147,7 +147,7 @@ function Home() {
         <Link
           target="_blank"
           rel="noreferrer"
-          aria-label={`View ${current.name} — designed and built by XY Combinators`}
+          aria-label={`View ${current.name} — designed and built by XY Combinator`}
           href={current.url}
           className={styles.heroMedia}
         >
@@ -159,7 +159,7 @@ function Home() {
                   loading={index === 0 ? 'eager' : 'lazy'}
                   decoding="async"
                   src={item.image}
-                  alt={`${item.name} — designed and built by XY Combinators`}
+                  alt={`${item.name} — designed and built by XY Combinator`}
                   fill
                   sizes="100%"
                 />

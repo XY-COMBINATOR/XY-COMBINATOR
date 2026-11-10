@@ -1,9 +1,8 @@
-# *
 User-agent: *
 Allow: /
 
 # Host
-Host: https://giats.me/
+Host: https://xycombinator.com
 
 # Sitemaps
-Sitemap: https://giats.me/sitemap.xml
+Sitemap: https://xycombinator.com/sitemap.xml

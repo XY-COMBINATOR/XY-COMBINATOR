@@ -2,18 +2,22 @@ import NextHead from 'next/head';
 import { NextSeo } from 'next-seo';
 import PropTypes from 'prop-types';
 
-const SITE_URL = 'https://xycombinators.com';
+const SITE_URL = 'https://xycombinator.com';
 const OG_IMAGE = `${SITE_URL}/og.png`;
 
 const getSchema = () => ({
-  '@context': 'http://schema.org',
+  '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'XY Combinators',
-  description: 'A design & engineering studio for founders who move fast. Websites, apps and e-commerce — from first sketch to live users in weeks.',
+  name: 'XY Combinator',
+  description: 'A design & engineering studio helping founders move fast. We build products, brands, and digital experiences that scale.',
   url: SITE_URL,
+  logo: `${SITE_URL}/logo.png`,
   image: OG_IMAGE,
   email: 'mailto:contact@xycombinator.com',
-  sameAs: ['https://jcreationbd.com/shop', 'https://arishbd.com/', 'https://slrplaygroundmalaysia.com/'],
+  sameAs: [
+    'https://x.com/xycombinators',
+    'https://www.linkedin.com/company/xy-combinator',
+  ],
 });
 
 function CustomHead({ title = '', description, keywords }) {
@@ -26,7 +30,7 @@ function CustomHead({ title = '', description, keywords }) {
         <meta name="robots" content={process.env.NODE_ENV !== 'development' ? 'index,follow' : 'noindex,nofollow'} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="keywords" content={keywords && keywords.length ? keywords.join(',') : keywords} />
-        <meta name="author" content="XY Combinators" />
+        <meta name="author" content="XY Combinator" />
         <meta name="referrer" content="no-referrer" />
         <meta name="format-detection" content="telephone=no" />
 
@@ -36,15 +40,24 @@ function CustomHead({ title = '', description, keywords }) {
 
         {/* OpenGraph Meta Tags */}
         <meta property="og:image" content={OG_IMAGE} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={title} />
         <meta property="og:type" content="website" />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:url" content={SITE_URL} />
+        <meta property="og:site_name" content="XY Combinator" />
+        <meta property="og:locale" content="en_US" />
 
         {/* Twitter Cards */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@xycombinators" />
+        <meta name="twitter:creator" content="@xycombinators" />
+        <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={OG_IMAGE} />
+        <meta name="twitter:image:alt" content={title} />
 
         {/* Favicons */}
         <link rel="icon" href="/favicon.ico" />

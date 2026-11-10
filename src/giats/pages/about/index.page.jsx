@@ -6,11 +6,11 @@ import Process from '@src/pages/about/components/process/Process';
 import CustomHead from '@src/components/dom/CustomHead';
 
 const seo = {
-  title: 'XY Combinators — Studio',
+  title: 'XY Combinator — Studio',
   description:
-    'XY Combinators is a design and engineering studio for founders who move fast. We build websites, apps and e-commerce, and we stick around through launch.',
+    'XY Combinator is a design and engineering studio for founders who move fast. We build websites, apps and e-commerce, and we stick around through launch.',
   keywords: [
-    'XY Combinators',
+    'XY Combinator',
     'Design Studio',
     'Engineering Studio',
     'Web Development',

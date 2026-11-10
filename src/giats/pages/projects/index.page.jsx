@@ -16,11 +16,11 @@ import { useStore } from '@src/store';
 import { useWindowSize } from '@darkroom.engineering/hamo';
 
 const seo = {
-  title: 'XY Combinators — Projects',
+  title: 'XY Combinator — Projects',
   description:
-    'Selected work from XY Combinators: websites, e-commerce stores, catalogs and mobile apps we designed, built and launched.',
+    'Selected work from XY Combinator: websites, e-commerce stores, catalogs and mobile apps we designed, built and launched.',
   keywords: [
-    'XY Combinators Projects',
+    'XY Combinator Projects',
     'Portfolio Showcase',
     'Web Design Portfolio',
     'Responsive Web Projects',

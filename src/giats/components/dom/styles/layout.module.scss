@@ -1,7 +1,9 @@
-@import '@src/styles/functions';
+@use '@src/styles/functions' as *;
 
 .footer {
   height: auto;
   width: 100vw;
   overflow: hidden;
 }
+
+

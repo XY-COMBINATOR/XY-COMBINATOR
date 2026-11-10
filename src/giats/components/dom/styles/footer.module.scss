@@ -1,41 +1,80 @@
-@import '@src/styles/functions';
+﻿@use '@src/styles/functions' as *;
+
+/* ============================================================
+   Footer Component Styles
+   Full-bleed dark footer with email contact, site links,
+   location info, and go-to-top button.
+   All text is selectable. Email launches native mail client.
+   The underline SVG gently slides on hover (thread effect).
+   ============================================================ */
 
 .root {
   height: auto;
   width: 100%;
+  position: relative;
+  z-index: 10;
   translate: inherit !important;
   box-shadow: none;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  pointer-events: auto !important;
+
+  * {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+  }
+
+  button,
+  svg {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+  }
 
   @include mobile {
     padding-top: var(--layout-columns-gap);
     padding-bottom: var(--layout-columns-gap);
   }
+
+  /* ---- Navigation links column ---- */
   .linksContainer {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
     padding-top: calc(var(--layout-columns-gap) * 4);
+
     @include mobile {
       padding-top: calc(var(--layout-columns-gap) * 1.5);
+      grid-column: 1 / 7;
     }
 
     width: 100%;
     > div {
       width: 100%;
     }
+
     .title {
       color: var(--white);
       padding-bottom: var(--layout-columns-gap);
+      user-select: text !important;
+      -webkit-user-select: text !important;
     }
 
     .linkTextContainer {
       padding-top: calc(var(--layout-columns-gap) * 0.5);
+
       @include mobile {
         padding-top: calc(var(--layout-columns-gap) * 0.25);
       }
+
       .linkText {
         cursor: pointer;
         overflow: unset;
         display: flex;
         align-items: center;
         position: relative;
+
         > svg {
           height: 0.75vw;
           width: 0.75vw;
@@ -43,6 +82,7 @@
           overflow: unset;
           fill: var(--white);
           stroke: var(--white);
+
           @include mobile {
             height: 2vw;
             width: 2vw;
@@ -54,6 +94,7 @@
           svg {
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.1, 1) !important;
             transform: translate3d(1vw, 0, 0) rotate(-150deg) !important;
+
             @include mobile {
               transform: translate3d(2vw, 0, 0) rotate(-150deg) !important;
             }
@@ -62,6 +103,7 @@
           span {
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.1, 1) !important;
             transform: translate3d(0.6vw, 0, 0);
+
             @include mobile {
               transform: translate3d(1.8vw, 0, 0);
             }
@@ -71,30 +113,67 @@
     }
   }
 
-  .emailContaineer {
-    @include mobile {
-      grid-column: 1 / 7;
-      padding-top: var(--layout-columns-gap);
-    }
+  .sitemap {
+    grid-column: 1 / 5;
+  }
 
+  .liveWork {
+    grid-column: 5 / 9;
+  }
+
+  /* ---- Email contact column ---- */
+  .emailContaineer {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
     padding-top: calc(var(--layout-columns-gap) * 4);
     width: min-content;
     grid-column: 9 / 17;
+
     .workWithMe {
       color: var(--white);
+      user-select: text !important;
+      -webkit-user-select: text !important;
     }
+
+    /* Large email address text */
     .link {
       color: var(--white);
       font-size: 2.5vw;
       line-height: 4.1vw;
       position: relative;
       white-space: nowrap;
-
+      overflow: hidden;
       cursor: pointer;
+      pointer-events: auto !important;
+      user-select: text !important;
+      -webkit-user-select: text !important;
+
+      /* Anchor wraps the email text so the whole block is clickable */
+      .emailAnchor {
+        display: inline-block;
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+        pointer-events: auto !important;
+        user-select: text !important;
+        -webkit-user-select: text !important;
+        position: relative;
+        z-index: 20;
+      }
+
       .email {
         color: var(--white);
+        pointer-events: auto !important;
+        user-select: text !important;
+        -webkit-user-select: text !important;
+        cursor: pointer;
       }
     }
+
+    /* Pseudo-element reservations (no content shown) */
     .link::before,
     .link::after {
       position: absolute !important;
@@ -104,18 +183,17 @@
       left: 0;
       pointer-events: none;
     }
+
     .link::before {
       content: '';
-      /* show by default */
     }
-    .link:hover path {
-      // stroke-dashoffset: 0;
-      // transition-timing-function: cubic-bezier(0.8, 1, 0.7, 1);
-      // transition-duration: 0.3s;
-    }
+
+    /* SVG thread slides laterally on hover â€” clean, no keyframe jank */
     .link:hover .linkGraphic {
       transform: translate3d(-65.5%, 0, 0);
     }
+
+    /* SVG underline thread â€” smooth lateral glide */
     .linkGraphic {
       position: absolute !important;
       left: 0;
@@ -124,66 +202,130 @@
       stroke: var(--white);
       bottom: 0;
       stroke-width: 0.03em;
+      transform-origin: center bottom;
       transition: transform 0.7s;
       transition-timing-function: cubic-bezier(0, 0.25, 0.5, 1);
     }
+
+    @include mobile {
+      grid-column: 1 / 7;
+      width: 100%;
+      padding-top: calc(var(--layout-columns-gap) * 2);
+
+      .link {
+        font-size: 5.9vw;
+        line-height: 1.4;
+      }
+    }
   }
 
+  /* ---- Bottom meta row ---- */
   .middleText {
     padding-top: calc(var(--layout-columns-gap) * 0.5);
+    user-select: text !important;
+    -webkit-user-select: text !important;
   }
+
   .middleContainer {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+
     @include mobile {
       grid-column: 1 / 7 !important;
       padding-top: var(--layout-columns-gap);
+      text-align: left;
     }
 
     > span > span > span {
       display: flex;
       flex-direction: column;
+      user-select: text !important;
+      -webkit-user-select: text !important;
     }
   }
-  div {
-    color: var(--white);
+
+  .location {
+    grid-column: 1 / 9;
   }
 
-  .giats {
+  .availability {
+    grid-column: 9 / 13;
+  }
+
+  .rights {
+    grid-column: 13 / 17;
+    text-align: right;
+
     @include mobile {
-      grid-column: 1 / 6;
+      text-align: left;
+    }
+  }
+
+  div {
+    color: var(--white);
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  /* Watermark backdrop is strictly decorative â€” non-interactive, sits below text */
+  .giats {
+    position: relative;
+    z-index: 0;
+    pointer-events: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+
+    @include mobile {
+      grid-column: 1 / 5;
       font-size: 22.2vw;
       line-height: 17.428vw;
     }
+
     align-self: flex-end;
     grid-column: 1 / 13;
-
     font-size: 15.2vw;
     line-height: 12.628vw;
     transform: translate(-0.3vw, 2.1vw);
     color: var(--white);
+
     > span {
       display: inherit;
+      pointer-events: none !important;
+      user-select: none !important;
     }
   }
+
+  /* ---- Go to top button ---- */
   .goToTop {
     position: relative;
+    z-index: 15;
+    pointer-events: auto !important;
 
     @include mobile {
-      grid-column: 6 / 7;
+      grid-column: 5 / 7;
     }
+
     align-self: flex-end;
     justify-self: flex-end;
     grid-column: 13 / 17;
   }
 }
+
+/* ---- Circular go-to-top button with magnetic ball fill ---- */
 .circleButton {
   z-index: 2;
   box-shadow:
     0 0.32vw 0.52vw #0000000a,
     0 0.12vw 0.22vw #0000000a;
+
   @include mobile {
     width: 10vw;
     height: 10vw;
   }
+
   width: 4vw;
   height: 4vw;
   background-color: var(--white);
@@ -193,12 +335,14 @@
 
   .arrowClassic {
     z-index: 2;
+
     @include mobile {
       width: 4vw;
       height: 4vw;
       top: 3.05vw;
       left: 3.05vw;
     }
+
     position: absolute;
     top: 1.25vw;
     left: 1.25vw;
@@ -227,14 +371,17 @@
     z-index: 1;
   }
 }
+
 .circleButton:hover {
   .ball {
     width: 25vw;
     height: 25vw;
     z-index: 1;
+
     @include mobile {
       width: 80vw;
       height: 80vw;
     }
   }
 }
+

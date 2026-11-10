@@ -1,3 +1,5 @@
+@use '@src/styles/functions' as *;
+
 .aspect-ratio {
   position: relative;
   padding-bottom: calc(100% / var(--aspect-ratio));

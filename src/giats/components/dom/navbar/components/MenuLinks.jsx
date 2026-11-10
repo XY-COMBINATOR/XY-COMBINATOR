@@ -1,24 +1,37 @@
+/**
+ * MenuLinks Component
+ * Fullscreen animated navigation drawer powered by GSAP timelines.
+ * Features staggered entrance animations, accessible keyboard escape handlers,
+ * and inertial scroll integration with Lenis.
+ */
 import { useEffect, useRef } from 'react';
-
 import Link from 'next/link';
 import clsx from 'clsx';
-import footerLinks from '@src/components/dom/navbar/constants/footerLinks';
 import gsap from 'gsap';
 import menuLinks from '@src/components/dom/navbar/constants/menuLinks';
-import projectsLinks from '@src/components/dom/navbar/constants/projectsLinks';
 import styles from '@src/components/dom/navbar/styles/menuLinks.module.scss';
 import useIsMobile from '@src/hooks/useIsMobile';
 import { useRouter } from 'next/router';
+import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '@src/store';
 
 function MenuLinks() {
   const timeline = useRef(gsap.timeline({ paused: true, defaults: { duration: 0.92, ease: 'expo.inOut' } }));
   const isMobile = useIsMobile();
-  const [isMenuOpen, setIsMenuOpen, lenis, isLoading] = useStore((state) => [state.isMenuOpen, state.setIsMenuOpen, state.lenis, state.isLoading]);
-  const menuRef = useRef();
+  const [isMenuOpen, setIsMenuOpen, lenis, isLoading] = useStore(
+    useShallow((state) => [state.isMenuOpen, state.setIsMenuOpen, state.lenis, state.isLoading]),
+  );
+  const menuRef = useRef(null);
   const menuLinksItemsRef = useRef([]);
+  const hashTimeout = useRef(null);
   const router = useRouter();
 
+  // Clear pending scroll timeouts on unmount
+  useEffect(() => () => clearTimeout(hashTimeout.current), []);
+
+  /**
+   * Builds GSAP timeline choreography for menu opening and backdrop morphing.
+   */
   const setupMenuAnimation = (gsapTimeline, refs) => {
     const fluidCanvas = document?.getElementById('fluidCanvas');
     const layout = document?.getElementById('layout');
@@ -53,6 +66,7 @@ function MenuLinks() {
     };
   }, [isLoading, isMobile]);
 
+  // Synchronize timeline with menu open state
   useEffect(() => {
     const tl = timeline.current;
     if (isMenuOpen) {
@@ -62,6 +76,24 @@ function MenuLinks() {
     }
   }, [isMenuOpen]);
 
+  // Keyboard accessibility: Close menu when Escape key is pressed
+  useEffect(() => {
+    if (!isMenuOpen) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsMenuOpen(false);
+        lenis?.start();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMenuOpen, setIsMenuOpen, lenis]);
+
+  /**
+   * Scrolls to footer contact section.
+   */
   const goToBottom = () => {
     setIsMenuOpen(false);
 
@@ -69,18 +101,45 @@ function MenuLinks() {
       const mainElement = document.querySelector('main');
       if (mainElement) {
         const mainHeight = mainElement.scrollHeight;
-        lenis.scrollTo(mainHeight, {
+        lenis?.scrollTo(mainHeight, {
           duration: 1.5,
           force: true,
           easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
           onComplete: () => {
-            lenis.start();
+            lenis?.start();
           },
         });
       }
     }, 850);
   };
 
+  /**
+   * Navigates smoothly to internal anchor target.
+   */
+  const goToHash = (event, href) => {
+    event.preventDefault();
+    setIsMenuOpen(false);
+
+    if (hashTimeout.current) clearTimeout(hashTimeout.current);
+
+    hashTimeout.current = setTimeout(() => {
+      const target = document.querySelector(href);
+      if (!target || !lenis) return;
+
+      lenis.scrollTo(target, {
+        duration: 1.5,
+        force: true,
+        easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
+        onComplete: () => {
+          lenis.start();
+        },
+      });
+    }, 850);
+  };
+
+  /**
+   * Renders the navigational link list.
+   */
   const renderMenuLinks = (links, refs, pathname) =>
     links.map((link, index) => (
       <div
@@ -91,7 +150,12 @@ function MenuLinks() {
         className={clsx(styles.menuListItem, pathname === link.href && styles.menuListItemActive)}
       >
         {link.href !== undefined ? (
-          <Link aria-label={`Go ${link.title}`} scroll={false} href={link.href}>
+          <Link
+            aria-label={`Navigate to ${link.title}`}
+            scroll={false}
+            href={link.href}
+            onClick={link.href.startsWith('#') ? (event) => goToHash(event, link.href) : undefined}
+          >
             <span>{link.title}</span>
           </Link>
         ) : (
@@ -99,6 +163,7 @@ function MenuLinks() {
             onClick={goToBottom}
             role="button"
             tabIndex={0}
+            aria-label="Scroll to footer contact form"
             onKeyDown={(event) => {
               if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
@@ -113,7 +178,14 @@ function MenuLinks() {
     ));
 
   return (
-    <nav id="menu" ref={menuRef} className={styles.menu}>
+    <nav 
+      id="menu" 
+      ref={menuRef} 
+      className={styles.menu} 
+      role="dialog" 
+      aria-modal="true" 
+      aria-label="Site navigation menu"
+    >
       <div className={clsx(styles.menuWrapper, 'layout-block-inner')}>
         <div
           ref={(el) => {
@@ -125,68 +197,23 @@ function MenuLinks() {
         </div>
         <div
           ref={(el) => {
-            menuLinksItemsRef.current[menuLinks.length + 2] = el;
+            menuLinksItemsRef.current[menuLinks.length + 1] = el;
           }}
           className={styles.menuList}
         >
-          {projectsLinks.map((link, index) => (
-            <div
-              ref={(el) => {
-                menuLinksItemsRef.current[menuLinks.length + index + 2] = el;
-              }}
-              key={link.title}
-              className={styles.menuListItem}
-            >
-              <Link aria-label={`Go ${link.title}`} scroll={false} href={link.href}>
-                <span>{link.title}</span>
-              </Link>
-            </div>
-          ))}
-        </div>
-        <div
-          ref={(el) => {
-            menuLinksItemsRef.current[menuLinks.length + projectsLinks.length + 3] = el;
-          }}
-          className={styles.menuList}
-        >
-          <div
-            role="presentation"
-            ref={(el) => {
-              menuLinksItemsRef.current[menuLinks.length + projectsLinks.length + 3] = el;
-            }}
-            className={styles.menuListItem}
-          >
-            <Link aria-label="Send email" scroll={false} href="mailto:contact@xycombinator.com">
+          <div role="presentation" className={styles.menuListItem}>
+            <Link aria-label="Send email to XY Combinator" scroll={false} href="mailto:contact@xycombinator.com">
               <span>GET IN TOUCH</span>
             </Link>
           </div>
-        </div>
-        <div
-          ref={(el) => {
-            menuLinksItemsRef.current[menuLinks.length + projectsLinks.length + 4] = el;
-          }}
-          className={styles.menuList}
-        >
-          {footerLinks.map((link, index) => (
-            <div
-              ref={(el) => {
-                menuLinksItemsRef.current[menuLinks.length + projectsLinks.length + index + 4] = el;
-              }}
-              key={link.title}
-              className={styles.menuListItem}
-            >
-              <Link aria-label={`Find me on ${link.title}`} target="_blank" rel="noopener noreferrer" scroll={false} href={link.href}>
-                <span>{link.title}</span>
-              </Link>
-            </div>
-          ))}
         </div>
         <button
           type="button"
           onClick={() => {
             setIsMenuOpen(false);
-            lenis.start();
+            lenis?.start();
           }}
+          aria-label="Close navigation menu"
           className={styles.menuClose}
         >
           <p>&#10005;</p>

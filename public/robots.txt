@@ -1,8 +1,9 @@
+# Robots.txt for XY Combinator
 User-agent: *
 Allow: /
 
-# Host
+# Canonical Host
 Host: https://xycombinator.com
 
-# Sitemaps
+# Sitemap location
 Sitemap: https://xycombinator.com/sitemap.xml

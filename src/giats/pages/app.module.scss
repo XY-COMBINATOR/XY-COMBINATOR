@@ -1,4 +1,4 @@
-@import '@src/styles/functions';
+@use '@src/styles/functions' as *;
 
 .background {
   height: 100%;
@@ -24,6 +24,12 @@
   align-items: center;
   height: 100svh;
   width: 100vw;
+}
+
+#fluidCanvas {
+  @media (hover: none), (pointer: coarse) {
+    display: none !important;
+  }
 }
 .layout {
   background-color: transparent;
@@ -61,7 +67,6 @@
 
     .mainContainer {
       height: auto;
-
       width: 100%;
     }
   }
@@ -72,9 +77,14 @@
     height: 100% !important;
     overflow: hidden;
     background-color: transparent;
-    pointer-events: none;
+    pointer-events: none !important;
     z-index: 2;
     opacity: 1;
+
+    * {
+      pointer-events: none !important;
+    }
+
     > div {
       width: 100% !important;
       height: 100% !important;
@@ -82,6 +92,7 @@
       > canvas {
         width: 100% !important;
         height: 100% !important;
+        pointer-events: none !important;
       }
     }
   }

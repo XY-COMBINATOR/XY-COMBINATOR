@@ -1,7 +1,7 @@
 {
-  "name": "XY Combinator",
+  "name": "XY Combinator — Design & Engineering Studio",
   "short_name": "XY Combinator",
-  "description": "XY Combinator is a design & engineering studio helping founders move fast.",
+  "description": "A design and engineering studio for founders who move fast. We build websites, apps, and e-commerce from first sketch to live users in weeks.",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -16,8 +16,8 @@
       "purpose": "any"
     }
   ],
-  "theme_color": "#000000",
-  "background_color": "#000000",
+  "theme_color": "#28282b",
+  "background_color": "#28282b",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

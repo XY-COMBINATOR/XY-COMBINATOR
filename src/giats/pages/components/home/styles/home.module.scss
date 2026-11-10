@@ -1,415 +1,148 @@
-@import '@src/styles/functions';
-
-@keyframes heroKenburns {
-  from {
-    transform: scale(1.04);
-  }
-  to {
-    transform: scale(1.14);
-  }
-}
-
-@keyframes heroProgress {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-@keyframes heroRise {
-  from {
-    opacity: 0;
-    transform: translateY(1.4vw);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+@use '@src/styles/functions' as *;
 
 .root {
   z-index: 4;
-  height: 100vh;
-  height: calc(100 * var(--svh, 1vh));
-  height: 100svh;
   position: relative;
   display: flex;
-  flex-direction: column;
-  padding: calc(var(--layout-columns-gap) + 3.1vw) var(--layout-margin)
-    calc(var(--layout-columns-gap) * 2);
-
-  box-shadow:
-    inset 0 calc(var(--layout-columns-gap) + 3.2vw) 0 0 var(--white),
-    inset calc(var(--layout-margin) * -1.05) 0 0 0 var(--white),
-    inset 0 calc(var(--layout-columns-gap) * -1.0065 * 2) 0 0 var(--white),
-    inset calc(var(--layout-margin) * 1.05) 0 0 0 var(--white);
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: calc(100 * var(--svh, 1vh));
+  min-height: 100svh;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  background: #000000;
+  color: #ffffff;
 
   @include mobile {
-    padding: calc(var(--layout-columns-gap) + 6.5vw) var(--layout-margin)
-      calc(var(--layout-columns-gap) * 2);
-    box-shadow:
-      inset 0 calc(var(--layout-columns-gap) + 6.6vw) 0 0 var(--white),
-      inset calc(var(--layout-margin) * -1.1001) 0 0 0 var(--white),
-      inset 0 calc(var(--layout-columns-gap) * -1.04 * 2) 0 0 var(--white),
-      inset calc(var(--layout-margin) * 1.1001) 0 0 0 var(--white);
+    min-height: 100svh;
+    padding: 0 16px;
   }
-  .topContainer {
-    padding: var(--layout-columns-gap) 0px;
-    flex: 0 1 auto;
-    background-color: var(--white);
-    align-items: center;
-    box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.04) var(--white);
-    @include mobile {
-      box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.04) var(--white);
-    }
-    .leftContainer {
-      grid-column: 1 / 9;
-      height: auto;
-      display: flex;
-      flex-direction: column;
-      @include mobile {
-        width: 100%;
-      }
-    }
-    .rightContainer {
-      height: auto;
-      grid-column: 11 / 17;
-    }
+}
+
+// ShapeWaves WebGL background layer
+.shapeWavesWrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: auto;
+  overflow: hidden;
+  opacity: 1;
+}
+
+// Main centered content layer
+.content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  max-width: 960px;
+  padding: 0 24px;
+  margin: 0 auto;
+  transform: translateY(-3.5vh);
+  pointer-events: auto;
+  user-select: text;
+
+  @include mobile {
+    padding: 0 12px;
+    transform: translateY(-2vh);
   }
+}
 
-  .bottomContainer {
-    position: relative;
-    flex: 1 1 auto;
-    height: 1px;
-    width: 100%;
-    box-shadow: 0 0 0 1vw var(--white);
+// Kinetic unmask container: hides text below baseline until revealed
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
 
-    border-radius: var(--layout-columns-gap);
-    overflow: hidden;
+// Minimalist monospaced mission badge
+.badge {
+  display: inline-block;
+  margin-bottom: clamp(24px, 2.6vw, 40px);
+  font-family: 'SF Mono', 'Cascadia Mono', Consolas, 'Roboto Mono', Menlo, monospace;
+  font-size: clamp(10px, 0.72vw, 13px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  opacity: 0;
+  transform: translateY(115%);
+  will-change: transform, opacity;
+  transition:
+    opacity 0.8s ease 0.2s,
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
 
-    @include mobile {
-      width: 100%;
-      flex: 1 1 auto;
-      min-height: 0;
-      height: auto;
-      box-shadow: 0 0 0 2vw var(--white);
-      border-radius: calc(var(--layout-columns-gap) * 0.5);
-    }
-    .svgWrapper {
-      width: 100.1%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-
-      > svg {
-        display: block;
-      }
-      .mask1 {
-        fill: white;
-      }
-      .mask2 {
-        fill: var(--white);
-
-        -webkit-mask: url(#mask);
-        mask: url(#mask);
-      }
-    }
+  @include mobile {
+    margin-bottom: 7vw;
+    font-size: 2.8vw;
+    letter-spacing: 0.28em;
   }
+}
 
-  .heroMedia {
-    position: absolute;
-    inset: 0;
-    display: block;
-    border-radius: inherit;
-    overflow: hidden;
-    cursor: pointer;
+// Bold, authoritative headline matching Raycast typographic scale
+.headline {
+  margin: 0;
+  padding: 0;
+  font-family: 'Neue Haas Grotesk Display Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: clamp(40px, 5.8vw, 92px);
+  font-weight: 650;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: #ffffff;
+  text-wrap: balance;
 
-    .mediaStack {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: -15%;
-      height: 130%;
-      will-change: transform;
-    }
-
-    .slide {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1);
-      will-change: opacity;
-
-      > img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transform: scale(1.04);
-      }
-    }
-
-    .slideActive {
-      opacity: 1;
-      z-index: 1;
-
-      > img {
-        animation: heroKenburns 14s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
-    }
+  em {
+    font-style: italic;
+    font-weight: 450;
+    color: #ffffff;
   }
 
-  .scrim {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    background-image:
-      linear-gradient(
-        to top,
-        rgba(40, 40, 43, 0.62) 0%,
-        rgba(40, 40, 43, 0.22) 26%,
-        rgba(40, 40, 43, 0) 52%
-      ),
-      linear-gradient(to bottom, rgba(40, 40, 43, 0.28) 0%, rgba(40, 40, 43, 0) 26%),
-      radial-gradient(130% 100% at 50% 45%, rgba(40, 40, 43, 0) 45%, rgba(40, 40, 43, 0.3) 100%);
+  @include mobile {
+    font-size: 11.2vw;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
   }
+}
 
-  .caption {
-    position: absolute;
-    left: var(--layout-columns-gap);
-    bottom: var(--layout-columns-gap);
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: calc(var(--layout-columns-gap) * 0.32);
-    max-width: 34vw;
-    padding: calc(var(--layout-columns-gap) * 0.85) calc(var(--layout-columns-gap) * 1.05);
-    border-radius: calc(var(--layout-columns-gap) * 0.55);
-    background-color: rgba(40, 40, 43, 0.6);
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
-    border: 1px solid rgba(240, 244, 241, 0.14);
-    box-shadow: 0 1.4vw 3.4vw rgba(40, 40, 43, 0.28);
-    color: var(--white);
-    animation: heroRise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+.line {
+  display: block;
+  opacity: 0;
+  transform: translateY(115%) skewY(1.5deg);
+  filter: blur(8px);
+  will-change: transform, opacity, filter;
+  transition:
+    transform 1.15s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.9s ease,
+    filter 0.85s ease;
+}
 
-    @include mobile {
-      left: calc(var(--layout-columns-gap) * 0.5);
-      bottom: calc(var(--layout-columns-gap) * 0.5);
-      max-width: calc(100% - var(--layout-columns-gap));
-      padding: calc(var(--layout-columns-gap) * 0.55) calc(var(--layout-columns-gap) * 0.8);
-      border-radius: calc(var(--layout-columns-gap) * 0.35);
-      gap: calc(var(--layout-columns-gap) * 0.18);
-    }
+.line1 {
+  transition-delay: 0.35s;
+}
+
+.line2 {
+  transition-delay: 0.52s;
+}
+
+// Active entered animations once page is ready
+.entered {
+  .badge {
+    opacity: 1;
+    transform: translateY(0);
   }
-
-  .captionTag {
-    font-size: 0.72vw;
-    line-height: 1;
-    font-weight: 650;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    opacity: 0.75;
-    @include mobile {
-      font-size: 2.4vw;
-    }
-  }
-
-  .captionTitle {
-    margin: 0;
-    font-size: 1.75vw;
-    line-height: 1.1;
-    font-weight: 650;
-    letter-spacing: -0.01em;
-    @include mobile {
-      font-size: 4.6vw;
-    }
-  }
-
-  .captionText {
-    margin: 0;
-    font-size: 0.85vw;
-    line-height: 1.45;
-    font-weight: 500;
-    opacity: 0.78;
-    @include mobile {
-      display: none;
-    }
-  }
-
-  .captionLink {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4vw;
-    margin-top: calc(var(--layout-columns-gap) * 0.15);
-    font-size: 0.8vw;
-    font-weight: 650;
-    letter-spacing: 0.02em;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(240, 244, 241, 0.4);
-    padding-bottom: 0.15vw;
-    transition:
-      border-color 0.3s ease,
-      gap 0.3s ease;
-
-    &:hover {
-      border-color: var(--white);
-      gap: 0.7vw;
-    }
-
-    @include mobile {
-      font-size: 2.7vw;
-      gap: 1.4vw;
-      margin-top: calc(var(--layout-columns-gap) * 0.1);
-    }
-  }
-
-  .statChip {
-    position: absolute;
-    top: var(--layout-columns-gap);
-    right: var(--layout-columns-gap);
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.15vw;
-    padding: calc(var(--layout-columns-gap) * 0.7) calc(var(--layout-columns-gap) * 0.95);
-    border-radius: calc(var(--layout-columns-gap) * 0.5);
-    background-color: rgba(240, 244, 241, 0.86);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(40, 40, 43, 0.07);
-    box-shadow: 0 1vw 2.6vw rgba(40, 40, 43, 0.16);
-    color: var(--black);
-    animation: heroRise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-
-    @include mobile {
-      top: calc(var(--layout-columns-gap) * 0.5);
-      right: calc(var(--layout-columns-gap) * 0.5);
-      padding: calc(var(--layout-columns-gap) * 0.45) calc(var(--layout-columns-gap) * 0.7);
-      gap: 0.4vw;
-      border-radius: calc(var(--layout-columns-gap) * 0.35);
-    }
-  }
-
-  .statValue {
-    font-size: 1.35vw;
-    line-height: 1;
-    font-weight: 750;
-    letter-spacing: -0.01em;
-    @include mobile {
-      font-size: 4vw;
-    }
-  }
-
-  .statLabel {
-    font-size: 0.68vw;
-    line-height: 1.2;
-    font-weight: 600;
-    opacity: 0.7;
-    white-space: nowrap;
-    @include mobile {
-      font-size: 2.3vw;
-    }
-  }
-
-  .pagination {
-    position: absolute;
-    right: var(--layout-columns-gap);
-    bottom: calc(var(--layout-columns-gap) - 1.4vw);
-    z-index: 4;
-    display: flex;
-    align-items: center;
-    gap: calc(var(--layout-columns-gap) * 0.35);
-
-    @include mobile {
-      top: calc(var(--layout-columns-gap) * 0.5 - 3vw);
-      bottom: auto;
-      left: calc(var(--layout-columns-gap) * 0.5);
-      right: auto;
-      gap: calc(var(--layout-columns-gap) * 0.28);
-      padding: 0;
-      border-radius: 999px;
-    }
-  }
-
-  .dot {
-    position: relative;
-    appearance: none;
-    border: 0;
-    padding: 1.4vw 0;
-    margin: 0;
-    width: 2.6vw;
-    background: transparent;
-    display: block;
-
-    @include mobile {
-      width: 8vw;
-      padding: 3vw 0;
-    }
-  }
-
-  .dotTrack {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: 0.3vw;
-    border-radius: 999px;
-    background-color: rgba(240, 244, 241, 0.32);
-    overflow: hidden;
-    transition: background-color 0.35s ease;
-
-    @include mobile {
-      height: 0.9vw;
-      background-color: rgba(40, 40, 43, 0.4);
-    }
-  }
-
-  .dotActive .dotTrack {
-    background-color: rgba(240, 244, 241, 0.5);
-
-    @include mobile {
-      background-color: rgba(40, 40, 43, 0.55);
-    }
-  }
-
-  .dotFill {
-    position: absolute;
-    inset: 0;
-    transform-origin: left center;
-    transform: scaleX(0);
-    background-color: var(--white);
-  }
-
-  .dotActive .dotFill {
-    animation: heroProgress 5.6s linear forwards;
-  }
-
-  .isPaused .dotActive .dotFill {
-    animation-play-state: paused;
-  }
-
-  .rightContainerMobile {
-    background-color: var(--white);
-    @include mobile {
-      height: auto;
-      padding-top: var(--layout-columns-gap);
-      box-shadow: 0 0 0 calc(var(--layout-columns-gap) * 0.04) var(--white);
-    }
-  }
-  .infiniteContainer {
-    position: absolute;
-    width: 100%;
-    left: 0;
-    bottom: 0;
-    background-color: var(--white);
-    overflow: hidden;
-    height: calc(var(--layout-columns-gap) * 2);
-    left: var(--layout-margin);
-    width: calc(100% - 2 * var(--layout-margin));
+  .line {
+    opacity: 1;
+    transform: translateY(0) skewY(0);
+    filter: blur(0);
   }
 }

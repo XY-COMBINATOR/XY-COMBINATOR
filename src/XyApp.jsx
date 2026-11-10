@@ -136,7 +136,7 @@ const PLANS = [
 
 const FAQS = [
   {
-    q: 'What does XY Combinators actually do?',
+    q: 'What does XY Combinator actually do?',
     a: 'We are a design & engineering studio. We take products from idea to live users — product design, websites, e-commerce, mobile apps, and the launch support after day one.',
   },
   {
@@ -263,7 +263,7 @@ export default function App() {
         >
           <a href="#top" className="brand">
             <span className="brand-mark">XY</span>
-            <span className="brand-name">XY Combinators</span>
+            <span className="brand-name">XY Combinator</span>
           </a>
           <nav className="nav-links">
             {NAV.map((l) => (
@@ -373,12 +373,12 @@ export default function App() {
               <em>slrplaygroundmalaysia.com — designed &amp; shipped by XY</em>
             </div>
             <div className="browser-hero-img">
-              <img src={slrHeroImg} alt="SLR Playground website designed and built by XY Combinators" />
+              <img src={slrHeroImg} alt="SLR Playground website designed and built by XY Combinator" />
             </div>
             <motion.a
               href="https://slrplaygroundmalaysia.com/"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="float-card float-live"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: [0, -7, 0] }}
@@ -624,7 +624,7 @@ export default function App() {
               key={p.name}
               href={p.href}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="work-card"
               initial={{ opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -681,7 +681,7 @@ export default function App() {
                   </li>
                 ))}
               </ul>
-              <a href={`mailto:${EMAIL}?subject=${encodeURIComponent(p.name + ' — XY Combinators')}`} className={p.hot ? 'btn-dark' : 'btn-light btn-border'}>
+              <a href={`mailto:${EMAIL}?subject=${encodeURIComponent(p.name + ' — XY Combinator')}`} className={p.hot ? 'btn-dark' : 'btn-light btn-border'}>
                 {p.cta}
               </a>
             </motion.div>
@@ -756,7 +756,7 @@ export default function App() {
           <div className="foot-brand">
             <span className="brand-mark">XY</span>
             <div>
-              <strong>XY Combinators</strong>
+              <strong>XY Combinator</strong>
               <span>A design &amp; engineering studio for founders who move fast.</span>
             </div>
           </div>
@@ -774,10 +774,10 @@ export default function App() {
           </div>
           <div>
             <h4>Live clients</h4>
-            <a href="https://jcreationbd.com/shop" target="_blank" rel="noreferrer">J Creation</a>
-            <a href="https://arishbd.com/" target="_blank" rel="noreferrer">Arish Travels</a>
-            <a href="https://slrplaygroundmalaysia.com/" target="_blank" rel="noreferrer">SLR Playground</a>
-            <a href="https://innovick.vercel.app/" target="_blank" rel="noreferrer">Innovick</a>
+            <a href="https://jcreationbd.com/shop" target="_blank" rel="noopener noreferrer">J Creation</a>
+            <a href="https://arishbd.com/" target="_blank" rel="noopener noreferrer">Arish Travels</a>
+            <a href="https://slrplaygroundmalaysia.com/" target="_blank" rel="noopener noreferrer">SLR Playground</a>
+            <a href="https://innovick.vercel.app/" target="_blank" rel="noopener noreferrer">Innovick</a>
           </div>
           <div>
             <h4>Contact</h4>
@@ -786,7 +786,7 @@ export default function App() {
           </div>
         </div>
         <div className="foot-base">
-          <span>© 2026 XY Combinators. All rights reserved.</span>
+          <span>© 2026 XY Combinator. All rights reserved.</span>
           <span>Designed &amp; shipped by XY — obviously.</span>
         </div>
       </footer>

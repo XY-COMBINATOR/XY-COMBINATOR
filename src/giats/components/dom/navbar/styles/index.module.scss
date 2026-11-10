@@ -1,4 +1,4 @@
-@import '@src/styles/functions';
+@use '@src/styles/functions' as *;
 
 .root {
   position: fixed;
@@ -11,6 +11,7 @@
   width: 100%;
   pointer-events: none;
   scale: 1;
+
   .innerHeader {
     height: 3.1vw;
     @include mobile {
@@ -22,6 +23,15 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
+
+    .brandText {
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .brandHidden {
+      opacity: 0;
+      transform: translateX(-16px);
+    }
 
     > a {
       pointer-events: all;

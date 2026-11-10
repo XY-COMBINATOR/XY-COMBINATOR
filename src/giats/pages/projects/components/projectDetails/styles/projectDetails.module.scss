@@ -1,4 +1,4 @@
-@import '@src/styles/functions';
+@use '@src/styles/functions' as *;
 
 .root {
   padding-top: calc(var(--layout-columns-gap) * 4);

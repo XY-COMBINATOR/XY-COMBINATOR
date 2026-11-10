@@ -1,5 +1,10 @@
+/**
+ * Vercel Analytics compatibility shim for client SPA environment.
+ */
 export function Analytics() {
-  return null
+  return null;
 }
 
-export default { Analytics }
+const VercelAnalytics = { Analytics };
+
+export default VercelAnalytics;

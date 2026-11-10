@@ -1,17 +1,39 @@
-@import '@src/styles/reset.scss';
-@import '@src/styles/fonts.scss';
-@import '@src/styles/colors.scss';
-@import '@src/styles/functions.scss';
-@import '@src/styles/layout.scss';
-@import '@src/styles/utils.scss';
-@import '@src/styles/fontStyle.scss';
-@import '@src/styles/scroll.scss';
+/**
+ * Global Stylesheet
+ * Integrates typography, responsive layout resets, fluid color schemes, and root CSS variables.
+ */
+@use '@src/styles/reset';
+@use '@src/styles/fonts';
+@use '@src/styles/colors';
+@use '@src/styles/functions' as *;
+@use '@src/styles/layout';
+@use '@src/styles/utils';
+@use '@src/styles/fontStyle';
+@use '@src/styles/scroll';
+@use '@src/styles/motion';
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* High visibility selection highlight */
+::selection {
+  background-color: #98ff03 !important;
+  color: #050505 !important;
+}
+
+::-moz-selection {
+  background-color: #98ff03 !important;
+  color: #050505 !important;
+}
 
 html {
   font-weight: bolder;
   font-family: var(--font-primary), sans-serif;
-
   scrollbar-width: thin;
+  scroll-behavior: auto;
+
   &.nav {
     overflow: hidden;
   }
@@ -22,14 +44,14 @@ main.lenis-stopped {
 }
 
 body {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+  -webkit-touch-callout: none;
   max-height: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background-color: var(--black, #28282b);
+  color: var(--white, #f0f4f1);
+  user-select: text;
+  -webkit-user-select: text;
 
   > canvas {
     position: fixed;
@@ -37,19 +59,40 @@ body {
     left: 0;
     width: 100vw;
     height: 100%;
+    pointer-events: none !important;
   }
+}
+
+/* Permit natural text selection across all content while preserving control ergonomics */
+*,
+*::before,
+*::after {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+button,
+[role="button"],
+canvas,
+svg,
+[aria-hidden="true"] {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 #backgroundWebGl {
   position: fixed;
   width: 100vw;
   height: 100vh;
+  pointer-events: none !important;
 
   & canvas {
     width: 100%;
     height: 100%;
+    pointer-events: none !important;
   }
 }
+
 #layout::before {
   content: '';
   position: fixed;
@@ -58,11 +101,9 @@ body {
   top: 0;
   width: calc(100% + 20rem);
   height: calc(100% + 20rem);
-  /* background-color: red; */
   background-image: url('/other/noise.png');
   opacity: 0.65;
   pointer-events: none;
-  animation: noise 1s steps(2) infinite;
 }
 
 a,
@@ -75,25 +116,28 @@ select {
   cursor: pointer;
 }
 
+/* Prevent all images from being draggable — preserves clean UX */
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: auto;
+}
+
 section {
   padding-top: calc(var(--layout-columns-gap) * 2);
   padding-bottom: calc(var(--layout-columns-gap) * 2);
-  box-shadow:
-    inset 0 calc(var(--layout-columns-gap) * 2.1) 0 0 var(--white),
-    inset calc(var(--layout-margin) * -1.05) 0 0 0 var(--white),
-    inset 0 calc(var(--layout-columns-gap) * -2.1) 0 0 var(--white),
-    inset calc(var(--layout-margin) * 1.05) 0 0 0 var(--white),
-    0 0 0 calc(var(--layout-columns-gap) * 0.045) var(--white);
-
+  box-shadow: none;
   background-color: transparent;
-  @include mobile {
-    box-shadow:
-      inset 0 calc(var(--layout-columns-gap) * 2.1) 0 0 var(--white),
-      inset calc(var(--layout-margin) * -1.0265) 0 0 0 var(--white),
-      inset 0 calc(var(--layout-columns-gap) * -2.1) 0 0 var(--white),
-      inset calc(var(--layout-margin) * 1.0265) 0 0 0 var(--white),
-      0 0 0 calc(var(--layout-columns-gap) * 0.04) var(--white);
-  }
+}
+
+/* Section styling with swiped card layer hierarchy */
+#studio,
+#work,
+#expertise {
+  box-shadow: none;
+  border: none;
 }
 
 main > div > section:nth-last-child(1) {
@@ -108,4 +152,13 @@ main > div > section:nth-last-child(1) {
 .trigger-footer {
   height: 10px;
   width: 100%;
+}
+
+header h4 {
+  transition: color 0.45s ease;
+}
+
+body.on-dark-hero header h4,
+body.on-dark-section header h4 {
+  color: var(--white);
 }

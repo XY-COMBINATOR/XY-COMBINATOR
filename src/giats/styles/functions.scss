@@ -1,5 +1,5 @@
 @use 'sass:math';
-@import '@src/styles/variables.scss';
+@use '@src/styles/variables' as *;
 
 // Breakpoint
 @mixin mobile {

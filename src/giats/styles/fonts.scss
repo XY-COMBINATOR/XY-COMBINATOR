@@ -42,8 +42,17 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/FrauncesItalic.woff2') format('woff2');
+  font-weight: 300 600;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   --font-primary: 'Neue Haas Grotesk Display Pro';
+  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
 }
 
 body {

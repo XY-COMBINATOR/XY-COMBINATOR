@@ -1,6 +1,9 @@
+/**
+ * Projects Archive Page Component
+ * Renders complete showcase of studio releases and development case studies.
+ */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-nested-ternary */
-
 import CustomHead from '@src/components/dom/CustomHead';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,28 +19,23 @@ import { useStore } from '@src/store';
 import { useWindowSize } from '@darkroom.engineering/hamo';
 
 const seo = {
-  title: 'XY Combinator — Projects',
-  description:
-    'Selected work from XY Combinator: websites, e-commerce stores, catalogs and mobile apps we designed, built and launched.',
+  title: 'XY Combinator — All Projects',
+  description: 'Explore the full portfolio of websites, web applications, and mobile products designed and engineered by XY Combinator.',
   keywords: [
     'XY Combinator Projects',
     'Portfolio Showcase',
+    'Frontend Development',
     'Web Design Portfolio',
-    'Responsive Web Projects',
-    'Web Applications Portfolio',
-    'E-commerce Projects',
-    'React Work',
-    'Next.js Projects',
-    'React Native Projects',
-    'Product Design Work',
+    'Responsive Web Applications',
+    'React Three Fiber',
+    'Next.js Studio',
   ],
 };
 
 function Page() {
   const isMobile = useIsMobile();
-
   const windowSize = useWindowSize();
-  const rootRef = useRef();
+  const rootRef = useRef(null);
   const projectRefs = useRef([]);
   const [isLoading] = useStore(useShallow((state) => [state.isLoading]));
 
@@ -80,10 +78,10 @@ function Page() {
       <section className={clsx(styles.titleContainer, 'layout-block-inner')}>
         <h1 className={clsx(styles.title, 'h1')}>All Projects</h1>
       </section>
-      <section ref={rootRef} className={clsx(styles.root, 'layout-block-inner')}>
+      <section ref={rootRef} className={clsx(styles.root, 'layout-block-inner')} aria-label="Projects list">
         <div className={styles.innerContainer}>
           {projects.map((project, index) => (
-            <Link aria-label={`Go ${project.title}`} id={project.id} key={project.id} scroll={false} href={project.link} className={clsx(styles.card)}>
+            <Link aria-label={`View ${project.title}`} id={project.id} key={project.id} scroll={false} href={project.link} className={clsx(styles.card)}>
               <div
                 style={
                   !isMobile

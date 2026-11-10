@@ -1,8 +1,12 @@
+/**
+ * Fluid Simulation Component
+ * Real-time Navier-Stokes fluid dynamics solver running in WebGL.
+ * Computes vorticity, curl, divergence, pressure Poisson equation, and advection across ping-pong FBOs.
+ */
 /* eslint-disable @react-three/no-new-in-loop */
-
 import { Camera, Scene, Texture, Vector2, Vector3 } from 'three';
 import { createPortal, useFrame, useThree } from '@react-three/fiber';
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import Effect from '@src/components/canvas/fluid/effect/Fluid';
 import useFBOs from '@src/components/canvas/fluid/hooks/useFBOs';
@@ -16,14 +20,22 @@ function Fluid({ mainRef, fluidColor }) {
   const size = useThree((three) => three.size);
   const gl = useThree((three) => three.gl);
 
-  const bufferScene = useRef(new Scene());
-  const bufferCamera = useRef(new Camera());
+  // Use useMemo for stable Three.js scene instances instead of ref access during render
+  const bufferScene = useMemo(() => new Scene(), []);
+  const bufferCamera = useMemo(() => new Camera(), []);
+  const pointerVec = useMemo(() => new Vector2(), []);
+  const colorVec = useMemo(() => new Vector3(), []);
+  
   const meshRef = useRef(null);
   const postRef = useRef(null);
   const FBOs = useFBOs();
   const materials = useMaterials();
   const splatStack = usePointerEvents(mainRef, size, force);
+  const lastActivity = useRef(0);
 
+  /**
+   * Sets the active shader material on the offscreen calculation quad.
+   */
   const setShaderMaterial = useCallback(
     (name) => {
       if (!meshRef.current) return;
@@ -33,23 +45,29 @@ function Fluid({ mainRef, fluidColor }) {
     [materials],
   );
 
+  /**
+   * Renders the buffer scene to the designated FBO target.
+   */
   const setRenderTarget = useCallback(
     (name) => {
       const target = FBOs[name];
       if ('write' in target) {
         gl.setRenderTarget(target.write);
         gl.clear();
-        gl.render(bufferScene.current, bufferCamera.current);
+        gl.render(bufferScene, bufferCamera);
         target.swap();
       } else {
         gl.setRenderTarget(target);
         gl.clear();
-        gl.render(bufferScene.current, bufferCamera.current);
+        gl.render(bufferScene, bufferCamera);
       }
     },
     [bufferCamera, bufferScene, FBOs, gl],
   );
 
+  /**
+   * Updates uniform values on the respective shader material.
+   */
   const setUniforms = useCallback(
     (material, uniform, value) => {
       const mat = materials[material];
@@ -60,22 +78,36 @@ function Fluid({ mainRef, fluidColor }) {
     [materials],
   );
 
+  /**
+   * Main simulation frame tick.
+   */
   useFrame(() => {
     if (!meshRef.current || !postRef.current) return;
 
+    // Sleep simulation when inactive for over 1.8 seconds to save GPU battery
+    if (splatStack.current.length > 0) {
+      lastActivity.current = performance.now();
+    } else if (performance.now() - lastActivity.current > 1800) {
+      return;
+    }
+
+    // Apply cursor splats
     while (splatStack.current.length > 0) {
       const { mouseX, mouseY, velocityX, velocityY } = splatStack.current.pop();
 
       setShaderMaterial('splat');
       setUniforms('splat', 'uTarget', FBOs.velocity.read.texture);
-      setUniforms('splat', 'uPointer', new Vector2(mouseX, mouseY));
-      setUniforms('splat', 'uColor', new Vector3(velocityX, velocityY, 10.0));
+      pointerVec.set(mouseX, mouseY);
+      colorVec.set(velocityX, velocityY, 10.0);
+      setUniforms('splat', 'uPointer', pointerVec);
+      setUniforms('splat', 'uColor', colorVec);
       setUniforms('splat', 'uRadius', radius / 100.0);
       setRenderTarget('velocity');
       setUniforms('splat', 'uTarget', FBOs.density.read.texture);
       setRenderTarget('density');
     }
 
+    // Solve Navier-Stokes equations
     const shaderUpdates = [
       { material: 'curl', uniforms: { uVelocity: FBOs.velocity.read.texture }, target: 'curl' },
       { material: 'vorticity', uniforms: { uVelocity: FBOs.velocity.read.texture, uCurl: FBOs.curl.texture, uCurlValue: curl }, target: 'velocity' },
@@ -89,6 +121,7 @@ function Fluid({ mainRef, fluidColor }) {
       setRenderTarget(target);
     });
 
+    // Pressure Poisson iterations
     setShaderMaterial('pressure');
     setUniforms('pressure', 'uDivergence', FBOs.divergence.texture);
     for (let i = 0; i < swirl; i += 1) {
@@ -96,11 +129,13 @@ function Fluid({ mainRef, fluidColor }) {
       setRenderTarget('pressure');
     }
 
+    // Gradient subtraction
     setShaderMaterial('gradientSubstract');
     setUniforms('gradientSubstract', 'uPressure', FBOs.pressure.read.texture);
     setUniforms('gradientSubstract', 'uVelocity', FBOs.velocity.read.texture);
     setRenderTarget('velocity');
 
+    // Advection
     setShaderMaterial('advection');
     setUniforms('advection', 'uVelocity', FBOs.velocity.read.texture);
     setUniforms('advection', 'uSource', FBOs.velocity.read.texture);
@@ -121,7 +156,7 @@ function Fluid({ mainRef, fluidColor }) {
         <mesh ref={meshRef} scale={[1, 1, 0]}>
           <planeGeometry args={[2, 2, 1, 1]} />
         </mesh>,
-        bufferScene.current,
+        bufferScene,
       )}
       <Effect
         intensity={intensity * 0.0001}
@@ -134,4 +169,5 @@ function Fluid({ mainRef, fluidColor }) {
     </>
   );
 }
+
 export default Fluid;

@@ -43,7 +43,7 @@ function About() {
 
   const renderImageContainer = () => (
     <div className={styles.imageContainer}>
-      <Image priority src={studioImg} sizes="100%" fill alt="A product shipped by XY Combinators" />
+      <Image priority src={studioImg} sizes="100%" fill alt="A product shipped by XY Combinator" />
     </div>
   );
 
@@ -51,8 +51,8 @@ function About() {
     <section ref={rootRef} id="studio" className={styles.root}>
       <div className={clsx(styles.nameContainer, 'layout-block-inner')}>
         <AppearTitle>
-          <h2 className={clsx('h1', 'medium')}>Hey, we&apos;re</h2>
-          <h2 className={clsx('h1', 'medium')}>XY Combinator!</h2>
+          <h1 className={clsx('h1', 'medium')}>Hey, we&apos;re</h1>
+          <h1 className={clsx('h1', 'medium')}>XY Combinator!</h1>
         </AppearTitle>
       </div>
 
@@ -60,30 +60,21 @@ function About() {
         {isMobile ? renderImageContainer() : null}
         <div className={clsx(styles.descWrapper)} ref={animatedImageRef}>
           <AppearTitle>
-            <div className="p-l">“We design and build web products end to end —</div>
-            <div className="p-l">from the first sketch to launch day, and the</div>
-            <div className="p-l">fixes after. One team, no middlemen, and</div>
-            <div className="p-l">something clickable every single week.”</div>
+            <p className="p-l">
+              “We design and build web products end to end — from the first sketch to launch day, and the iterations after. One
+              team, no handoffs into the void, shipping every single week.”
+            </p>
           </AppearTitle>
         </div>
         {!isMobile ? renderImageContainer() : null}
         <div className={clsx(styles.descWrapperBottom)}>
-          {!isMobile ? (
-            <AppearTitle key="desktop-descWrapperBottom">
-              <h6 className="h6">A design &amp; engineering studio for founders</h6>
-              <h6 className="h6">who move fast. We turn ideas into live products</h6>
-              <h6 className="h6">with clean, quick code and an eye for the little</h6>
-              <h6 className="h6">details that make software easy to use —</h6>
-              <h6 className="h6">then we stick around through launch.</h6>
-            </AppearTitle>
-          ) : (
-            <AppearTitle key="mobile-descWrapperBottom">
-              <h6 className="h6"> A design &amp; engineering studio for founders who move</h6>
-              <h6 className="h6">fast. We turn ideas into live products with clean, quick</h6>
-              <h6 className="h6">code and an eye for the little details that make software</h6>
-              <h6 className="h6">easy to use — then we stick around through launch.</h6>
-            </AppearTitle>
-          )}
+          <AppearTitle>
+            <p className="h6">
+              A design &amp; engineering studio for founders who move fast. We turn ideas into live products with clean,
+              efficient code and an eye for the details that make software feel effortless — then we stay through launch and
+              beyond.
+            </p>
+          </AppearTitle>
           <div className={clsx(styles.buttonContainer)}>
             <ButtonLink href="mailto:contact@xycombinator.com" label="START A PROJECT" />
           </div>

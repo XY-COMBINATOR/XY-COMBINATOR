@@ -1,11 +1,23 @@
 .title {
   overflow: hidden;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  pointer-events: auto !important;
 
   > div {
     overflow: hidden;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    pointer-events: auto !important;
   }
 }
+
 .visibleFooter {
+  overflow: visible !important;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  pointer-events: auto !important;
+
   > * {
     transition:
       transform 0.45s ease-out,
@@ -13,6 +25,9 @@
     opacity: 1;
     transition-delay: calc(100ms * var(--i));
     transform: translateY(0) skewY(0);
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    pointer-events: auto !important;
   }
 }
 
@@ -22,12 +37,19 @@
     opacity: 0;
   }
 }
+
 .visible {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  pointer-events: auto !important;
+
   > div > * {
     transition: transform 0.45s ease-out;
-
     transition-delay: calc(50ms * var(--i));
     transform: translateY(0) skewY(0);
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    pointer-events: auto !important;
   }
 }
 
@@ -36,11 +58,18 @@
     transform: translateY(100%) skewY(1deg);
   }
 }
+
 .titleFooter {
   display: inline-block;
-  overflow: hidden;
+  overflow: visible;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  pointer-events: auto !important;
 
   > * {
     display: block;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    pointer-events: auto !important;
   }
 }

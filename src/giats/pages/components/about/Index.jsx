@@ -76,7 +76,7 @@ function About() {
             </p>
           </AppearTitle>
           <div className={clsx(styles.buttonContainer)}>
-            <ButtonLink href="mailto:contact@xycombinator.com" label="START A PROJECT" />
+            <ButtonLink href="/contact" label="START A PROJECT" />
           </div>
         </div>
       </div>

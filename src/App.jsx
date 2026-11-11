@@ -8,7 +8,7 @@ import '@src/styles/global.scss';
 import '@src/styles/global.css';
 
 import * as THREE from 'three';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Analytics } from '@vercel/analytics/react';
 import Background from '@src/components/canvas/background/Index';
@@ -25,6 +25,7 @@ import Tempus from '@darkroom.engineering/tempus';
 import { View } from '@react-three/drei';
 import { gsap } from 'gsap';
 import LandingPage from '@src/pages/index.page.jsx';
+import ContactPage from '@src/pages/contact/ContactPage';
 import styles from '@src/pages/app.module.scss';
 import useFoucFix from '@src/hooks/useFoucFix';
 import { useFrame } from '@darkroom.engineering/hamo';
@@ -55,6 +56,7 @@ if (typeof window !== 'undefined') {
 const staticRouter = { asPath: '/', pathname: '/', route: '/', query: {} };
 
 export default function App() {
+  const [pathname, setPathname] = useState(() => window.location.pathname);
   const [lenisInstance, setLenis, fluidColor, isAbout] = useStore(
     useShallow((state) => [state.lenis, state.setLenis, state.fluidColor, state.isAbout]),
   );
@@ -62,6 +64,16 @@ export default function App() {
   const mainRef = useRef(null);
   const mainContainerRef = useRef(null);
   const layoutRef = useRef(null);
+  const router = useMemo(
+    () => ({ ...staticRouter, asPath: pathname, pathname, route: pathname }),
+    [pathname],
+  );
+
+  useEffect(() => {
+    const syncPathname = () => setPathname(window.location.pathname);
+    window.addEventListener('popstate', syncPathname);
+    return () => window.removeEventListener('popstate', syncPathname);
+  }, []);
 
   // Hooks for preventing FOUC and binding scroll events
   useFoucFix();
@@ -168,8 +180,8 @@ export default function App() {
         {/* Main Content Viewport */}
         <main ref={mainRef} className={styles.main}>
           <div ref={mainContainerRef} id="mainContainer" className={styles.mainContainer}>
-            <Layout layoutRef={layoutRef} mainRef={mainRef} router={staticRouter}>
-              <LandingPage />
+            <Layout layoutRef={layoutRef} mainRef={mainRef} router={router}>
+              {pathname.replace(/\/+$/, '') === '/contact' ? <ContactPage /> : <LandingPage />}
             </Layout>
           </div>
         </main>

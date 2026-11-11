@@ -202,7 +202,7 @@ function MenuLinks() {
           className={styles.menuList}
         >
           <div role="presentation" className={styles.menuListItem}>
-            <Link aria-label="Send email to XY Combinator" scroll={false} href="mailto:contact@xycombinator.com">
+            <Link aria-label="Start a project with XY Combinator" scroll={false} href="/contact">
               <span>GET IN TOUCH</span>
             </Link>
           </div>

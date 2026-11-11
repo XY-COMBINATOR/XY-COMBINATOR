@@ -1,4 +1,10 @@
 {
+  "rewrites": [
+    {
+      "source": "/contact",
+      "destination": "/"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

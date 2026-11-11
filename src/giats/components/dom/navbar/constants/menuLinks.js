@@ -13,7 +13,7 @@ const menuLinks = [
   },
   {
     title: 'Contact',
-    href: undefined,
+    href: '/contact',
   },
 ];
 export default menuLinks;

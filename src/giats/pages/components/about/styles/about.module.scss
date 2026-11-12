@@ -73,3 +73,34 @@
     }
   }
 }
+
+// Reduce About section headline & body font sizes (were too large)
+.root .h1 {
+  font-size: 3.5vw !important;
+  line-height: 125% !important;
+
+  @include mobile {
+    font-size: 6vw !important;
+    line-height: 130% !important;
+  }
+}
+
+.root .p-l {
+  font-size: 0.9vw !important;
+  line-height: 145% !important;
+
+  @include mobile {
+    font-size: 2.4vw !important;
+    line-height: 145% !important;
+  }
+}
+
+.root .h6 {
+  font-size: 1.1vw !important;
+  line-height: 145% !important;
+
+  @include mobile {
+    font-size: 2.6vw !important;
+    line-height: 145% !important;
+  }
+}

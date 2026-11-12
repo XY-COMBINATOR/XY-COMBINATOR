@@ -23,6 +23,22 @@ import AppearTitle from '@src/components/animationComponents/appearTitle/Index';
 import { FAQS } from '@src/constants/faqs';
 import styles from '@src/pages/components/faq/styles/faq.module.scss';
 
+const faqColumns = [
+  FAQS.slice(0, 4),
+  FAQS.slice(4, 8),
+];
+
+const ToggleIcon = ({ isOpen }) => (
+  <svg
+    className={clsx(styles.toggleIcon, isOpen && styles.toggleIconOpen)}
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path d="M5 12h14M12 5v14" />
+  </svg>
+);
+
 /**
  * Generates FAQPage JSON-LD structured data from the same FAQS array
  * used to render the UI, keeping visible copy and schema in sync.
@@ -65,44 +81,45 @@ function FAQ() {
           </AppearTitle>
         </header>
 
-        <div className={styles.list}>
-          {FAQS.map((item, i) => {
-            const isOpen = open === i;
-            const id = `faq-question-${i}`;
-            const answerId = `faq-answer-${i}`;
-            return (
-              <div key={item.q} className={clsx(styles.item, isOpen && styles.open)}>
-                <button
-                  type="button"
-                  className={styles.button}
-                  id={id}
-                  aria-controls={answerId}
-                  aria-expanded={isOpen}
-                  onClick={() => toggle(i)}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                      event.preventDefault();
-                      toggle(i);
-                    }
-                  }}
-                >
-                  <h3 className={clsx(styles.question, styles.questionHeading)}>{item.q}</h3>
-                  <span
-                    className={clsx(styles.toggle, isOpen && styles.toggleOpen)}
-                    aria-hidden="true"
-                  >
-                    &plus;
-                  </span>
-                </button>
-                <div
-                  id={answerId}
-                  className={clsx(styles.answer, isOpen && styles.answerOpen)}
-                >
-                  <p>{item.a}</p>
-                </div>
-              </div>
-            );
-          })}
+        <div className={styles.columns}>
+          {faqColumns.map((column, colIndex) => (
+            <div key={`faq-column-${colIndex}`} className={styles.column}>
+              {column.map((item, rowIndex) => {
+                const absoluteIndex = colIndex * 4 + rowIndex;
+                const isOpen = open === absoluteIndex;
+                const id = `faq-question-${absoluteIndex}`;
+                const answerId = `faq-answer-${absoluteIndex}`;
+
+                return (
+                  <div key={item.q} className={clsx(styles.item, isOpen && styles.open)}>
+                    <button
+                      type="button"
+                      className={styles.button}
+                      id={id}
+                      aria-controls={answerId}
+                      aria-expanded={isOpen}
+                      onClick={() => toggle(absoluteIndex)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          toggle(absoluteIndex);
+                        }
+                      }}
+                    >
+                      <h3 className={clsx(styles.question, styles.questionHeading)}>{item.q}</h3>
+                      <ToggleIcon isOpen={isOpen} />
+                    </button>
+                    <div
+                      id={answerId}
+                      className={clsx(styles.answer, isOpen && styles.answerOpen)}
+                    >
+                      <p>{item.a}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
 
         <div className={styles.cta}>

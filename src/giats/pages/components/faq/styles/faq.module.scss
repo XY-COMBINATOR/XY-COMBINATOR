@@ -97,6 +97,23 @@ $accent: #98ff03;
   }
 }
 
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(12px, 1vw, 20px);
+  margin-top: clamp(28px, 3vw, 40px);
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1vw, 16px);
+}
+
 .list {
   display: flex;
   flex-direction: column;
@@ -162,25 +179,33 @@ $accent: #98ff03;
     font-weight: inherit;
     line-height: inherit;
   }
+}
 
-  .toggle {
-    font-size: clamp(14px, 1vw, 14px);
-    line-height: 1;
-    flex-shrink: 0;
-    color: rgba(240, 244, 241, 0.4);
-    // GPU-composited chevron rotation (no layout thrash)
-    transition: transform 0.25s ease, color 0.25s ease;
-    will-change: transform;
-  }
+.toggleIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  stroke: rgba(240, 244, 241, 0.55);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  transition: transform 0.25s ease, stroke 0.25s ease;
 
-  &:hover .toggle,
-  &[aria-expanded='true'] .toggle {
-    color: #98ff03;
+  path {
+    fill: none;
   }
+}
 
-  &[aria-expanded='true'] .toggle {
-    transform: rotate(45deg);
-  }
+.button:hover .toggleIcon,
+.button[aria-expanded='true'] .toggleIcon {
+  stroke: #98ff03;
+}
+
+.button[aria-expanded='true'] .toggleIcon {
+  transform: rotate(45deg);
+}
+
+.toggleIconOpen {
+  transform: rotate(45deg);
 }
 
 /* Answer panel: always in DOM (crawlable), visually collapsed when closed.
@@ -217,7 +242,7 @@ $accent: #98ff03;
 
   p {
     margin: 0;
-    font-size: clamp(14px, 1.1vw, 16px);
+    font-size: clamp(13px, 0.95vw, 15px);
     line-height: 1.55;
     color: rgba(240, 244, 241, 0.75);
   }

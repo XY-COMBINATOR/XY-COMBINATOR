@@ -728,28 +728,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section id="contact" className="cta">
-        <Reveal>
-          <span className="kicker light">Have a project in mind?</span>
-          <h2>
-            Build the product
-            <br />
-            your startup is missing.
-          </h2>
-          <p>Tell us what you are building and when you want to launch. We reply to every message.</p>
-          <div className="cta-btns">
-            <a href={`mailto:${EMAIL}`} className="btn-light btn-lg">
-              {EMAIL}
-            </a>
-            <a href="#work" className="btn-ghost-dark btn-lg">
-              Revisit the work
-            </a>
-          </div>
-          <p className="cta-note">Fixed quote in 48 hrs · First release in ~2 weeks · No credit card, just a conversation</p>
-        </Reveal>
-      </section>
-
       {/* FOOTER */}
       <footer className="footer">
         <div className="foot-top">

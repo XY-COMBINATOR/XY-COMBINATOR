@@ -13,7 +13,7 @@ const menuLinks = [
   },
   {
     title: 'Contact',
-    href: '#contact',
+    href: '/contact',
   },
   {
     title: 'FAQ',

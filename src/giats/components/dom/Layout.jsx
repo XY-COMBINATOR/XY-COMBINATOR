@@ -322,7 +322,7 @@ function Layout({ children, layoutRef, mainRef, router }) {
         </ReactTransition>
       </SwitchTransition>
 
-      <PreFooter />
+      {router.asPath.replace(/\/+$/, '') !== '/contact' && <PreFooter />}
       <footer className={styles.footer} role="contentinfo">
         <Footer />
       </footer>

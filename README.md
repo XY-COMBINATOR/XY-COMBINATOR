@@ -4,6 +4,16 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
+## Contact form email delivery
+
+The `/contact` form sends enquiries through [Web3Forms](https://web3forms.com/). Create an access key using the
+email address that should receive enquiries, then set this Vite environment variable in `.env.local` for local
+development and in your deployment environment:
+
+- `VITE_WEB3FORMS_ACCESS_KEY`
+
+`.env.example` contains the expected variable names.
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)

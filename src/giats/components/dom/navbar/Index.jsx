@@ -14,8 +14,11 @@ import useIsMobile from '@src/hooks/useIsMobile';
 import useScroll from '@src/hooks/useScroll';
 import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '@src/store';
+import { useRouter } from 'next/router';
 
 function Navbar() {
+  const router = useRouter();
+  const isContactPage = router.pathname.replace(/\/+$/, '') === '/contact';
   const isMobile = useIsMobile();
   const [lenis] = useStore(useShallow((state) => [state.lenis]));
   const [hideBrandText, setHideBrandText] = useState(false);
@@ -72,7 +75,12 @@ function Navbar() {
 
       <header className={styles.root} role="banner">
         <div className={styles.innerHeader}>
-          <Link onClick={goToTop} aria-label="Go home" scroll="false" href="#top">
+          <Link
+            onClick={isContactPage ? undefined : goToTop}
+            aria-label="Go home"
+            scroll="false"
+            href={isContactPage ? '/' : '#top'}
+          >
             <h4 className={clsx('bold', 'h4', styles.brandText, hideBrandText && styles.brandHidden)}>
               XY COMBINATOR
             </h4>
@@ -81,9 +89,8 @@ function Navbar() {
           <div className={styles.rightContainer}>
             {!isMobile && (
               <ButtonLink 
-                href="mailto:contact@xycombinator.com" 
-                label="GET IN TOUCH" 
-                aria-label="Send email to XY Combinator"
+                href="/contact"
+                label="GET IN TOUCH"
               />
             )}
             <MenuButton />

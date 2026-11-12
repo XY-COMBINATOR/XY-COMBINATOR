@@ -32,10 +32,11 @@ const getFAQPageSchema = () => ({
   '@type': 'FAQPage',
   mainEntity: FAQS.map((item) => ({
     '@type': 'Question',
-    name: item.q.replace(/&mdash;/g, '—').replace(/&ndash;/g, '–').replace(/&rsquo;/g, "'"),
+    // Brand guideline: schema entries strictly omit hyphens and dashes
+    name: item.q.replace(/[-—–]/g, ' ').replace(/\s+/g, ' ').trim(),
     acceptedAnswer: {
       '@type': 'Answer',
-      text: item.a.replace(/&mdash;/g, '—').replace(/&ndash;/g, '–').replace(/&rsquo;/g, "'"),
+      text: item.a.replace(/[-—–]/g, ' ').replace(/\s+/g, ' ').trim(),
     },
   })),
 });

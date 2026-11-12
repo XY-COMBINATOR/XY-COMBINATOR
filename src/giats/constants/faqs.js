@@ -6,59 +6,54 @@
  */
 export const FAQS = [
   {
-    q: 'What does XY Combinator actually do?',
+    q: 'What services do you offer?',
     a:
-      'We are a design & engineering studio for founders who move fast. We take products from idea to live users &mdash; product design, brand strategy, websites, e-commerce, mobile apps, and launch support after day one.',
+      'We provide comprehensive solutions, including Brand Strategy and Identity, Creative and Art Direction, Digital Experience Design, Product and Interface Design, Web Development and CMS, Application Development, and Search and Performance Optimization.',
   },
   {
-    q: 'How fast can we start?',
+    q: 'How long does it take to complete a project?',
     a:
-      'A 30-minute intro call, a scoped proposal within 48 hours, and kickoff within a week. The first clickable release typically lands in two weeks.',
+      'Project timelines vary based on complexity and scope. Typically: Brand Strategy and Identity 6 to 8 weeks, Digital Experience Design 4 to 6 weeks, Web Development and CMS 8 to 12 weeks, and Application Development 12 to 16 weeks. These durations are estimates and can vary based on project specifics.',
   },
   {
-    q: 'How long does a project take?',
+    q: 'Do you offer ongoing support after the project is completed?',
     a:
-      'Timelines depend on scope. Brand strategy and identity usually take 6&ndash;8 weeks, digital experience design 4&ndash;6 weeks, web development 8&ndash;12 weeks, and application development 12&ndash;16 weeks. These are estimates and vary with project specifics.',
+      'Yes, we provide ongoing maintenance and support services to ensure your website remains secure, up-to-date, and optimized for performance.',
   },
   {
-    q: 'How much does it cost?',
+    q: 'Can you help improve my existing website SEO performance?',
     a:
-      'Fixed projects are scoped and priced upfront &mdash; no hourly black box. Tell us what you are building and we will give you a number within 48 hours.',
+      'Absolutely. Our Search and Performance Optimization services focus on enhancing your website visibility and performance through: Technical SEO audits, Content optimization, Speed enhancements, and Mobile responsiveness improvements.',
   },
   {
-    q: 'Do we own the code and designs?',
+    q: 'What platforms do you use for web development?',
     a:
-      'Yes. Everything &mdash; code, designs, accounts, analytics &mdash; is yours from day one, in your repos, under your accounts.',
+      'We work with various platforms, including WordPress, Shopify, Wix, and Squarespace, selecting the one that best aligns with your business needs and goals.',
   },
   {
-    q: 'Do you work with early-stage founders?',
+    q: 'How do you ensure my website is mobile-friendly?',
     a:
-      'That is our home turf. Most clients arrive with an idea, a rough deck, or a half-built product. We meet you where you are and get you to launch.',
+      'We implement responsive design principles, ensuring your website adapts seamlessly to various screen sizes and devices, providing an optimal user experience across all platforms.',
   },
   {
-    q: 'Do you offer ongoing support after launch?',
+    q: 'Will my website be optimized for search engines from the start?',
     a:
-      'Yes. We provide maintenance and support to keep your site secure, up-to-date, and optimized for performance long after launch.',
+      'Yes, SEO foundations are integrated into every website we develop, including clean code architecture, fast load speeds, mobile responsiveness, structured metadata, and properly configured sitemaps.',
   },
   {
-    q: 'Will my website be optimized for search engines?',
+    q: 'Do you provide content creation services?',
     a:
-      'Yes. SEO foundations are built in from the start &mdash; clean code architecture, fast load speeds, mobile responsiveness, structured metadata, and configured sitemaps.',
-  },
-  {
-    q: 'Is my website mobile-friendly?',
-    a:
-      'Yes. We use responsive design principles so your site adapts seamlessly across all screen sizes and devices.',
+      'Yes, we offer content strategy and creation services, including copywriting, photography, and videography, to ensure your website content aligns with your brand and engages your target audience effectively.',
   },
   {
     q: 'How do you handle website security?',
     a:
-      'We use SSL certificates, regular software updates, and proactive monitoring to protect your site and ensure data integrity.',
+      'We implement robust security measures, including SSL certificates, regular software updates, and proactive monitoring, to protect your website from potential threats and ensure data integrity.',
   },
   {
-    q: 'Can you integrate third-party tools?',
+    q: 'Can you integrate third-party tools and services into my website?',
     a:
-      'Yes. We integrate CRM systems, marketing platforms, analytics tools, and other services to extend your site&rsquo;s functionality.',
+      'Yes, we can integrate various third-party tools and services, such as CRM systems, marketing platforms, and analytics tools, to enhance your website functionality and support your business operations.',
   },
 ];
 

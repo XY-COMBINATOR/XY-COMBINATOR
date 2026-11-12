@@ -132,6 +132,7 @@ $accent: #98ff03;
   border: none;
   color: var(--white);
   padding: clamp(16px, 1.6vw, 22px);
+  min-height: 48px; // accessible touch target for mobile
   font-size: clamp(16px, 1.4vw, 20px);
   font-weight: 550;
   line-height: 1.3;
@@ -145,9 +146,21 @@ $accent: #98ff03;
     color: #98ff03;
   }
 
+  &:focus-visible {
+    outline: 2px solid var(--white);
+    outline-offset: 2px;
+  }
+
   .question {
     display: block;
     min-width: 0;
+  }
+
+  .questionHeading {
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
   }
 
   .toggle {
@@ -155,27 +168,59 @@ $accent: #98ff03;
     line-height: 1;
     flex-shrink: 0;
     color: rgba(240, 244, 241, 0.4);
-    transition: color 0.25s ease;
+    // GPU-composited chevron rotation (no layout thrash)
+    transition: transform 0.25s ease, color 0.25s ease;
+    will-change: transform;
   }
 
   &:hover .toggle,
   &[aria-expanded='true'] .toggle {
     color: #98ff03;
   }
+
+  &[aria-expanded='true'] .toggle {
+    transform: rotate(45deg);
+  }
 }
 
+/* Answer panel: always in DOM (crawlable), visually collapsed when closed.
+   Uses max-height transition instead of display: none so content remains
+   indexable and CLS is minimized. */
 .answer {
   overflow: hidden;
   background: rgba(255, 255, 255, 0.02);
   border-top: 1px solid rgba(240, 244, 241, 0.08);
-}
 
-.answer p {
-  margin: 0;
-  padding: clamp(12px, 1.2vw, 16px) clamp(16px, 1.6vw, 22px);
-  font-size: clamp(14px, 1.1vw, 16px);
-  line-height: 1.55;
-  color: rgba(240, 244, 241, 0.75);
+  // Collapsed state: visually hidden but still in the DOM
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height 0.35s ease,
+    opacity 0.25s ease,
+    padding 0.35s ease;
+
+  padding-top: 0;
+  padding-bottom: 0;
+
+  &.answerOpen {
+    // Expanded state: content revealed
+    max-height: 2000px; // large enough for any answer length
+    opacity: 1;
+    transition:
+      max-height 0.45s ease,
+      opacity 0.35s ease,
+      padding 0.45s ease;
+
+    padding-top: clamp(12px, 1.2vw, 16px);
+    padding-bottom: clamp(12px, 1.2vw, 16px);
+  }
+
+  p {
+    margin: 0;
+    font-size: clamp(14px, 1.1vw, 16px);
+    line-height: 1.55;
+    color: rgba(240, 244, 241, 0.75);
+  }
 }
 
 .cta {

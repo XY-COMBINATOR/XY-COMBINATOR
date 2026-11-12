@@ -74,7 +74,15 @@ function MyApp({ Component, pageProps, router }) {
     setLenis(lenis);
     lenis.stop();
 
+    // Fallback: ensure Lenis starts even if the Loader animation
+    // never completes (e.g. on mobile where SplitType/GSAP may hang).
+    // Without this, scroll remains locked forever on mobile.
+    const lenisFallback = setTimeout(() => {
+      lenis.start();
+    }, 8000);
+
     return () => {
+      clearTimeout(lenisFallback);
       lenis.destroy();
       setLenis(null);
     };

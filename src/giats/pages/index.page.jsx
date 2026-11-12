@@ -13,6 +13,8 @@ import Gallery from '@src/pages/components/gallery/Index';
 import Projects from '@src/pages/components/projects/Index';
 import Expertise from '@src/pages/components/expertise/Index';
 import Clients from '@src/pages/components/clients/Index';
+import Contact from '@src/pages/components/contact/Index';
+import FAQ from '@src/pages/components/faq/Index';
 import CustomHead from '@src/components/dom/CustomHead';
 
 const seo = {
@@ -49,6 +51,8 @@ function Page() {
       <Clients />
       <Projects />
       <Expertise />
+      <Contact />
+      <FAQ />
     </>
   );
 }

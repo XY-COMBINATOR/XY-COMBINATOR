@@ -1,0 +1,272 @@
+@use '@src/styles/functions' as *;
+
+$root-bg: #060608;
+$accent: #98ff03;
+
+.root {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  overflow: hidden;
+  padding-top: clamp(120px, 12vw, 200px);
+  padding-bottom: clamp(96px, 10vw, 168px);
+  background-color: $root-bg;
+  color: var(--white);
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    height: 180px;
+    pointer-events: none;
+  }
+
+  &::before {
+    top: 0;
+    background-image: linear-gradient(to bottom, #060608 0px, rgba(6, 6, 8, 0) 180px);
+  }
+
+  &::after {
+    bottom: 0;
+    background-image: linear-gradient(to bottom, rgba(6, 6, 8, 0) 0px, #060608 180px);
+  }
+}
+
+.inner {
+  position: relative;
+  z-index: 2;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--layout-columns-gap);
+  padding-bottom: clamp(48px, 5vw, 84px);
+  border-bottom: 1px solid rgba(240, 244, 241, 0.12);
+
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-bottom: 8vw;
+    gap: 4vw;
+  }
+}
+
+.headMain {
+  display: flex;
+  flex-direction: column;
+}
+
+.kicker {
+  display: block;
+  margin-bottom: clamp(14px, 1.4vw, 22px);
+  font-family: 'SF Mono', 'Cascadia Mono', Consolas, 'Roboto Mono', Menlo, monospace;
+  font-size: clamp(9px, 0.66vw, 12px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 241, 0.55);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(38px, 5.2vw, 92px);
+  line-height: 0.98;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.story {
+  max-width: 26em;
+  margin: 0;
+  font-size: clamp(15px, 1.35vw, 22px);
+  line-height: 1.35;
+  color: rgba(240, 244, 241, 0.72);
+
+  @include mobile {
+    max-width: 100%;
+    font-size: 4.2vw;
+    line-height: 1.4;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(32px, 4vw, 64px);
+  padding-top: clamp(40px, 4vw, 72px);
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: 10vw;
+    padding-top: 10vw;
+  }
+}
+
+.formCol {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 1.6vw, 24px);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 1.4vw, 20px);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
+  font-family: 'SF Mono', 'Cascadia Mono', Consolas, 'Roboto Mono', Menlo, monospace;
+  font-size: clamp(10px, 0.7vw, 12px);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 241, 0.5);
+}
+
+input,
+textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(240, 244, 241, 0.12);
+  border-radius: 6px;
+  color: var(--white);
+  padding: clamp(10px, 1vw, 14px) clamp(12px, 1.2vw, 16px);
+  font-size: clamp(14px, 1.1vw, 17px);
+  line-height: 1.4;
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  font-family: inherit;
+
+  &:focus {
+    border-color: var(--white);
+    box-shadow: 0 0 0 3px rgba(152, 255, 3, 0.1);
+  }
+
+  &::placeholder {
+    color: rgba(240, 244, 241, 0.35);
+  }
+}
+
+textarea {
+  resize: vertical;
+  min-height: clamp(110px, 14vw, 180px);
+}
+
+.submit {
+  align-self: start;
+  width: fit-content;
+  background: transparent;
+  border: 1px solid var(--white);
+  color: var(--white);
+  border-radius: 6px;
+  padding: clamp(10px, 1vw, 14px) clamp(20px, 2vw, 26px);
+  font-size: clamp(13px, 1vw, 15px);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  font-family: inherit;
+
+  &:hover {
+    background-color: var(--white);
+    color: #050505;
+  }
+}
+
+.confirmation {
+  margin: 0;
+  font-size: clamp(13px, 1vw, 15px);
+  color: #98ff03;
+  font-weight: 550;
+}
+
+.infoCol {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(24px, 2.5vw, 36px);
+}
+
+.infoCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(240, 244, 241, 0.1);
+  border-radius: 10px;
+  padding: clamp(24px, 2.5vw, 36px);
+}
+
+.infoTitle {
+  margin: 0 0 clamp(16px, 1.6vw, 24px);
+  font-size: clamp(18px, 1.6vw, 24px);
+  font-weight: 600;
+  color: var(--white);
+}
+
+.infoRow {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(12px, 1.2vw, 18px);
+  margin-bottom: clamp(12px, 1.2vw, 18px);
+  font-size: clamp(14px, 1.1vw, 16px);
+  line-height: 1.4;
+}
+
+.infoLabel {
+  color: rgba(240, 244, 241, 0.45);
+  font-family: 'SF Mono', 'Cascadia Mono', Consolas, 'Roboto Mono', Menlo, monospace;
+  font-size: clamp(11px, 0.8vw, 13px);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.infoValue {
+  color: var(--white);
+  text-decoration: none;
+  transition: color 0.25s ease;
+
+  &:hover {
+    color: #98ff03;
+  }
+}
+
+.quickNote {
+  margin-top: auto;
+}
+
+.quickNote p {
+  margin: 0;
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.5;
+  color: rgba(240, 244, 241, 0.65);
+}
+
+.back {
+  margin-top: clamp(40px, 4vw, 64px);
+  padding-top: clamp(24px, 2.5vw, 36px);
+  border-top: 1px solid rgba(240, 244, 241, 0.1);
+}
+
+.backLink {
+  color: rgba(240, 244, 241, 0.6);
+  text-decoration: none;
+  font-size: clamp(13px, 1vw, 15px);
+  transition: color 0.25s ease;
+
+  &:hover {
+    color: var(--white);
+  }
+}

@@ -1,71 +1,45 @@
 /**
  * FAQ Component
  * Frequently asked questions section/page for XY Combinator.
- * Accessible accordion built with framer-motion, one answer open at a time.
+ *
+ * SEO / Crawlability (Issue #6):
+ * - All questions and answers are rendered directly in the initial DOM payload
+ *   (no client-side lazy injection or conditional DOM removal), so search
+ *   engine bots index the full text immediately.
+ * - Semantic HTML: <h2> for the section title, <h3> for each question,
+ *   accessible accordion buttons with aria-expanded / aria-controls.
+ * - Valid FAQPage JSON-LD structured data is injected from the same single
+ *   source of truth data array used to render the UI, so visible copy and
+ *   schema markup never drift out of sync.
+ * - Smooth expand/collapse transitions use max-height / opacity (no
+ *   display: none on answer text) so content stays in the DOM and
+ *   Cumulative Layout Shift is minimized.
+ * - Chevron animation is GPU-composited (transform) for smooth mobile
+ *   performance. Header rows meet the 48px min touch-target guideline.
  */
 import { useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
 import clsx from 'clsx';
 import AppearTitle from '@src/components/animationComponents/appearTitle/Index';
+import { FAQS } from '@src/constants/faqs';
 import styles from '@src/pages/components/faq/styles/faq.module.scss';
 
-const FAQS = [
-  {
-    q: 'What does XY Combinator actually do?',
-    a:
-      'We are a design & engineering studio for founders who move fast. We take products from idea to live users &mdash; product design, brand strategy, websites, e-commerce, mobile apps, and launch support after day one.',
-  },
-  {
-    q: 'How fast can we start?',
-    a:
-      'A 30-minute intro call, a scoped proposal within 48 hours, and kickoff within a week. The first clickable release typically lands in two weeks.',
-  },
-  {
-    q: 'How long does a project take?',
-    a:
-      'Timelines depend on scope. Brand strategy and identity usually take 6&ndash;8 weeks, digital experience design 4&ndash;6 weeks, web development 8&ndash;12 weeks, and application development 12&ndash;16 weeks. These are estimates and vary with project specifics.',
-  },
-  {
-    q: 'How much does it cost?',
-    a:
-      'Fixed projects are scoped and priced upfront &mdash; no hourly black box. Tell us what you are building and we will give you a number within 48 hours.',
-  },
-  {
-    q: 'Do we own the code and designs?',
-    a:
-      'Yes. Everything &mdash; code, designs, accounts, analytics &mdash; is yours from day one, in your repos, under your accounts.',
-  },
-  {
-    q: 'Do you work with early-stage founders?',
-    a:
-      'That is our home turf. Most clients arrive with an idea, a rough deck, or a half-built product. We meet you where you are and get you to launch.',
-  },
-  {
-    q: 'Do you offer ongoing support after launch?',
-    a:
-      'Yes. We provide maintenance and support to keep your site secure, up-to-date, and optimized for performance long after launch.',
-  },
-  {
-    q: 'Will my website be optimized for search engines?',
-    a:
-      'Yes. SEO foundations are built in from the start &mdash; clean code architecture, fast load speeds, mobile responsiveness, structured metadata, and configured sitemaps.',
-  },
-  {
-    q: 'Is my website mobile-friendly?',
-    a:
-      'Yes. We use responsive design principles so your site adapts seamlessly across all screen sizes and devices.',
-  },
-  {
-    q: 'How do you handle website security?',
-    a:
-      'We use SSL certificates, regular software updates, and proactive monitoring to protect your site and ensure data integrity.',
-  },
-  {
-    q: 'Can you integrate third-party tools?',
-    a:
-      'Yes. We integrate CRM systems, marketing platforms, analytics tools, and other services to extend your site&rsquo;s functionality.',
-  },
-];
+/**
+ * Generates FAQPage JSON-LD structured data from the same FAQS array
+ * used to render the UI, keeping visible copy and schema in sync.
+ */
+const getFAQPageSchema = () => ({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS.map((item) => ({
+    '@type': 'Question',
+    // Brand guideline: schema entries strictly omit hyphens and dashes
+    name: item.q.replace(/[-—–]/g, ' ').replace(/\s+/g, ' ').trim(),
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.a.replace(/[-—–]/g, ' ').replace(/\s+/g, ' ').trim(),
+    },
+  })),
+});
 
 function FAQ() {
   const [open, setOpen] = useState(null); // index of the open answer, or null
@@ -94,36 +68,38 @@ function FAQ() {
         <div className={styles.list}>
           {FAQS.map((item, i) => {
             const isOpen = open === i;
+            const id = `faq-question-${i}`;
+            const answerId = `faq-answer-${i}`;
             return (
               <div key={item.q} className={clsx(styles.item, isOpen && styles.open)}>
                 <button
                   type="button"
                   className={styles.button}
-                  onClick={() => toggle(i)}
+                  id={id}
+                  aria-controls={answerId}
                   aria-expanded={isOpen}
+                  onClick={() => toggle(i)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      toggle(i);
+                    }
+                  }}
                 >
-                  <span className={styles.question}>{item.q}</span>
-                  <motion.em
-                    className={styles.toggle}
-                    animate={{ rotate: isOpen ? 45 : 0 }}
-                    transition={{ duration: 0.2 }}
+                  <h3 className={clsx(styles.question, styles.questionHeading)}>{item.q}</h3>
+                  <span
+                    className={clsx(styles.toggle, isOpen && styles.toggleOpen)}
+                    aria-hidden="true"
                   >
                     &plus;
-                  </motion.em>
+                  </span>
                 </button>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      className={styles.answer}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeOut' }}
-                    >
-                      <p>{item.a}</p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <div
+                  id={answerId}
+                  className={clsx(styles.answer, isOpen && styles.answerOpen)}
+                >
+                  <p>{item.a}</p>
+                </div>
               </div>
             );
           })}
@@ -134,6 +110,14 @@ function FAQ() {
             Ready to start? &rarr; Contact us
           </a>
         </div>
+
+        {/* FAQPage JSON-LD structured data (crawlable rich results) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(getFAQPageSchema()),
+          }}
+        />
       </div>
     </section>
   );

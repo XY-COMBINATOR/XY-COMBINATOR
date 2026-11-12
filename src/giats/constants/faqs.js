@@ -31,11 +31,6 @@ export const FAQS = [
       'We work with various platforms, including WordPress, Shopify, Wix, and Squarespace, selecting the one that best aligns with your business needs and goals.',
   },
   {
-    q: 'How do you ensure my website is mobile-friendly?',
-    a:
-      'We implement responsive design principles, ensuring your website adapts seamlessly to various screen sizes and devices, providing an optimal user experience across all platforms.',
-  },
-  {
     q: 'Will my website be optimized for search engines from the start?',
     a:
       'Yes, SEO foundations are integrated into every website we develop, including clean code architecture, fast load speeds, mobile responsiveness, structured metadata, and properly configured sitemaps.',
@@ -44,11 +39,6 @@ export const FAQS = [
     q: 'Do you provide content creation services?',
     a:
       'Yes, we offer content strategy and creation services, including copywriting, photography, and videography, to ensure your website content aligns with your brand and engages your target audience effectively.',
-  },
-  {
-    q: 'How do you handle website security?',
-    a:
-      'We implement robust security measures, including SSL certificates, regular software updates, and proactive monitoring, to protect your website from potential threats and ensure data integrity.',
   },
   {
     q: 'Can you integrate third-party tools and services into my website?',

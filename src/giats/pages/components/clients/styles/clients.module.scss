@@ -91,7 +91,7 @@
 .lead {
   display: block;
   max-width: 11em;
-  font-size: clamp(30px, 4.15vw, 68px);
+  font-size: clamp(24px, 3.2vw, 52px);
   font-weight: 750;
   line-height: 0.98;
   letter-spacing: -0.015em;
@@ -105,7 +105,7 @@
   margin-top: 0.15em;
   margin-bottom: 0.1em;
   font-family: var(--font-serif);
-  font-size: clamp(15px, 1.8vw, 28px);
+  font-size: clamp(13px, 1.2vw, 20px);
   font-weight: 400;
   font-style: italic;
   font-variation-settings: 'opsz' 16;
@@ -117,7 +117,7 @@
   display: block;
   max-width: 14em;
   font-family: var(--font-serif);
-  font-size: clamp(42px, 8.2vw, 128px);
+  font-size: clamp(38px, 5.8vw, 96px);
   font-weight: 400;
   font-style: italic;
   font-variation-settings: 'opsz' 144;

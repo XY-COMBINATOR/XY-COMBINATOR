@@ -2,6 +2,8 @@
   RewriteEngine On
   RewriteBase /
 
+  # Hostinger/Vite SPA fallback for deep links like /contact
+  RewriteCond %{REQUEST_URI} !^/api/
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ index.html [L]

@@ -21,6 +21,7 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import AppearTitle from '@src/components/animationComponents/appearTitle/Index';
 import { FAQS } from '@src/constants/faqs';
+import projects from '@src/constants/projects';
 import styles from '@src/pages/components/faq/styles/faq.module.scss';
 
 const faqColumns = [
@@ -126,6 +127,33 @@ function FAQ() {
           <a href="#contact" className={styles.ctaLink}>
             Ready to start? &rarr; Contact us
           </a>
+        </div>
+
+        <div className={styles.projectsSection}>
+          <h2 className={styles.projectsTitle}>Featured Projects</h2>
+          <div className={styles.projectsCarousel}>
+            {projects.slice(0, 3).map((project) => (
+              <div key={project.id} className={styles.projectCard}>
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`View ${project.title} project`}
+                >
+                  <img
+                    src={project.img}
+                    alt={project.title}
+                    loading="lazy"
+                    className={styles.projectImg}
+                  />
+                  <div className={styles.projectInfo}>
+                    <h3 className={styles.projectName}>{project.title}</h3>
+                    <p className={styles.projectDate}>{project.date}</p>
+                  </div>
+                </a>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* FAQPage JSON-LD structured data (crawlable rich results) */}
